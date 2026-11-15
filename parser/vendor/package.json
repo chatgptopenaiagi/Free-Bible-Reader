@@ -1,0 +1,75 @@
+{
+  "name": "bible-passage-reference-parser",
+  "version": "4.0.0",
+  "description": "Identifies and parses Bible references (like John 3:16) in 50 languages.",
+  "main": "./esm/bcv_parser.js",
+  "types": "./types/bcv_parser.d.ts",
+  "directories": {
+    "test": "test"
+  },
+  "files": [
+    "cjs/",
+    "js/",
+    "esm/",
+    "types/",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./types/bcv_parser.d.ts",
+      "default": "./esm/bcv_parser.js"
+    },
+    "./esm/bcv_parser.js": {
+      "types": "./types/bcv_parser.d.ts",
+      "default": "./esm/bcv_parser.js"
+    },
+    "./esm/lang/*.js": {
+      "types": "./types/lang.d.ts",
+      "default": "./esm/lang/*.js"
+    },
+    "./cjs/*.js": "./cjs/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "esm/bcv_parser.js": [
+        "types/bcv_parser.d.ts"
+      ],
+      "esm/lang/*.js": [
+        "types/lang.d.ts"
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/openbibleinfo/Bible-Passage-Reference-Parser.git"
+  },
+  "type": "module",
+  "keywords": [
+    "bible",
+    "verses"
+  ],
+  "author": "OpenBible.info <openbibleinfo@gmail.com> (https://www.openbible.info/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/openbibleinfo/Bible-Passage-Reference-Parser/issues"
+  },
+  "homepage": "https://github.com/openbibleinfo/Bible-Passage-Reference-Parser",
+  "scripts": {
+    "build-language": "cd bin && sh build_lang.sh",
+    "fuzz": "node bin/fuzz_lang.js",
+    "fuzz:smoke": "node bin/fuzz_lang.js --count 2000 --seed 42",
+    "lint:format": "eslint src/*.ts src/*.js test/*.js test/*.cjs bin/*.js",
+    "serve": "esbuild --servedir=. --serve=127.0.0.1:8765",
+    "test": "npx jasmine test/*.spec.*"
+  },
+  "devDependencies": {
+    "@pemistahl/grex": "^1.0.2",
+    "esbuild": "^0.28.1",
+    "eslint": "^10.6.0",
+    "globals": "^17.7.0",
+    "jasmine": "^6.3.0",
+    "peggy": "^5.1.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.62.1"
+  }
+}

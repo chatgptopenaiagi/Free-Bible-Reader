@@ -1,0 +1,13 @@
+{
+  "name": "free-bible-reader",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Offline desktop Bible reader; JavaScript dependencies are for developer browser acceptance only.",
+  "scripts": {
+    "test:browser": "node tests/browser/acceptance.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.64.1"
+  }
+}

@@ -1,0 +1,5 @@
+.visual-engine{padding:1rem;border:1px solid #343c46;border-radius:.7rem;background:#0d0d0d;color:#e8edf3;font:14px/1.5 system-ui,sans-serif}
+.visual-engine-header{display:flex;justify-content:space-between;gap:.7rem;flex-wrap:wrap}.visual-engine-reference{color:#b7d8ec}.visual-engine-status,.visual-engine-mapping{color:#c8d2dc}.visual-engine-message{color:#ffcf7b}
+.visual-engine-canvas{display:block;width:100%;height:auto;min-height:160px;background:#0d0d0d;border-radius:.4rem}.visual-engine-arc{cursor:pointer;transition:stroke-width .15s}.visual-engine-arc:hover,.visual-engine-arc:focus{stroke-width:3.5;opacity:1;outline:none}
+.visual-engine-legend{display:flex;flex-wrap:wrap;gap:.25rem 1rem;list-style:none;padding:0;font-size:12px}.visual-engine-legend li{display:flex;align-items:center;gap:.4rem}.visual-engine-swatch{display:inline-block;width:10px;height:10px;border-radius:2px}.visual-engine-credit{font-size:11px;color:#aab5c0}.visual-engine-credit a{color:#a9d8ef}.visual-engine-credit a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+@media(max-width:600px){.visual-engine{padding:.7rem}.visual-engine-legend{gap:.25rem .6rem;font-size:11px}}

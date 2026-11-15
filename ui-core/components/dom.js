@@ -1,0 +1,5 @@
+export const $ = id => document.getElementById(id);
+export function element(tag,text,cls){const node=document.createElement(tag);if(text!==undefined)node.textContent=String(text);if(cls)node.className=cls;return node;}
+export function options(select,values,selected){select.replaceChildren(...values.map(([value,label])=>{const o=element('option',label);o.value=value;return o;}));if(selected!==undefined)select.value=selected;}
+export async function api(path,payload,signal){const response=await fetch(path,{...(payload?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}:{}),signal});const data=await response.json();if(!response.ok){const error=new Error(typeof data.error==='string'?data.error:`HTTP ${response.status}`);error.data=data;throw error;}return data;}
+export function sourceDetails(title,data){const box=element('details',undefined,'source-details');const pre=element('pre',JSON.stringify(data,null,2));pre.dataset.sourceData='';box.append(element('summary',title),pre);return box;}

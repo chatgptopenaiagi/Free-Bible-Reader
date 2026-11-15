@@ -1,0 +1,16 @@
+:root {
+  --ui-primary:#24445d; --ui-secondary:#655c50; --ui-accent:#80601e;
+  --ui-background:#faf9f6; --ui-surface:#fff; --ui-text:#202a32; --ui-muted:#596570;
+  --ui-border:#b9c2ca; --ui-selected:#dae9f4; --ui-control:#e9eef2; --ui-link:#15558f;
+  --ui-highlight:#fff0ad; --ui-graph-selection:#a3440c; --ui-cross-reference:#425a99;
+  --ui-on-primary:#fff; --ui-control-text:#000; --ui-highlight-text:#000; --ui-focus:#15558f;
+  --ui-interface-font:"Segoe UI",Arial,"Nirmala UI","Segoe UI Historic",system-ui,sans-serif;
+  --ui-scripture-font:Georgia,"Times New Roman","Nirmala UI","Segoe UI Historic",serif;
+  --ui-safety-background:#fff4d2; --ui-safety-text:#332500; --ui-safety-border:#7d6120;
+  --ui-safety-control:#ffffff; --ui-safety-focus:#172f47;
+  --ui-interface-font-size:16px; --ui-scripture-font-size:19.2px;
+  --ui-interface-font-scale:1; --ui-scripture-font-scale:1.2;
+  --ui-line-height:1.7; --ui-paragraph-spacing:1em; --ui-reading-width:72ch;
+  --ui-density:1; --ui-space-1:.25rem; --ui-space-2:.5rem; --ui-space-3:.75rem; --ui-space-4:1rem;
+  --ui-control-height:44px; --ui-motion-duration:140ms; --ui-border-width:1px;
+}
