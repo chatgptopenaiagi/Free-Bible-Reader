@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0.0",
+  "product": "FREE BIBLE READER",
+  "version": "0.2.0",
+  "status": "PASS",
+  "checked_utc": "2026-11-16T18:34:28.378953+00:00",
+  "release_url": "https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/tag/v0.2.0",
+  "release_id": 447401921,
+  "published_at": "2026-11-16T18:27:08Z",
+  "draft": false,
+  "prerelease": false,
+  "repository_visibility": "public",
+  "source_tag_commit": "105bfcea7c8318abcdebb79a0a52273a974651ca",
+  "source_tag_remotely_verified": true,
+  "download_method": "System curl -q, HTTPS redirects only; no Authorization header, cookies, GitHub CLI downloader or curl configuration used.",
+  "installer_transfer": {
+    "http_code": 200,
+    "bytes": 251084255,
+    "seconds": 322.531715
+  },
+  "speech_source_transfer": {
+    "http_code": 200,
+    "bytes": 61200561,
+    "seconds": 114.688864
+  },
+  "assets": [
+    {
+      "name": "Free-Bible-Reader-0.2.0-windows-x64-setup.exe",
+      "bytes": 251084255,
+      "sha256": "ac69a3c86d2444785cfa1af12308ed280bec13ee03d39f7ab5ed9e50aeaeb5dd",
+      "github_digest": "sha256:ac69a3c86d2444785cfa1af12308ed280bec13ee03d39f7ab5ed9e50aeaeb5dd",
+      "anonymous_download_matches_tested_local_asset": true,
+      "url": "https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/download/v0.2.0/Free-Bible-Reader-0.2.0-windows-x64-setup.exe"
+    },
+    {
+      "name": "Free-Bible-Reader-0.2.0-tts-sources.zip",
+      "bytes": 61200561,
+      "sha256": "d1a8007a5117b5eab4413482065076ccae29ae3ed0eb7a859a394c0b77d0293d",
+      "github_digest": "sha256:d1a8007a5117b5eab4413482065076ccae29ae3ed0eb7a859a394c0b77d0293d",
+      "anonymous_download_matches_tested_local_asset": true,
+      "url": "https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/download/v0.2.0/Free-Bible-Reader-0.2.0-tts-sources.zip"
+    },
+    {
+      "name": "SHA256SUMS-0.2.0.txt",
+      "bytes": 220,
+      "sha256": "4f97849c8ffa0aa3f968d3850b05df4dbcdf7dc43ad5c23b94e5905bdb7b93be",
+      "github_digest": "sha256:4f97849c8ffa0aa3f968d3850b05df4dbcdf7dc43ad5c23b94e5905bdb7b93be",
+      "anonymous_download_matches_tested_local_asset": true,
+      "url": "https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/download/v0.2.0/SHA256SUMS-0.2.0.txt"
+    },
+    {
+      "name": "release-manifest-0.2.0.json",
+      "bytes": 2955,
+      "sha256": "324c97a0aeb48f65278df732a6b12a14e7bb9dd24bdd55185e56a9bccac3b971",
+      "github_digest": "sha256:324c97a0aeb48f65278df732a6b12a14e7bb9dd24bdd55185e56a9bccac3b971",
+      "anonymous_download_matches_tested_local_asset": true,
+      "url": "https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/download/v0.2.0/release-manifest-0.2.0.json"
+    }
+  ],
+  "speech_source_archives": [
+    {
+      "component": "Piper",
+      "archive": "piper1-gpl-v1.8.0.tar.gz",
+      "sha256": "0a22987a6157f14e2fb7cf4aa702b547467fd0448bea9f233abd503c3ff4a0e1",
+      "matches": true
+    },
+    {
+      "component": "eSpeak NG standalone runtime",
+      "archive": "espeak-ng-1.52.0.tar.gz",
+      "sha256": "bb4338102ff3b49a81423da8a1a158b420124b055b60fa76cfb4b18677130a23",
+      "matches": true
+    },
+    {
+      "component": "eSpeak NG embedded by Piper espeakbridge",
+      "archive": "espeak-ng-724808c5a83f9ef95fdd0db886ba7ba537ff224a.tar.gz",
+      "sha256": "7d8ebd78201923a443245362a928999977d1721c3eeba596eafc6ea8db7e243c",
+      "matches": true
+    }
+  ],
+  "previous_releases": [
+    {
+      "tag": "v0.1.1",
+      "release_id": 446875599,
+      "published_at": "2026-11-16T10:25:54Z",
+      "preserved": true
+    },
+    {
+      "tag": "v0.1.0",
+      "release_id": 446186275,
+      "published_at": "2026-11-15T16:31:08Z",
+      "preserved": true
+    }
+  ],
+  "private_corpus_or_models_distributed": false,
+  "claim": "The publicly downloaded installer is byte-identical to the installer actually installed and tested; no extra install of the downloaded duplicate is claimed."
+}
