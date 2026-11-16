@@ -1,0 +1,305 @@
+{
+  "schema_version": "1.0.0",
+  "product": "FREE BIBLE READER",
+  "version": "0.1.1",
+  "checked_utc": "2026-11-16T10:10:32.6877566Z",
+  "status": "PASS",
+  "scope": "Actual Windows x64 production installation and one installed Edge browser; local acceptance summary with private host paths/process identifiers omitted. Publication/download verification is a separate stage.",
+  "tested_runtime_versions": {
+    "python": "3.14.10",
+    "sqlite": "3.50.4",
+    "bundled_node": "26.12.1",
+    "browser": "Microsoft Edge 157.0.4341.42",
+    "pyinstaller": "6.22.3",
+    "inno_setup": "7.1.1"
+  },
+  "tests": {
+    "python_unittest_passed": 29,
+    "python_unittest_failed": 0,
+    "node_formal_runner_passed": 25,
+    "core_unit_passed": 24,
+    "reader_internal_passed": 14,
+    "localization_internal_passed": 15,
+    "production_reading_browser_passed": 68,
+    "production_legacy_browser_passed": 24,
+    "bootstrap_fault_and_user_retry_passed": 8,
+    "bootstrap_uncaught_page_errors": 0,
+    "production_cold_browser_contexts": 16,
+    "production_cold_ready": 16,
+    "production_cold_refused_resources": 0,
+    "production_asset_burst_requests": 120,
+    "production_asset_burst_failures": 0,
+    "installed_self_checks": 9,
+    "installed_file_hash_checks": 180,
+    "installed_file_hash_matches": 180,
+    "counts_overlap_note": "The25formal Node tests include24core cases andonewrapper containing14reader checks; localization reports15internal checks. Suites overlap and are not summed as a quality score."
+  },
+  "required_reading": {
+    "editions": [
+      "web",
+      "kjv",
+      "bsb"
+    ],
+    "chapter_fixtures": [
+      [
+        "Gen",
+        1
+      ],
+      [
+        "Ps",
+        23
+      ],
+      [
+        "Matt",
+        5
+      ],
+      [
+        "John",
+        1
+      ],
+      [
+        "John",
+        3
+      ],
+      [
+        "Rom",
+        8
+      ],
+      [
+        "Rev",
+        21
+      ]
+    ],
+    "complete_chapter_comparisons": 21,
+    "source_record_comparisons_exact": true,
+    "search_terms": [
+      "Love",
+      "Faith",
+      "Forgiveness",
+      "Jesus",
+      "God",
+      "Spirit"
+    ],
+    "search_queries": 18,
+    "book_to_chapter_observations": 4,
+    "viewports": [
+      {
+        "width": 320,
+        "height": 568
+      },
+      {
+        "width": 390,
+        "height": 844
+      },
+      {
+        "width": 768,
+        "height": 1024
+      },
+      {
+        "width": 1024,
+        "height": 768
+      },
+      {
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "width": 2560,
+        "height": 1440
+      },
+      {
+        "width": 3840,
+        "height": 2160
+      }
+    ],
+    "large_text_cases": 9,
+    "large_text_controls_reachable_each": [
+      31
+    ],
+    "large_text_interface_scale": 1.6,
+    "reflow_scope": "320x256CSSviewport equivalent to400%reduction from1280x1024, not actual browser-zoom certification"
+  },
+  "startup": {
+    "pending_accept_queue": 128,
+    "http_protocol": "HTTP/1.0",
+    "network_bind": "loopback only",
+    "controlled_ab_requests_per_variant": 280,
+    "controlled_backlog5_connection_refusals": 67,
+    "controlled_backlog128_failures": 0,
+    "http_burst_unit_requests": 96,
+    "controlled_result_qualification": "Queue size was the changed variable for this controlled workload. This does not establish a unique cause for every historical browser startup failure.",
+    "bootstrap_faults": "Requiredmodule andinitialEnglishcatalog failure inen/ro/de, bootstrapfetchfailure, malformeddisplaypreferences; userRetryreload restoredsavedpassage. Expected injected network/console errors are not counted as uncaught page errors."
+  },
+  "production_lifecycle": {
+    "status": "PASS",
+    "actual_production_uninstall_and_reinstall": true,
+    "uninstall_exit_code": 0,
+    "reinstall_exit_code": 0,
+    "restart_required": false,
+    "normal_native_launch_observed": true,
+    "configuration_preserved_after_uninstall": true,
+    "configuration_preserved_after_reinstall": true
+  },
+  "artifacts": {
+    "executable": {
+      "name": "FreeBibleReader.exe",
+      "sha256": "6a7a7baec1e1f4467857b6e0af05e74070228005f5035ff0a043e846852d4d4b"
+    },
+    "windows_installer": {
+      "name": "Free-Bible-Reader-0.1.1-windows-x64-setup.exe",
+      "bytes": 171933773,
+      "sha256": "690b384125667c1816b579f7ab006e52b6bd001bdc3153cd7a4d97b916b02059",
+      "code_signing": "Unsigned"
+    },
+    "app_build_manifest_sha256": "d7b8701805f2457d88cf352f07f3c9180778752df25d206b3c202e1ffd10d9fe"
+  },
+  "data_files": [
+    {
+      "path": "data/reader.sqlite",
+      "bytes": 33865728,
+      "sha256": "474728be08f401526305cc1109e52f45b350646b8cf3481f041276bb58313663"
+    },
+    {
+      "path": "data/xref_visual.sqlite",
+      "bytes": 92536832,
+      "sha256": "6a6a3bc14076ddf54b6e06116fd330d6b2455e70334bbe6b0dfb7e4d24f96fb9"
+    },
+    {
+      "path": "data/xref_aggregate.sqlite",
+      "bytes": 325378048,
+      "sha256": "ecb3469a80fb5d846245d61951b4ae78e4cb415df272076f09eee1aaa15e249f"
+    },
+    {
+      "path": "data/xref_phrase.sqlite",
+      "bytes": 468582400,
+      "sha256": "4339c13c50b9e4aab76ea893c6f5070d7a54db8c125a84212199147b13ce6b42"
+    },
+    {
+      "path": "data/xref_reference.sqlite",
+      "bytes": 5570560,
+      "sha256": "5ac6d623a04a68bf7a0bf6b1491a8724096f36264dcc3607985394fc78bc828b"
+    },
+    {
+      "path": "data/reader-source.jsonl.gz",
+      "bytes": 4196978,
+      "sha256": "a77cea2b4e341d425de58ced92e664b46bd140d6695367a13a1562e4835c0ead"
+    }
+  ],
+  "interface_catalogs": [
+    {
+      "language": "en",
+      "keys": 521,
+      "path": "ui-core/i18n/en.json",
+      "sha256": "5bc7506c8e9583866d37ca7e8a1c0a72dcc835a0f90d18e22528c96678c2ddc1"
+    },
+    {
+      "language": "ro",
+      "keys": 521,
+      "path": "ui-core/i18n/ro.json",
+      "sha256": "1b54ac292cbfaca182bb9ff78a12a02816afb895ac9da01667bac04165e45ca9"
+    },
+    {
+      "language": "de",
+      "keys": 521,
+      "path": "ui-core/i18n/de.json",
+      "sha256": "299b592204f26906e6e3c8a71c11e6088bb7e663a966bb4bb55486c343f12dbb"
+    }
+  ],
+  "screenshot_count": 13,
+  "screenshots": [
+    {
+      "name": "comparison.png",
+      "path": "screenshots/v0.1.1/production-reading-final/comparison.png",
+      "bytes": 108352,
+      "sha256": "3d469939ae327a7d5348a7bbb8ff5cf1ab1d2f590438fed1df04d6653b71abe1"
+    },
+    {
+      "name": "dark.png",
+      "path": "screenshots/v0.1.1/production-reading-final/dark.png",
+      "bytes": 93362,
+      "sha256": "8890e18f92f8bb3a4796947e45005c7ff619aba854a23b9489eae26267b18ef3"
+    },
+    {
+      "name": "de.png",
+      "path": "screenshots/v0.1.1/production-reading-final/de.png",
+      "bytes": 94547,
+      "sha256": "71d7502aff63bfaab56023cc768fd9cd91815b790390b8fadb5c44d7957cf563"
+    },
+    {
+      "name": "genesis1.png",
+      "path": "screenshots/v0.1.1/production-reading-final/genesis1.png",
+      "bytes": 119765,
+      "sha256": "c3c7d75c95e86cecf7b1e10c7a344d7f0f3754f1662b2cbfb305fab848ba100c"
+    },
+    {
+      "name": "john1.png",
+      "path": "screenshots/v0.1.1/production-reading-final/john1.png",
+      "bytes": 92407,
+      "sha256": "02014ee1147a8680e91f6ad0b99108ee913d7ab3fa21b0ff5d41ffca415fa00d"
+    },
+    {
+      "name": "light.png",
+      "path": "screenshots/v0.1.1/production-reading-final/light.png",
+      "bytes": 92144,
+      "sha256": "f70272aa3eebe7ffeb4300aab3f14acfc401828fb1f6cabb52a2dfe8d3455b07"
+    },
+    {
+      "name": "main.png",
+      "path": "screenshots/v0.1.1/production-reading-final/main.png",
+      "bytes": 103141,
+      "sha256": "fb8ecb9be539f442403219f66931b7529fb92c81801a5012d78a056f2d7e6b1e"
+    },
+    {
+      "name": "mobile-reading.png",
+      "path": "screenshots/v0.1.1/production-reading-final/mobile-reading.png",
+      "bytes": 39449,
+      "sha256": "4b510fdfd14373158a834a07b3e860b30bc8ef7879b01b09280f8403b6a2713e"
+    },
+    {
+      "name": "mobile.png",
+      "path": "screenshots/v0.1.1/production-reading-final/mobile.png",
+      "bytes": 38414,
+      "sha256": "1277185d0f2a3be369fc169fceacfae1450ad8b715babb52e761b40ef8c9dfe9"
+    },
+    {
+      "name": "research.png",
+      "path": "screenshots/v0.1.1/production-reading-final/research.png",
+      "bytes": 92796,
+      "sha256": "b5b2230c768c3c20db4cb6966cb70c37bcafaccac2927c0b70742450702f42c4"
+    },
+    {
+      "name": "ro.png",
+      "path": "screenshots/v0.1.1/production-reading-final/ro.png",
+      "bytes": 92972,
+      "sha256": "ee40ec8260129c7a0c2bc751bd9f71b5c3cff5e525a9aecee15cd1480e2a40ea"
+    },
+    {
+      "name": "search.png",
+      "path": "screenshots/v0.1.1/production-reading-final/search.png",
+      "bytes": 93143,
+      "sha256": "b46989ef0fbe7c2bdfc1145e6295c416df4aaca5989b87068b0debde4adc253d"
+    },
+    {
+      "name": "sepia.png",
+      "path": "screenshots/v0.1.1/production-reading-final/sepia.png",
+      "bytes": 92280,
+      "sha256": "271f07cbf2af863b1cddfded90fd749d034c505e8c36083d1d6420024b649c79"
+    }
+  ],
+  "limitations": [
+    "OneWindowsx64host andEdge only;Chrome/Firefox/WebKitnotexecuted",
+    "PhysicalAndroid/Vivo/iPhone/iPadnotverified;noAPK/IPA",
+    "Screen-readerandglobalWCAGconformancenotcertified",
+    "OSscalingvariationsandactualbrowser400%zoomnotcertified",
+    "Fontfallbackdoesnotcertifyuniversalglyphcoverage/combiningmarkplacement",
+    "Coldloadsarefreshownedheadlessbrowsercontexts,notshareduserprofiles;OSnetworkingwasnotdisabled",
+    "Windowsinstallerisunsigned",
+    "Localacceptanceisnotanonymouspublicreleasedownloadverification"
+  ],
+  "publication_verification_included": false,
+  "third_party_notices": "THIRD-PARTY-NOTICES.md"
+}

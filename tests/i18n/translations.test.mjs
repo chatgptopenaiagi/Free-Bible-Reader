@@ -16,7 +16,7 @@ const make=(code='en',options={})=>createTranslator(code,{loader:async language=
 
 await test('Exact key and placeholder parity, frontend manifest and plain text',()=>{
  const report=validateCatalogs(dictionaries,{requiredKeys:required});assert.equal(report.valid,true,JSON.stringify(report.errors));
- assert.equal(report.keyCount,503);for(const d of Object.values(dictionaries))assert.equal(Object.keys(d).filter(k=>k.startsWith('books.')).length,66);
+ assert.equal(report.keyCount,521);for(const d of Object.values(dictionaries))assert.equal(Object.keys(d).filter(k=>k.startsWith('books.')).length,66);
 });
 await test('Regional selection and only three enabled UI languages',()=>{
  assert.deepEqual(LANGUAGES.map(x=>x.id),['en','ro','de']);assert.equal(resolveLanguage(' RO_ro ').language,'ro');
@@ -85,6 +85,11 @@ await test('Every catalog placeholder has the exact same names as English',()=>{
 });
 
 const hashes=Object.fromEntries(await Promise.all(['en','ro','de'].map(async code=>[code,crypto.createHash('sha256').update(await fs.readFile(path.join(root,'ui-core/i18n',code+'.json'))).digest('hex')])));
-const receipt={mission:'00F',checked_utc:new Date().toISOString(),runtime:process.version,scope:'Catalog validation and dependency-free translator functional tests; browser behavior is tested separately.',status:results.every(x=>x.status==='PASS')?'PASS':'FAIL',passed:results.filter(x=>x.status==='PASS').length,failed:results.filter(x=>x.status==='FAIL').length,languages:['en','ro','de'],keys_each:Object.fromEntries(Object.entries(dictionaries).map(([c,d])=>[c,Object.keys(d).length])),frontend_literal_keys:required.length,catalog_sha256:hashes,tests:results};
-await fs.mkdir(path.join(root,'evidence/mission00f/verification'),{recursive:true});await fs.writeFile(path.join(root,'evidence/mission00f/verification/i18n-tests.json'),JSON.stringify(receipt,null,2)+'\n');
+// Keep historical receipts immutable. Callers may select a fresh output directory;
+// otherwise every invocation gets its own dated evidence directory.
+const requestedEvidenceDirectory=process.env.FBR_TEST_EVIDENCE_DIR?.trim();
+const evidenceDirectory=requestedEvidenceDirectory?path.resolve(root,requestedEvidenceDirectory):path.join(root,'reports','MISSION-FBR-002','evidence',`i18n-${new Date().toISOString().replace(/[-:.]/g,'')}-${crypto.randomUUID().slice(0,8)}`);
+const evidenceFile=path.join(evidenceDirectory,'i18n-tests.json');
+const receipt={mission:'MISSION-FBR-002',checked_utc:new Date().toISOString(),runtime:process.version,scope:'Catalog validation and dependency-free translator functional tests; browser behavior is tested separately.',status:results.every(x=>x.status==='PASS')?'PASS':'FAIL',passed:results.filter(x=>x.status==='PASS').length,failed:results.filter(x=>x.status==='FAIL').length,languages:['en','ro','de'],keys_each:Object.fromEntries(Object.entries(dictionaries).map(([c,d])=>[c,Object.keys(d).length])),frontend_literal_keys:required.length,catalog_sha256:hashes,evidence_file:path.relative(root,evidenceFile).split(path.sep).join('/'),tests:results};
+await fs.mkdir(evidenceDirectory,{recursive:true});await fs.writeFile(evidenceFile,JSON.stringify(receipt,null,2)+'\n',{encoding:'utf8',flag:'wx'});
 console.log(JSON.stringify(receipt,null,2));if(receipt.failed)process.exitCode=1;

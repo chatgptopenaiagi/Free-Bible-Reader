@@ -1,44 +1,81 @@
-# Release 0.1.0 verification
+# Release 0.1.1 verification
 
-Verified on Windows 11 x64 on 15 November 2026. These are observed tests of this release, not a promise that every device or browser has been certified.
+The final production Windows x64 application passed its reading, search, research, startup-recovery, integrity and lifecycle checks on 16 November 2026. Local application verification is complete; public asset delivery is verified separately. The observations below apply to the exact tested executable and package, not every device or browser.
 
-## Installed Windows application
+The [0.1.0 verification record](verification/v0.1.0.md) is preserved byte for byte. Earlier candidate attempts and their failures remain historical evidence; they are not counted as final passes. A sanitized [machine-readable verification summary](verification/0.1.1.json) accompanies this record.
+
+## Final results
 
 | Check | Observed result |
 |---|---|
-| Isolated per-user installer run | Exit 0 |
-| Installed file hashes compared with the tested build | All ten principal executable, data, runtime and translation files matched |
-| Installed executable self-test | 9/9 passed: actual reading editions, chapter retrieval, search, final-book navigation, UI assets and all three research engines |
-| Clean host-runtime test | The same 9/9 passed with host Python/Node removed from PATH and Python/Node module overrides cleared |
-| Installed-runtime Edge acceptance suite | 24/24 passed |
-| Isolated uninstallation | Exit 0; test application executable removed |
-| Ordinary owner installation | Exit 0; no reboot |
-| Normal desktop launch and shutdown | Companion opened the browser; English/German companion controls were observed; GUI Close application stopped the owned listener |
+| Source Python reading/research/asset/HTTP tests | 29/29 passed, including a 96-fetch HTTP regression |
+| Shared preferences/theme/typography tests | 24/24 passed |
+| Focused reader state/search/comparison tests | 14/14 internal checks passed |
+| Localization | 15/15 checks; 521 matching EN/RO/DE keys |
+| Actual production reading-experience browser suite | 68/68 passed |
+| Actual production existing browser acceptance | 24/24 passed |
+| Actual production startup/retry fault scenarios | 8/8 passed |
+| Actual production repeated fresh-page diagnostic | 16/16 ready pages; zero refused requests in 120 bounded static requests |
+| Isolated installation, clean-runtime self-test and uninstall | Passed; 9/9 self-tests and all 180 bundle-file hashes matched |
+| Ordinary update and actual production uninstall/reinstall | Passed, uninstall/reinstall exit 0/0; no restart |
+| Normal native restart and reading-state retention | Passed without retry or browser-state injection |
+| Production screenshots | 13 valid PNGs; 12 original suite captures unchanged plus one curated mobile view |
+| Public asset delivery | Verified separately from local application tests |
 
-The installed browser tests verified the running executable’s identity and hash. They exercised real chapters and book transitions, local search, native verse numbering, edition selection, 108 sampled verse-text comparisons, language/theme/typography changes, preference persistence, the three research engines and source provenance. The offline browser scenario made no external requests. No JavaScript exceptions or missing-translation warnings were observed in the final run.
+The recorded environment used Windows 11 x64, Python 3.14.10, bundled Node 26.12.1 and Edge 157.0.4341.42. These are observed versions, not an assertion that every other version is incompatible. Counts describe different scopes and are not an exhaustive certification score.
 
-The Windows executable SHA-256 is `c4ac9ee9f78e819fd9bed06aa2a41633486d80e26e67b65d998dc23855e67bc0`. The installer SHA-256 is `8c156b7941de2731de1f47a39182c5a18e8aa6626cbfcf0cf986e5466d8d5fcd`. Compare the downloaded installer with the [release checksum file](https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/download/v0.1.0/SHA256SUMS.txt).
+The final installer is **171,933,773 bytes**, SHA-256 `690b384125667c1816b579f7ab006e52b6bd001bdc3153cd7a4d97b916b02059`. The installed executable SHA-256 is `6a7a7baec1e1f4467857b6e0af05e74070228005f5035ff0a043e846852d4d4b`. These hashes identify the locally verified application/package; independent public-download checks belong to the delivery record.
 
-## Source and data checks
+## Complete chapters, search and reading continuity
 
-- 28/28 Python tests: twelve reading/navigation/search checks and sixteen public research/integrity/asset-restoration checks.
-- 24/24 Node UI-core tests and fifteen localization checks, with matching 503-key English, Romanian and German catalogs.
-- All 93,307 packaged reading rows compared exactly with their source records. Three editions each have 66 books and 1,189 chapters. Native verse boundaries remain edition-specific.
-- SQLite integrity and foreign-key checks passed for the packaged reader and the four specialized research models.
-- Public research models exclude private corpus mappings, private host paths, user caches and S21/French source content. Dataset derivations retain their own provenance and notices.
+All displayed verses in seven required chapters were compared independently across WEB, KJV and BSB:
 
-Run the commands in [DEVELOPMENT.md](DEVELOPMENT.md) to reproduce source checks. `tests/browser/acceptance.mjs` accepts `READER_URL`, `READER_RUNTIME_STATE` and `READER_RUNTIME_KIND`; use an installed executable for installed-runtime claims. Browser automation uses the installed Edge browser through Playwright Core, rather than downloading a second browser.
+| Chapter | Verse count in each of these examples |
+|---|---:|
+| Genesis 1 | 31 |
+| Psalm 23 | 6 |
+| Matthew 5 | 48 |
+| John 1 | 51 |
+| John 3 | 36 |
+| Romans 8 | 39 |
+| Revelation 21 | 27 |
 
-## Adaptive interface regression
+These **21 complete-chapter cases** made **714 exact UTF-8 text comparisons** against the compressed source records. Eighteen searches used love, faith, forgiveness, Jesus, God and spirit in each edition, with source-checked selected results. Pagination retained the submitted query/edition/book despite draft edits.
 
-The precursor engineering workbench retained all 100 Python engine tests and all seventeen original browser checks. Its adaptive interface passed 58 browser checks, six focused accessibility checks, nine optional-browser-API fallback checks and five panel-navigation regression checks. These workbench results are distinct from the 24 installed-product browser checks above.
+The final suite also verified John 3:16 across edition changes and reload, chapter grid and bottom navigation, keyboard/focus behavior, three actual comparison texts, stale-response protection and independent research provenance. Dropdown and sidebar book→chapter journeys at 320×568 and 1440×900 measured controls before any locator scrolling, then used an actual pointer click and native keyboard selection to open John 21.
 
-Responsive rendering was checked at 320×568, 375×667, 390×844, 430×932, 768×1024, 820×1180, 1024×768, 1280×800, 1440×900, 1920×1080, 2560×1440 and 3840×2160 CSS pixels. Equivalent 200%/400% reflow conditions, keyboard interaction, reduced motion, settings dialogs, contrast advisories and increased text sizes were exercised. Thirteen engineering screenshots and the eight public screenshots are actual rendered captures.
+Real production uninstall/reinstall and normal restart retained Romanian, sepia, Georgia, BSB John 3, selected verse 16 and visible verse 11 without injecting browser storage. A separate persistent Edge close/reopen check also retained state. Reading position and display preferences remain separate browser-origin records containing no copied Scripture text.
+
+## Startup repair and recovery
+
+An earlier production walkthrough found intermittent local module-connection failures. A controlled same-handler test recorded 67 refused requests out of 280 with pending queue five, versus zero out of 280 with queue 128. This supports the bounded queue repair under those conditions, without assigning every historical incident a proven cause or estimating a general failure rate.
+
+The final server uses queue 128. A dependency-free bootstrap catches module and initial localization failures. Static EN/RO/DE messages and fixed readable colors work without translation catalogs or application CSS. Retry is an explicit page reload, with no automatic reload loop or storage clearing.
+
+Eight installed recovery scenarios cover module and initial English-catalog failures under EN/RO/DE, bootstrap failure and malformed display preferences. Each intentionally blocked a local resource, verified visible recovery and then used Retry to recover the saved passage. Expected injected network/console failures are recorded separately from unexpected errors. The final repeated-start sample saw all 16 pages become ready and zero refused requests across eight bounded burst rounds containing 120 static requests.
+
+## Responsive layout and larger text
+
+Reading and triple-engine layouts were checked at eight CSS-pixel sizes:
+
+`320×568`, `390×844`, `768×1024`, `1024×768`, `1440×900`, `1920×1080`, `2560×1440`, `3840×2160`.
+
+Nine further cases combined EN/RO/DE, interface scale 1.6 and each of `320×568` portrait, `568×320` landscape and `320×256` equivalent 400% CSS reflow. Each checked visible/clickable Close, label overflow and scroll/focus/hit-test access to all **31 settings/color/footer controls**. This is nine repetitions of 31 controls, not 279 distinct controls or physical browser-zoom certification.
+
+Theme/language/typography changes preserved source text without reading/research API requests in the measured sequence. Normal final acceptance observed no JavaScript exceptions or missing-translation warnings. Non-loopback requests were blocked in the test browser context; operating-system networking was not disabled.
+
+## Data, screenshots and reproducibility
+
+All **93,307** reading records passed exact source comparison in 0.1.0. The five SQLite snapshots retain those pinned hashes in 0.1.1, as recorded in [build-inputs.json](../data/build-inputs.json). WEB contains 31,103 native rows; KJV and BSB each contain 31,102. Each has 66 books and 1,189 chapters. Matching references do not establish identical verse boundaries.
+
+The 18 new reader labels bring each catalog from 503 to 521 keys with the existing values preserved. No additional fonts or application frameworks were installed for this update.
+
+The [main reader](../screenshots/v0.1.1/production-reading-final/main.png), [actual comparison](../screenshots/v0.1.1/production-reading-final/comparison.png) and [clean mobile view](../screenshots/v0.1.1/production-reading-final/mobile-reading.png) are final production captures. All thirteen PNGs passed size/hash, chunk-CRC and decode checks and visual inspection. The twelve suite captures were preserved unchanged; the thirteenth was captured through ordinary GUI controls. See the complete gallery in [README.md](../README.md).
+
+Use [DEVELOPMENT.md](DEVELOPMENT.md) to reproduce source/browser checks. Installed claims require a matching installed process, executable hash and installation evidence, rather than a source URL or a runtime-kind label alone. Build, isolated verification, ordinary installation and publication are explicit separate operations.
 
 ## Limits
 
-Only Windows x64 and the recorded Edge browser runtime were tested. Responsive phone/tablet viewports are emulation, not physical Android or iPhone verification. WebKit, physical-device behavior, assistive-technology certification and native Android/iOS packages remain unverified or unbuilt. The accessibility work targets applicable WCAG 2.2 AA behavior and does not constitute independent WCAG certification.
+Recorded browser coverage is Edge on Windows x64. Physical phones/tablets, other browser engines, manual screen-reader behavior and independent WCAG certification remain unverified. Accessibility checks cover the recorded keyboard, focus, reflow and contrast behaviors. No native Android/iOS package is supplied; local font glyph coverage varies.
 
-The package is unsigned. The installer wizard is English/German; the reader and companion support English/Romanian/German. The reading editions are English, even when interface controls use another language. Locally available font glyph coverage varies. Cross-reference links remain source assertions rather than automatic textual or theological equivalence.
-
-The original private multi-gigabyte corpus and SQL Server databases are not release inputs or runtime requirements. They are not included in Git or release assets.
+The package is unsigned. Installer controls are English/German; reader and companion controls are English/Romanian/German. The main reading editions are English. Cross-references remain attributed source assertions, not automatic textual or theological equivalence. No private corpus or SQL Server instance is a release input or runtime dependency.

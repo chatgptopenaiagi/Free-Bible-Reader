@@ -1,7 +1,7 @@
 """FREE BIBLE READER: local-only desktop launcher and portable HTTP application."""
 from __future__ import annotations
 import argparse,contextlib,json,os,pathlib,socket,sys,threading,time,urllib.parse,urllib.request,webbrowser
-VERSION='0.1.0'
+VERSION='0.1.1'
 ROOT=pathlib.Path(getattr(sys,'_MEIPASS',pathlib.Path(__file__).resolve().parent))
 sys.path.insert(0,str(ROOT))
 def user_directory():return pathlib.Path(os.environ.get('LOCALAPPDATA',pathlib.Path.home()/'.local/share'))/'FreeBibleReader'

@@ -1,0 +1,51 @@
+{
+  "kind": "free-bible-reader-build-inputs",
+  "schema_version": 1,
+  "application_version": "0.1.1",
+  "research_data_version": "0.1.0",
+  "description": "Portable pinned public data/runtime inputs. Paths are relative to the repository root; no host evidence directory is required.",
+  "inputs": [
+    {
+      "path": "data/reader.sqlite",
+      "version": "0.1.0",
+      "role": "public-reader-snapshot",
+      "bytes": 33865728,
+      "sha256": "474728be08f401526305cc1109e52f45b350646b8cf3481f041276bb58313663"
+    },
+    {
+      "path": "data/xref_visual.sqlite",
+      "version": "0.1.0",
+      "role": "public-research-snapshot",
+      "bytes": 92536832,
+      "sha256": "6a6a3bc14076ddf54b6e06116fd330d6b2455e70334bbe6b0dfb7e4d24f96fb9"
+    },
+    {
+      "path": "data/xref_aggregate.sqlite",
+      "version": "0.1.0",
+      "role": "public-research-snapshot",
+      "bytes": 325378048,
+      "sha256": "ecb3469a80fb5d846245d61951b4ae78e4cb415df272076f09eee1aaa15e249f"
+    },
+    {
+      "path": "data/xref_phrase.sqlite",
+      "version": "0.1.0",
+      "role": "public-research-snapshot",
+      "bytes": 468582400,
+      "sha256": "4339c13c50b9e4aab76ea893c6f5070d7a54db8c125a84212199147b13ce6b42"
+    },
+    {
+      "path": "data/xref_reference.sqlite",
+      "version": "0.1.0",
+      "role": "public-research-snapshot",
+      "bytes": 5570560,
+      "sha256": "5ac6d623a04a68bf7a0bf6b1491a8724096f36264dcc3607985394fc78bc828b"
+    },
+    {
+      "path": "runtime/node.exe",
+      "version": "26.12.1",
+      "role": "bundled-parser-runtime",
+      "bytes": 105319752,
+      "sha256": "1c63f1417e2e26d83ca9a9ec1d548524ab1305bc7209d90ebca56257ff0d84ed"
+    }
+  ]
+}

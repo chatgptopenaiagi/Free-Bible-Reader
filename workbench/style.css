@@ -15,3 +15,86 @@
 /* Accessible progressive enhancement when native dialog methods are unavailable. */
 .settings-dialog:not([open]),.help-dialog:not([open]){display:none}.dialog-fallback{position:fixed;z-index:101}.help-dialog.dialog-fallback{inset:1rem;margin:auto;block-size:max-content}.dialog-fallback-backdrop{position:fixed;inset:0;z-index:100;background:#0008}
 .settings-dialog>footer button,.settings-dialog>footer .button{background:var(--ui-safety-control,#fff)!important;color:var(--ui-safety-text,#332500)!important;border-color:var(--ui-safety-border,#7d6120)!important}
+
+/* Reading comes first: study tools stay available without crowding the library. */
+.sidebar-study-tools { margin-block-end: 1.1rem; border-block-end: 1px solid var(--ui-border); }
+.sidebar-study-tools > summary { padding: .7rem .25rem; font-size: .8rem; color: var(--ui-text); }
+.sidebar-study-tools .workspace-shortcuts { margin-block: .4rem .8rem; border: 0; }
+.sidebar-study-tools:not([open]) + .sidebar-heading { margin-block-start: .4rem; }
+.header-actions .workspace-choice select { inline-size: 15rem; }
+.reading-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-block: 1rem .5rem; }
+.reading-actions button { min-block-size: 44px; padding-inline: .85rem; font-size: .8rem; }
+.reading-actions button:last-child { margin-inline-start: auto; }
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(44px, 1fr)); gap: .45rem; max-block-size: 18rem; overflow: auto; padding: .8rem; border: 1px solid var(--ui-border); border-radius: .6rem; margin-block: .7rem; }
+.chapter-grid[hidden] { display: none; }
+.chapter-grid button { min-block-size: 44px; min-inline-size: 44px; padding: .4rem; }
+.chapter-grid button[aria-current="page"] { background: var(--ui-primary); color: var(--ui-on-primary); }
+.reader-search { margin-block: .8rem 1rem; }
+.reader-search:not([open]) { display: none; }
+.reader-search:not([open]) summary { margin: 0; font-size: .8rem; }
+.chapter-toolbar { padding-block: 1.2rem .6rem; }
+.chapter-toolbar > div { min-inline-size: 0; overflow-wrap: anywhere; }
+.chapter-toolbar button { min-inline-size: 44px; min-block-size: 44px; }
+.chapter-toolbar > button { flex-shrink: 0; }
+.setting-field input[type="range"] { margin-inline: 0; min-inline-size: 0; max-inline-size: 100%; }
+.workspace[data-layout="reading"] .panel-heading { padding: 0; min-block-size: 0; block-size: 0; border: 0; }
+.workspace[data-layout="reading"] .panel-heading h1 { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+.workspace[data-layout="reading"] .reader-panel .panel-tools { visibility: hidden; }
+.reader-navigation select { border-color: var(--ui-border); min-block-size: 44px; }
+.chapter-end-navigation { display: flex; justify-content: space-between; gap: .8rem; border-block-start: 1px solid var(--ui-border); padding-block: 1.1rem .5rem; }
+.chapter-end-navigation button { min-block-size: 44px; font-size: .85rem; flex: 1; max-inline-size: 19rem; }
+.reading-shortcuts { text-align: center; margin-block: .5rem 1rem; }
+.reader-context { flex-wrap: wrap; justify-content: flex-start; }
+.reader-context > span { flex: 1 1 16rem; }
+.reader-context button { min-block-size: 44px; }
+.reader-context.has-selection { position: sticky; inset-block-end: 0; z-index: 5; background: var(--ui-surface); box-shadow: 0 -4px 14px #0000000d; padding-inline: .65rem; }
+.workspace[data-layout="reading"] .reader-panel { overflow: visible; }
+body:has(.workspace[data-layout="reading"]) .main-workspace { overflow: visible; }
+.verse-number { min-inline-size: 28px; min-block-size: 28px; padding: .15rem .3rem; margin-inline-end: .25rem; }
+.reader-comparison-dialog { inline-size: min(860px, calc(100% - 2rem)); }
+.reader-comparison-dialog header { position: sticky; inset-block-start: 0; background: var(--ui-surface); z-index: 1; }
+.settings-dialog > header { align-items: flex-start; gap: .65rem; }
+.settings-dialog > header > div { min-inline-size: 0; }
+.settings-dialog > header h2 { font-size: 1.4rem; line-height: 1.2; overflow-wrap: anywhere; }
+.settings-dialog > header button, .help-dialog > header button { flex: 0 0 44px; min-inline-size: 44px; min-block-size: 44px; }
+.help-dialog > header h2 { min-inline-size: 0; overflow-wrap: anywhere; }
+.reader-comparison-dialog h3 { text-transform: none; letter-spacing: 0; color: var(--ui-text); font-size: 1rem; }
+.reader-comparison-dialog section { border-block-start: 1px solid var(--ui-border); padding-block: .7rem; }
+.reader-comparison-dialog .scripture, .reader-comparison-dialog [data-source-data] { font-family: var(--ui-scripture-font); line-height: var(--ui-line-height); overflow-wrap: anywhere; }
+.reader-comparison-dialog p[data-source-data] { font-size: var(--ui-scripture-font-size); }
+body[data-reading-focus="true"] .library-sidebar { display: none; }
+body[data-reading-focus="true"] .reader-panel { max-inline-size: 100%; }
+body[data-reading-focus="true"] .reader-navigation,
+body[data-reading-focus="true"] .panel-heading,
+body[data-reading-focus="true"] #reader-breadcrumb { display: none; }
+body[data-reading-focus="true"] .reading-actions { justify-content: flex-end; }
+body[data-reading-focus="true"] #reader-focus-toggle { margin-inline-start: 0; background: var(--ui-primary); color: var(--ui-on-primary); }
+.library-sidebar { inset-block-start: var(--reader-header-height, 78px); block-size: calc(100dvh - var(--reader-header-height, 78px)); }
+.sidebar-backdrop { inset-block-start: var(--reader-header-height, 78px); }
+@media(max-width:760px) {
+  .header-actions .workspace-choice select { inline-size: 100px; }
+  .main-nav button { min-block-size: 44px; }
+  .reading-actions button { flex: 1 1 auto; }
+  .reading-actions button:last-child { margin-inline-start: 0; }
+  .chapter-toolbar { padding-block: 1rem .5rem; }
+  .chapter-end-navigation { gap: .5rem; }
+  .chapter-end-navigation button { font-size: .8rem; padding-inline: .55rem; }
+  .reader-context > span { flex-basis: 100%; }
+  .reader-context button { flex: 1; }
+  .reading-shortcuts { display: none; }
+  .reader-comparison-dialog .help-body { padding: 1rem; }
+}
+@media(max-width:400px) { .header-actions .workspace-choice select { inline-size: 90px; } }
+@media(max-width:440px) {
+  .settings-grid, .color-grid { grid-template-columns: minmax(0, 1fr); }
+  .setting-field > span, .settings-dialog > footer { overflow-wrap: anywhere; }
+  .settings-content { min-block-size: 0; }
+}
+/* Short windows use one natural settings scroll area instead of squeezing fields
+   between a large title and a fixed action footer. The close control stays visible. */
+@media(max-height:600px) {
+  .settings-dialog[open] { display: block; overflow-y: auto; scroll-padding-block-start: var(--settings-header-height, 100px); }
+  .settings-dialog > header { position: sticky; inset-block-start: 0; z-index: 3; }
+  .settings-content { overflow: visible; }
+  .settings-dialog > footer { position: static; }
+}

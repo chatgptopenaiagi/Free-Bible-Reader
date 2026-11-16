@@ -1,7 +1,11 @@
 """Local-only engineering workbench. No production application or permanent service."""
 from __future__ import annotations
 import argparse,contextlib,json,os,pathlib,sys,threading,time,urllib.parse
-from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
+from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer as _ThreadingHTTPServer
+class ThreadingHTTPServer(_ThreadingHTTPServer):
+    # Cold browser module graphs can open a burst of short HTTP connections.
+    # This is the pending accept queue, not a limit on active request threads.
+    request_queue_size=128
 ROOT=pathlib.Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 from bridge import hub,reference,corpus_adapter
 from reader import service as reader
@@ -42,7 +46,7 @@ class Handler(BaseHTTPRequestHandler):
                 if path=='/api/reader/chapter':return self.send(200,reader.chapter(edition,options.get('book',['John'])[0],options.get('chapter',['1'])[0]))
             except (ValueError,TypeError) as error:return self.send(400,{'status':'QUERY_ERROR','error':str(error)})
             except (OSError,Exception) as error:return self.send(500,{'status':'QUERY_ERROR','error':'READER_UNAVAILABLE'})
-        if path=='/api/health':return self.send(200,{'status':'OK','scope':'FREE BIBLE READER desktop application','product':'FREE BIBLE READER','version':'0.1.0','lab_engines_available':True,'reader_available':reader.DATABASE.exists(),'allowed_engine':self.server.allowed_engine,'pid':os.getpid(),'bind':'127.0.0.1','contract_version':'1.0'})
+        if path=='/api/health':return self.send(200,{'status':'OK','scope':'FREE BIBLE READER desktop application','product':'FREE BIBLE READER','version':'0.1.1','lab_engines_available':True,'reader_available':reader.DATABASE.exists(),'allowed_engine':self.server.allowed_engine,'pid':os.getpid(),'bind':'127.0.0.1','contract_version':'1.0'})
         if path=='/api/editions':return self.send(200,{'editions':hub.editions(urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query).get('all',['false'])[0]=='true')})
         if path=='/api/books':
             with contextlib.closing(reference.connect_registry()) as db:rows=db.execute('SELECT osis,chapters_json FROM BookRegistry WHERE native_source_code IS NOT NULL ORDER BY book_order').fetchall()

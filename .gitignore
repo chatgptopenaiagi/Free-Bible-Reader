@@ -19,3 +19,8 @@ SEOREADME.md
 *.pem
 *.key
 screenshots/*failure*
+
+# Mission receipts contain machine paths and transient test profiles.
+reports/**/evidence/
+/reports/MISSION-FBR-002/
+/screenshots/v0.1.1/installed-test-reading-20261116T083554Z-0dc5eca4/

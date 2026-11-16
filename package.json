@@ -1,6 +1,6 @@
 {
   "name": "free-bible-reader",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "Offline desktop Bible reader; JavaScript dependencies are for developer browser acceptance only.",
