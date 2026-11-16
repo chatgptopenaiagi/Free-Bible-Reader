@@ -79,3 +79,7 @@ Use [DEVELOPMENT.md](DEVELOPMENT.md) to reproduce source/browser checks. Install
 Recorded browser coverage is Edge on Windows x64. Physical phones/tablets, other browser engines, manual screen-reader behavior and independent WCAG certification remain unverified. Accessibility checks cover the recorded keyboard, focus, reflow and contrast behaviors. No native Android/iOS package is supplied; local font glyph coverage varies.
 
 The package is unsigned. Installer controls are English/German; reader and companion controls are English/Romanian/German. The main reading editions are English. Cross-references remain attributed source assertions, not automatic textual or theological equivalence. No private corpus or SQL Server instance is a release input or runtime dependency.
+
+## Public delivery verification
+
+On 16 November 2026, the v0.1.1 release was published and its Windows installer downloaded anonymously. All 171,933,773 bytes matched SHA-256 `690b384125667c1816b579f7ab006e52b6bd001bdc3153cd7a4d97b916b02059`, the tested local installer, GitHub’s asset digest and the published checksum. The previous v0.1.0 release remains available. See the [public delivery receipt](verification/0.1.1-delivery.json). This delivery check complements the installed acceptance above.

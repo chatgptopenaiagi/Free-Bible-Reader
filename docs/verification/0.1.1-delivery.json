@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "product": "FREE BIBLE READER",
+  "version": "0.1.1",
+  "status": "PASS",
+  "verified_utc": "2026-11-16T10:32:46.4102245Z",
+  "published_utc": "2026-11-16T10:25:54Z",
+  "repository": "https://github.com/chatgptopenaiagi/Free-Bible-Reader",
+  "release_url": "https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/tag/v0.1.1",
+  "source_commit": "0557eae36f813f6f5f733dd6c8499bcc4f6b564e",
+  "tag": "v0.1.1",
+  "installer": {
+    "url": "https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/download/v0.1.1/Free-Bible-Reader-0.1.1-windows-x64-setup.exe",
+    "bytes": 171933773,
+    "sha256": "690b384125667c1816b579f7ab006e52b6bd001bdc3153cd7a4d97b916b02059",
+    "github_asset_digest_matches": true,
+    "anonymous_download_matches_tested_installer": true,
+    "published_checksum_matches": true,
+    "http_status": 200
+  },
+  "checksum_url": "https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/download/v0.1.1/SHA256SUMS-0.1.1.txt",
+  "download_authentication": "None; curl config disabled and no authorization/cookie/credential flags",
+  "redirect_queries_or_response_headers_stored": false,
+  "verification": "The downloaded artifact is byte-identical to the production setup already verified through installation, real reading/search/research GUI, normal shutdown, uninstall and reinstall. It was not redundantly executed.",
+  "old_release_preserved": true,
+  "limits": [
+    "Unsigned Windows x64 package",
+    "Edge on Windows tested; physical mobile devices and native mobile packages not verified"
+  ],
+  "local_acceptance_summary": "0.1.1.json"
+}
