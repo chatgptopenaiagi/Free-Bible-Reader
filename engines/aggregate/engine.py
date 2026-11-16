@@ -13,8 +13,11 @@ import pathlib
 import re
 import sqlite3
 import time
+import sys
 
-ROOT = pathlib.Path(__file__).resolve().parents[2]
+if not __package__:sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[2]))
+from free_bible_reader.resources import asset_root
+ROOT = asset_root()
 DATABASE = ROOT / 'data/xref_aggregate.sqlite'
 REPOSITORY = 'https://github.com/neuu-org/bible-crossrefs-dataset'
 COMMIT = '8aa012820f5881a787e87d71005a22f52844c4fb'

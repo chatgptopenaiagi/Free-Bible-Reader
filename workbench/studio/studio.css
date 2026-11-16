@@ -42,3 +42,8 @@ body:has(.studio-player){padding-block-end:96px}.reader-context.has-selection{in
 @media(max-width:600px){.studio-menubar{grid-template-columns:repeat(4,minmax(0,1fr));max-block-size:none}.studio-menu[data-menu]{display:none}.studio-menu[data-menu=bible],.studio-menu[data-menu=audio],.studio-menu[data-menu=library],.studio-tools{display:block}.studio-player-selectors{display:none}.reader-context.has-selection{inset-block-end:82px}body:has(.studio-player){padding-block-end:100px}}
 @media(max-width:600px){.studio-menu>summary{white-space:normal;overflow-wrap:anywhere;line-height:1.3}.studio-player-controls{gap:.15rem}.studio-player-button{padding-inline:.3rem}}
 body[data-reading-focus=true] .studio-menubar{display:none}
+.android-product-nav{position:fixed;z-index:46;inset-inline:0;inset-block-end:0;display:flex;gap:.3rem;padding:.4rem .5rem calc(.4rem + env(safe-area-inset-bottom));border-block-start:1px solid var(--ui-border);background:var(--ui-surface);min-block-size:60px}
+.android-product-nav button{min-inline-size:0;min-block-size:44px;flex:1;padding-inline:.25rem;font-size:.8rem}
+body.android-ultimate .studio-player{inset-block-end:calc(60px + env(safe-area-inset-bottom))}
+body.android-ultimate{padding-block-end:240px}
+html[data-platform=android] .app-shell{padding-inline-start:env(safe-area-inset-left);padding-inline-end:env(safe-area-inset-right)}

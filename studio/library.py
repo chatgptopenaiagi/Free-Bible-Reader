@@ -6,7 +6,8 @@ Import policy lives in studio.importers; creating a job is an explicit confirmat
 from __future__ import annotations
 import contextlib, hashlib, json, os, pathlib, re, sqlite3, threading, time, uuid
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
+from free_bible_reader.resources import asset_root
+ROOT = asset_root()
 _WRITE_LOCK = threading.RLock()
 
 def data_root():

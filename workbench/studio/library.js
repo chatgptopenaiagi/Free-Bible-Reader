@@ -14,7 +14,9 @@ export function createLibrary(c,{reader,onImport=()=>{}}={}){
   async function open(){
     await load();main??=dialog(key('title'),{id:'studio-library-dialog',wide:true});main.body.replaceChildren();
     const bar=node('div',null,'studio-actions'),list=node('div'),status=text('p',key('loading'));
-    bar.append(button(key('add'),()=>openImport()),button(key('download'),()=>openDownload()),button(key('sqlServer'),()=>openSQLServer()),button(key('reindex'),async()=>{await request('library/reindex',{});c.notify(c.t(key('reindexed')));}));main.body.append(bar,status,list);main.open();
+    bar.append(button(key('add'),()=>openImport()),button(key('download'),()=>openDownload()));
+    const capabilities=await request('capabilities').catch(()=>({}));if(capabilities.sql_server!==false)bar.append(button(key('sqlServer'),()=>openSQLServer()));
+    bar.append(button(key('reindex'),async()=>{await request('library/reindex',{});c.notify(c.t(key('reindexed')));}));main.body.append(bar,status,list);main.open();
     const data=await request('library');status.remove();
     for(const e of data.editions){const card=node('section',null,'studio-card');card.append(node('h3',e.name),node('p',[e.language,e.origin,e.status||'ready'].join(' · ')),node('p',e.license));
       if(!e.status||e.status==='ready'){const stats=await request('library/stats?edition='+encodeURIComponent(e.id));card.append(text('p',key('statistics'),'',stats));}

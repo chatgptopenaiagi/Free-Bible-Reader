@@ -80,7 +80,15 @@ class PublicResearchTests(unittest.TestCase):
         self.assertNotIn('PRIVATE_SENTINEL_PATH',json.dumps(result))
 
     def test_12_parser_runtime_failure_is_honest(self):
-        with mock.patch.object(reference,'node_executable',side_effect=RuntimeError('unavailable')):result=hub.query({'reference':'John1:1'})
+        # Universal Python now has a deliberately bounded stdlib fallback;
+        # an absent optional Node runtime must not disable canonical research.
+        with mock.patch.dict('os.environ',{'FBR_PARSER':'auto'}),mock.patch.object(reference,'node_executable',side_effect=RuntimeError('unavailable')):
+            result=hub.query({'reference':'John1:1'})
+        self.assertEqual(result['status'],'VALID_RESULT')
+        self.assertEqual(result['parser']['parser_backend'],'portable-strict')
+        # Explicit full-upstream requests still report an unavailable runtime.
+        with mock.patch.dict('os.environ',{'FBR_PARSER':'upstream'}),mock.patch.object(reference,'node_executable',side_effect=RuntimeError('unavailable')):
+            result=hub.query({'reference':'John1:1'})
         self.assertEqual(result['status'],'QUERY_ERROR')
 
     def test_13_independent_results_have_public_provenance(self):

@@ -1,0 +1,4 @@
+include LICENSE PYTHON-PACKAGE.md pyproject.toml
+recursive-include free_bible_reader/assets *
+recursive-include studio *.ps1 voice_manifest.json
+global-exclude __pycache__ *.pyc *.pyo *.exe *.dll *.pyd *.so *.onnx *.onnx.json

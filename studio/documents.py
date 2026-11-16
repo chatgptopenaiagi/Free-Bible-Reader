@@ -19,6 +19,14 @@ MAX_ARTIFACT_BYTES = 30_000_000
 SHAPES = frozenset({"selection", "verses", "chapter", "multichapter", "searchcomparison", "collection", "notes"})
 MIMES = {"pdf": "application/pdf", "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
 _FONT_LOCK = threading.Lock()
+_renderer = None
+
+def configure_renderer(renderer=None):
+    """Inject a native renderer for validated, source-preserving requests."""
+    global _renderer
+    if renderer is not None and not callable(renderer):
+        raise TypeError('Document renderer must be callable')
+    _renderer = renderer
 _FONTS = {"sans": ("DejaVuSans.ttf", "DejaVu Sans", "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"),
           "serif": ("DejaVuSerif.ttf", "DejaVu Serif", "42d1edeb7952f31b1f96d767ed7030b08a39e0c372b0071641518864e2bffb51"),
           "mono": ("DejaVuSansMono.ttf", "DejaVu Sans Mono", "b4a6c3e4faab8773f4ff761d56451646409f29abedd68f05d38c2df667d3c582"),}
@@ -351,7 +359,7 @@ def _summary(row, *, details=False):
 def create_export(payload):
     request = _request(payload)
     try:
-        raw, rendering = _pdf(request) if request["format"] == "pdf" else _docx(request)
+        raw, rendering = _renderer(request) if _renderer is not None else (_pdf(request) if request["format"] == "pdf" else _docx(request))
     except ImportError as error:
         raise DocumentError("EXPORT_UNAVAILABLE", "This application package lacks a required document component.", status=503) from error
     if not raw or len(raw) > MAX_ARTIFACT_BYTES:

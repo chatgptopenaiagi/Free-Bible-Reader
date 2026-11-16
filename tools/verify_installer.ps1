@@ -20,7 +20,7 @@ $OwnerDirectory=[IO.Path]::GetFullPath((Join-Path $env:LOCALAPPDATA 'Programs\Fr
 $VerificationRoot=[IO.Path]::GetFullPath((Join-Path $env:LOCALAPPDATA 'FBRVerification'))
 if(!$RunId){if($Phase -notin @('InstallTest','UpdateOwner')){throw 'Use the RunId returned by InstallTest'};$RunId='verify-'+$Version.Replace('.','-')+'-'+[DateTime]::UtcNow.ToString('yyyyMMddTHHmmssZ')+'-'+[Guid]::NewGuid().ToString('N').Substring(0,6)}
 if($RunId -notmatch '^[a-zA-Z0-9_-]{1,100}$'){throw 'Invalid run ID'}
-$Evidence=Join-Path $ProductRoot ('reports\MISSION-FBR-003\evidence\'+$RunId)
+$Evidence=Join-Path $ProductRoot ('reports\MISSION-FBR-004\evidence\'+$RunId)
 New-Item -ItemType Directory -Path $Evidence -Force | Out-Null
 $TestDirectory=[IO.Path]::GetFullPath((Join-Path $VerificationRoot $RunId))
 if(!$TestDirectory.StartsWith($VerificationRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase) -or $TestDirectory -eq $OwnerDirectory){throw 'Test destination escaped the dedicated verification directory'}

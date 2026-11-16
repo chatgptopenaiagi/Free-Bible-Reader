@@ -56,7 +56,7 @@
   "library.bibliaHelp": "Wählen Sie Ihre vorhandene BIBLIA-Korpusdatei im SQLite-Format. Die Quelle wird nur gelesen; suchen und wählen Sie eine tatsächliche Ausgabe, prüfen Sie die Vorschau und bestätigen Sie. Keine Originaldatenbank wird geändert oder öffentlich mitgeliefert.",
   "library.importHelp": "Wählen Sie lokal SQLite, CSV, JSON/JSONL, ZIP oder einen SQL-Dump mit reinen Datenwerten. Zuerst untersuchen, Spalten zuordnen, Originaltext prüfen, dann bestätigen. Das Schließen des Dialogs bricht eine laufende Aufgabe nicht ab.",
   "library.chooseSource": "Keine Quelle ausgewählt.",
-  "library.chooseNative": "Lokale Datei mit Windows auswählen",
+  "library.chooseNative": "Lokale Datenbankdatei auswählen",
   "library.upload": "Datei über Browser hochladen (bis 256 MiB)",
   "library.uploadLimit": "Für Dateien über 256 MiB verwenden Sie die native Dateiauswahl.",
   "library.failed": "Der Vorgang ist fehlgeschlagen.",
@@ -95,7 +95,7 @@
   "library.exportEdition": "Diese Ausgabe als SQLite exportieren",
   "library.exportConfirm": "Nur „{name}“ als separates SQLite-Paket exportieren? Andere private Ausgaben und Arbeitsbereichseinträge sind ausgeschlossen. Daraus folgen keine Weiterverbreitungsrechte.",
   "library.exportReady": "Paket der gewählten Ausgabe: {bytes} Bytes · SHA-256 {sha256}",
-  "library.savePackage": "Paket mit Windows speichern…",
+  "library.savePackage": "Bibliothekspaket speichern…",
   "library.downloadPackage": "Dieses SQLite-Paket herunterladen",
   "library.previewChanged": "Die Zuordnung wurde während der Vorschau geändert. Prüfen Sie vor der Bestätigung eine neue Vorschau."
 }

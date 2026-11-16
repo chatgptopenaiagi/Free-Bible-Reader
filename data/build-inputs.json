@@ -1,7 +1,7 @@
 {
   "kind": "free-bible-reader-build-inputs",
   "schema_version": 1,
-  "application_version": "0.2.0",
+  "application_version": "0.3.0",
   "research_data_version": "0.1.0",
   "description": "Portable pinned public data/runtime inputs. Paths are relative to the repository root; no host evidence directory is required.",
   "inputs": [

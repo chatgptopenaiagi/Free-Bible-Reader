@@ -1,0 +1,16 @@
+{
+  "product_version": "0.3.0",
+  "release_classification": "development-signed prerelease",
+  "runtime": {"android_api": 37, "guest_abi": "x86_64", "tested_application_abi": "arm64-v8a", "native_bridge": "libndk_translation.so", "physical_device": false, "offline_airplane_mode": true},
+  "packages": [
+    {"variant": "lite", "application_id": "com.freebiblereader.lite", "bytes": 39545760, "sha256": "51673b0928ae5b85275cc153a9d25d26dcbdf2b10408baea66b2b2e5791d184b", "sqlite_databases": 2, "bundled_neural_voice_models": 0, "debuggable": false, "signature_verified": true, "installed": true, "release_reading_screen_verified": true},
+    {"variant": "ultimate", "application_id": "com.freebiblereader.ultimate", "bytes": 446393687, "sha256": "84cb59e763fcb68cfa60c8bbce0321f2aafdddcb90bc3a3e67da0f5b6e9f170f", "sqlite_databases": 6, "bundled_neural_voice_models": 3, "debuggable": false, "signature_verified": true, "installed": true, "release_reading_screen_verified": true}
+  ],
+  "certificate": {"nature": "Android Debug development certificate", "sha256": "d77e623706f0146bc495904affe310cb492d67277ecf70b28455d1f5e138e419"},
+  "functional_tests": {"installed_arm64_lite_debug": {"passed": 8, "failed": 0}, "installed_arm64_ultimate_debug": {"passed": 8, "failed": 0}, "research_engines_returning_real_results": 3, "sqlite_import": "3 unchanged public Romanian verse records imported into private emulator storage, reopened and searched", "pdf_docx": "actual exports independently reopened; source text and Romanian diacritics verified", "piper_voices_verified": ["ro_RO-mihai-medium", "en_US-joe-medium", "de_DE-thorsten-medium"], "espeak_language_verified": "ro", "speech_cancellation": "CANCELLED returned"},
+  "scope": {"final_release_install_startup_screenshots_and_normal_close": true, "debug_probe_activity_absent_in_release": true, "windows_binaries_in_apks": 0, "native_abis_in_apks": ["arm64-v8a"], "physical_audio_listening": false, "continuous_narration_suite": false, "native_document_picker_end_to_end": false, "installed_storage_measured": false, "production_signed": false, "aab_built": false},
+  "romanian_edition": {"id": "ronbl", "coverage": "New Testament only", "draft": true, "script": "Latin", "books": 27},
+  "original_corpus_included": false,
+  "private_user_data_included": false,
+  "publication_by_android_runtime_agent": false
+}

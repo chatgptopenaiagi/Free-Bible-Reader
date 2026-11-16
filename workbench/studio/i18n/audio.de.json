@@ -78,5 +78,14 @@
   "audio.error.ESPEAK_RUNTIME_UNAVAILABLE": "Die mitgelieferte eSpeak-NG-Sprachausgabe ist nicht verfügbar.",
   "audio.error.INVALID_TEXT": "Einen nicht leeren Abschnitt mit höchstens 25.000 Zeichen auswählen.",
   "audio.error.INVALID_SPEED": "Eine Sprechgeschwindigkeit zwischen 0,5 und 2 wählen.",
-  "audio.savedVoiceUnavailable": "Die gespeicherte Stimme ist nicht verfügbar. Eine installierte Stimme wurde gewählt."
+  "audio.savedVoiceUnavailable": "Die gespeicherte Stimme ist nicht verfügbar. Eine installierte Stimme wurde gewählt.",
+  "audio.provider.android-native": "Android · Gerätestimmen",
+  "audio.androidSettings": "Android-Stimmeinstellungen öffnen",
+  "audio.androidOpened": "Die Android-Spracheinstellungen wurden geöffnet. Gerätestimmen werden dort verwaltet.",
+  "audio.androidVoicesHelp": "Die mit Ultimate gebündelten Piper- und eSpeak-Stimmen funktionieren offline. Android-Gerätestimmen werden nur nach Erkennung angezeigt; als netzwerkpflichtig gekennzeichnete Stimmen funktionieren möglicherweise nicht offline.",
+  "audio.androidPlayer": "Bibel-Audio · Android",
+  "audio.offlineVoice": "Offline-Stimme",
+  "audio.networkVoice": "Netzwerk erforderlich",
+  "audio.bundledVoice": "Enthaltene Offline-Stimme",
+  "audio.voiceAvailabilityUnknown": "Offline-Verfügbarkeit nicht geprüft"
 }

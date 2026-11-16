@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';import path from 'node:path';import crypto fro
 import{DEFAULT_PREFERENCES}from'../../ui-core/preferences/schema.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 if(!process.env.READER_URL)throw new Error('READER_URL is required');const target=new URL(process.env.READER_URL);if(target.protocol!=='http:'||target.hostname!=='127.0.0.1')throw new Error('Loopback only');
-const run='bootstrap-'+new Date().toISOString().replace(/[-:.]/g,'')+'-'+crypto.randomUUID().slice(0,8),evidence=path.resolve(process.env.READER_EVIDENCE||path.join(root,'reports/MISSION-FBR-003/evidence',run));await fs.mkdir(evidence,{recursive:true});await fs.writeFile(path.join(evidence,'bootstrap-run.json'),JSON.stringify({run,target:target.href})+'\n',{flag:'wx'});
+const run='bootstrap-'+new Date().toISOString().replace(/[-:.]/g,'')+'-'+crypto.randomUUID().slice(0,8),evidence=path.resolve(process.env.READER_EVIDENCE||path.join(root,'reports/MISSION-FBR-004/evidence',run));await fs.mkdir(evidence,{recursive:true});await fs.writeFile(path.join(evidence,'bootstrap-run.json'),JSON.stringify({run,target:target.href})+'\n',{flag:'wx'});
 const temporary=path.join(evidence,'browser-temp');await fs.mkdir(temporary,{recursive:true});process.env.TEMP=temporary;process.env.TMP=temporary;
 const supplied=process.env.PLAYWRIGHT_MODULE;const module=supplied?(supplied.startsWith('file:')?supplied:pathToFileURL(supplied).href):'playwright-core';const{chromium}=await import(module);
 const executable='C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',browser=await chromium.launch({executablePath:executable,headless:true}),checks=[],external=[];
@@ -36,7 +36,7 @@ async function scenario(kind,language,{malformed=false}={}){
  checks.push(result);await fs.appendFile(path.join(evidence,'progress.ndjson'),JSON.stringify(result)+'\n');console.log((result.passed?'PASS ':'FAIL ')+name);return result;
 }
 try{
- health=await fetch(new URL('/api/health',target)).then(r=>r.json());assert.equal(health.product,'FREE BIBLE READER');assert.equal(health.version,process.env.EXPECTED_READER_VERSION||'0.2.0');
+ health=await fetch(new URL('/api/health',target)).then(r=>r.json());assert.equal(health.product,'FREE BIBLE READER');assert.equal(health.version,process.env.EXPECTED_READER_VERSION||'0.3.0');
  if(process.env.READER_RUNTIME_STATE){const state=JSON.parse(await fs.readFile(process.env.READER_RUNTIME_STATE,'utf8'));assert.equal(state.pid,health.pid);assert.equal(new URL(state.url).origin,target.origin);runtime={executable:state.executable,pid:state.pid,pid_matches_health:true,sha256:sha(await fs.readFile(state.executable))};if(process.env.READER_EXPECTED_EXECUTABLE_SHA256)assert.equal(runtime.sha256,process.env.READER_EXPECTED_EXECUTABLE_SHA256.toLowerCase());}else assert.notEqual(process.env.READER_RUNTIME_KIND,'installed','Installedclassificationrequiresruntime-stateproof');
  for(const kind of ['module','catalog'])for(const language of ['en','ro','de'])await scenario(kind,language);
  await scenario('bootstrap','en');await scenario('module','en',{malformed:true});

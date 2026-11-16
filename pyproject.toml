@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=77", "wheel>=0.45"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "free-bible-reader"
+version = "0.3.0"
+description = "Offline multilingual Bible reading, personal SQLite libraries, research and documents"
+readme = "PYTHON-PACKAGE.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "FREE BIBLE READER contributors"}]
+keywords = ["bible", "offline", "scripture", "romanian", "sqlite", "cross-references"]
+classifiers = ["Programming Language :: Python :: 3", "Operating System :: OS Independent", "Topic :: Religion", "Topic :: Text Processing"]
+dependencies = []
+
+[project.optional-dependencies]
+documents = ["python-docx>=1.2,<2", "reportlab>=4.4,<6"]
+speech = ["piper-tts>=1.8,<2; platform_system == 'Windows' or platform_system == 'Linux'"]
+test = ["pypdf>=6,<7"]
+
+[project.scripts]
+fbr = "free_bible_reader.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/chatgptopenaiagi/Free-Bible-Reader"
+Issues = "https://github.com/chatgptopenaiagi/Free-Bible-Reader/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["free_bible_reader*", "reader", "studio", "bridge", "engines", "engines.visual", "engines.aggregate", "engines.phrase", "workbench"]
+exclude = ["tests*", "repositories*", "build*", "android*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+free_bible_reader = ["assets/**/*", "assets/*"]
+studio = ["*.ps1", "voice_manifest.json"]
+

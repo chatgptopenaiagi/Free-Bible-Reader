@@ -1,0 +1,6 @@
+pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.PREFER_PROJECT); repositories { google(); mavenCentral() } }
+rootProject.name = 'FreeBibleReaderAndroid'
+include ':app', ':native-poc', ':capacitor'
+project(':capacitor').projectDir = new File('node_modules/@capacitor/android/capacitor')
+if (file('speech/build.gradle').exists()) { include ':speech' }

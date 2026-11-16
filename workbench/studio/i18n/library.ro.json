@@ -56,7 +56,7 @@
   "library.bibliaHelp": "Alege fișierul SQLite existent al corpusului BIBLIA. Sursa este numai pentru citire; caută edițiile reale, alege una, apoi previzualizează și confirmă. Baza originală nu este modificată și nu este inclusă într-o distribuție publică.",
   "library.importHelp": "Alege local un fișier SQLite, CSV, JSON/JSONL, ZIP sau un dump SQL cu valori literale. Inspectează, mapează coloanele, previzualizează textul original, apoi confirmă. Închiderea dialogului nu anulează o sarcină pornită.",
   "library.chooseSource": "Nicio sursă aleasă.",
-  "library.chooseNative": "Alege un fișier local prin Windows",
+  "library.chooseNative": "Alege un fișier local de baze de date",
   "library.upload": "Încărcare prin browser (până la 256 MiB)",
   "library.uploadLimit": "Pentru fișiere mai mari de 256 MiB, folosește selectorul nativ.",
   "library.failed": "Operațiunea a eșuat.",
@@ -95,7 +95,7 @@
   "library.exportEdition": "Exportă această ediție ca SQLite",
   "library.exportConfirm": "Export doar ediția „{name}” ca pachet SQLite separat? Celelalte ediții și datele din spațiul personal nu sunt incluse. Drepturile de redistribuire nu sunt implicate.",
   "library.exportReady": "Pachetul ediției alese: {bytes} octeți · SHA-256 {sha256}",
-  "library.savePackage": "Salvează pachetul prin Windows…",
+  "library.savePackage": "Salvează pachetul bibliotecii…",
   "library.downloadPackage": "Descarcă acest pachet SQLite",
   "library.previewChanged": "Maparea s-a schimbat în timpul încărcării previzualizării. Verifică o previzualizare nouă înainte de confirmare."
 }

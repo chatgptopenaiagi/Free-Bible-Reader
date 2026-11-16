@@ -1,0 +1,143 @@
+{
+  "product": "FREE BIBLE READER",
+  "version": "0.3.0",
+  "scope": "Python distributions",
+  "verified_utc": "2026-11-16T21:48:17.214679+00:00",
+  "status": "VERIFIED",
+  "artifacts": [
+    {
+      "file": "free_bible_reader-0.3.0-py3-none-any.whl",
+      "bytes": 223102823,
+      "sha256": "2e0eeb9fa1605665aa7ab3f10180d03f3b3843b69dadbd217b26984e1c27b5af"
+    },
+    {
+      "file": "free_bible_reader-0.3.0.tar.gz",
+      "bytes": 217383942,
+      "sha256": "4309515629f3dd2fab836eb3e29bd84f3a3b3df986dd96d004de81c153d1024a"
+    }
+  ],
+  "wheel_tag": "py3-none-any",
+  "public_database_count": 6,
+  "public_database_bytes": 929001472,
+  "private_corpus_included": false,
+  "native_runtime_or_voice_models_included": false,
+  "tests": {
+    "windows": {
+      "python": "3.14.10",
+      "architecture": "x64",
+      "fresh_virtual_environment": true,
+      "outside_source_working_directory": true,
+      "passed_groups": 11,
+      "failed_groups": 0,
+      "checks": [
+        {
+          "name": "installed_metadata",
+          "status": "PASS"
+        },
+        {
+          "name": "real_edition_catalog",
+          "status": "PASS"
+        },
+        {
+          "name": "complete_chapters_and_unicode",
+          "status": "PASS"
+        },
+        {
+          "name": "node_free_parser",
+          "status": "PASS"
+        },
+        {
+          "name": "real_scripture_search",
+          "status": "PASS"
+        },
+        {
+          "name": "three_real_research_engines",
+          "status": "PASS"
+        },
+        {
+          "name": "personal_sqlite_import_native_labels",
+          "status": "PASS"
+        },
+        {
+          "name": "pdf_docx_export_and_unicode",
+          "status": "PASS"
+        },
+        {
+          "name": "cli_real_commands",
+          "status": "PASS"
+        },
+        {
+          "name": "local_server_reading_and_shutdown",
+          "status": "PASS"
+        },
+        {
+          "name": "all_six_public_database_integrity_and_preservation",
+          "status": "PASS"
+        }
+      ]
+    },
+    "linux": {
+      "python": "3.14.10",
+      "architecture": "x86_64",
+      "runtime": "Existing python:3.14-slim Docker image; no Node",
+      "fresh_virtual_environment": true,
+      "outside_source_working_directory": true,
+      "passed_groups": 11,
+      "failed_groups": 0,
+      "checks": [
+        {
+          "name": "installed_metadata",
+          "status": "PASS"
+        },
+        {
+          "name": "real_edition_catalog",
+          "status": "PASS"
+        },
+        {
+          "name": "complete_chapters_and_unicode",
+          "status": "PASS"
+        },
+        {
+          "name": "node_free_parser",
+          "status": "PASS"
+        },
+        {
+          "name": "real_scripture_search",
+          "status": "PASS"
+        },
+        {
+          "name": "three_real_research_engines",
+          "status": "PASS"
+        },
+        {
+          "name": "personal_sqlite_import_native_labels",
+          "status": "PASS"
+        },
+        {
+          "name": "pdf_docx_export_and_unicode",
+          "status": "PASS"
+        },
+        {
+          "name": "cli_real_commands",
+          "status": "PASS"
+        },
+        {
+          "name": "local_server_reading_and_shutdown",
+          "status": "PASS"
+        },
+        {
+          "name": "all_six_public_database_integrity_and_preservation",
+          "status": "PASS"
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Strict portable parser is not the complete upstream grammar",
+    "Romanian Biblia Libera is a draft New Testament only",
+    "Optional speech synthesis is not newly verified by these Python tests",
+    "Document structure and Unicode verified; visual document review not repeated",
+    "No physical mobile-device or macOS claim",
+    "Windows 0.3.0 installer GUI was not tested in this final pass"
+  ]
+}

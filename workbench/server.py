@@ -1,12 +1,15 @@
 """Local-only engineering workbench. No production application or permanent service."""
 from __future__ import annotations
-import argparse,contextlib,json,os,pathlib,sys,threading,time,urllib.parse
+import argparse,contextlib,json,os,pathlib,sys,threading,time,urllib.parse,hmac
+from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer as _ThreadingHTTPServer
 class ThreadingHTTPServer(_ThreadingHTTPServer):
     # Cold browser module graphs can open a burst of short HTTP connections.
     # This is the pending accept queue, not a limit on active request threads.
     request_queue_size=128
-ROOT=pathlib.Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
+if not __package__:sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]))
+from free_bible_reader.resources import asset_root
+ROOT=asset_root()
 from bridge import hub,reference,corpus_adapter
 from reader import service as reader
 from studio import api as studio_api
@@ -25,6 +28,14 @@ class Handler(BaseHTTPRequestHandler):
         raw=json.dumps(data,ensure_ascii=False,allow_nan=False).encode('utf-8') if isinstance(data,(dict,list)) else data
         self.send_response(status);self.send_header('Content-Type',kind);self.send_header('Content-Length',str(len(raw)));self.send_header('Cache-Control','no-store');self.send_header('X-Content-Type-Options','nosniff');self.send_header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'");self.end_headers();self.wfile.write(raw)
     def host_ok(self):return self.headers.get('Host','') in {f'127.0.0.1:{self.server.server_port}',f'localhost:{self.server.server_port}'}
+    def session_ok(self):
+        token=getattr(self.server,'session_token',None)
+        if token is None:return True
+        try:
+            cookie=SimpleCookie();cookie.load(self.headers.get('Cookie',''))
+            value=cookie.get('fbr_session')
+            return value is not None and hmac.compare_digest(value.value,token)
+        except Exception:return False
     def send_file(self,value):
         path=pathlib.Path(value.path);length=path.stat().st_size;start=0;end=length-1;status=200
         requested=self.headers.get('Range')
@@ -50,6 +61,7 @@ class Handler(BaseHTTPRequestHandler):
         except (BrokenPipeError,ConnectionResetError):pass
     def do_GET(self):
         if not self.host_ok():return self.send(400,{'error':'Local host header required'})
+        if not self.session_ok():return self.send(403,{'error':'Application session required'})
         path=urllib.parse.urlsplit(self.path).path
         if path.startswith('/api/studio/'):
             try:
@@ -61,7 +73,13 @@ class Handler(BaseHTTPRequestHandler):
         if path in STATIC:
             file,kind=STATIC[path];return self.send(200,(ROOT/file).read_bytes(),kind)
         asset=None
-        if path.startswith('/studio-ui/'):
+        if path=='/lite/' or path.startswith('/lite/'):
+            candidate=(ROOT/'workbench/lite'/('index.html' if path=='/lite/' else path.removeprefix('/lite/'))).resolve()
+            if candidate.is_relative_to((ROOT/'workbench/lite').resolve()) and candidate.suffix in ('.html','.js','.css','.json','.svg'):asset=candidate
+        elif path.startswith('/reference-parser/'):
+            candidate=(ROOT/'parser'/path.removeprefix('/reference-parser/')).resolve()
+            if candidate.is_relative_to((ROOT/'parser').resolve()) and candidate.suffix in ('.js','.mjs','.json'):asset=candidate
+        elif path.startswith('/studio-ui/'):
             candidate=(ROOT/'workbench/studio'/path.removeprefix('/studio-ui/')).resolve()
             if candidate.is_relative_to((ROOT/'workbench/studio').resolve()) and candidate.suffix in ('.js','.css','.json','.svg'):asset=candidate
         elif path.startswith('/ui-core/'):
@@ -71,7 +89,7 @@ class Handler(BaseHTTPRequestHandler):
             candidate=(ROOT/'workbench'/path.lstrip('/')).resolve()
             if candidate.is_relative_to((ROOT/'workbench').resolve()):asset=candidate
         if asset and asset.is_file():
-            kind={'.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml'}[asset.suffix]
+            kind={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml'}[asset.suffix]
             return self.send(200,asset.read_bytes(),kind)
         if path.startswith('/api/reader/'):
             try:
@@ -80,7 +98,7 @@ class Handler(BaseHTTPRequestHandler):
                 if path=='/api/reader/chapter':return self.send(200,reader.chapter(edition,options.get('book',['John'])[0],options.get('chapter',['1'])[0]))
             except (ValueError,TypeError) as error:return self.send(400,{'status':'QUERY_ERROR','error':str(error)})
             except (OSError,Exception) as error:return self.send(500,{'status':'QUERY_ERROR','error':'READER_UNAVAILABLE'})
-        if path=='/api/health':return self.send(200,{'status':'OK','scope':'FREE BIBLE READER desktop application','product':'FREE BIBLE READER','version':'0.2.0','lab_engines_available':True,'reader_available':reader.DATABASE.exists(),'allowed_engine':self.server.allowed_engine,'pid':os.getpid(),'bind':'127.0.0.1','contract_version':'1.0'})
+        if path=='/api/health':return self.send(200,{'status':'OK','scope':'FREE BIBLE READER local application','product':'FREE BIBLE READER','version':'0.3.0','variant':getattr(self.server,'product_variant','desktop'),'lab_engines_available':getattr(self.server,'product_variant','desktop')!='lite','reader_available':reader.DATABASE.exists(),'allowed_engine':self.server.allowed_engine,'pid':os.getpid(),'bind':'127.0.0.1','contract_version':'1.0'})
         if path=='/api/editions':return self.send(200,{'editions':hub.editions(urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query).get('all',['false'])[0]=='true')})
         if path=='/api/books':
             with contextlib.closing(reference.connect_registry()) as db:rows=db.execute('SELECT osis,chapters_json FROM BookRegistry WHERE native_source_code IS NOT NULL ORDER BY book_order').fetchall()
@@ -88,11 +106,14 @@ class Handler(BaseHTTPRequestHandler):
         return self.send(404,{'error':'Unknown route'})
     def do_POST(self):
         if not self.host_ok():return self.send(400,{'error':'Local host header required'})
+        if not self.session_ok():return self.send(403,{'error':'Application session required'})
         origin=self.headers.get('Origin');expected=f'http://127.0.0.1:{self.server.server_port}'
         if origin and origin!=expected:return self.send(403,{'error':'Same-origin local requests only'})
         try:
             size=int(self.headers.get('Content-Length','0'))
             path=urllib.parse.urlsplit(self.path).path
+            if getattr(self.server,'product_variant','desktop')=='lite' and path in ('/api/query','/api/compare','/api/resolve'):
+                return self.send(501,{'code':'FEATURE_UNAVAILABLE','error':'Research databases are included in Ultimate'})
             if path=='/api/studio/upload':
                 return self.send(200,studio_api.upload(self.rfile,size,urllib.parse.unquote(self.headers.get('X-Filename','source.sqlite'))))
             maximum=8*1024*1024 if path.startswith('/api/studio/') else 16384

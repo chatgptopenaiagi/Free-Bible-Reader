@@ -19,7 +19,7 @@ $DistPrefix=[IO.Path]::GetFullPath((Join-Path $ProductRoot 'dist'))+[IO.Path]::D
 if(!$ArtifactDirectory.StartsWith($DistPrefix,[StringComparison]::OrdinalIgnoreCase)){throw 'Versioned artifact directory must remain under this project dist directory'}
 if(!$RunId){$RunId='build-'+$Version.Replace('.','-')+'-'+[DateTime]::UtcNow.ToString('yyyyMMddTHHmmssZ')+'-'+[Guid]::NewGuid().ToString('N').Substring(0,6)}
 if($RunId -notmatch '^[a-zA-Z0-9_-]{1,100}$'){throw 'Invalid run ID'}
-$Evidence=Join-Path $ProductRoot ('reports\MISSION-FBR-003\evidence\'+$RunId)
+$Evidence=Join-Path $ProductRoot ('reports\MISSION-FBR-004\evidence\'+$RunId)
 if(Test-Path -LiteralPath $Evidence){throw 'Create-only build run already exists; choose another RunId'}
 New-Item -ItemType Directory -Path $Evidence | Out-Null
 function Write-NewJson([string]$Path,$Value){if(Test-Path -LiteralPath $Path){throw "Evidence already exists: $Path"};$Value | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath $Path -Encoding utf8}

@@ -1,0 +1,8 @@
+plugins { id 'com.android.application' }
+android {
+ namespace 'com.freebiblereader.poc'
+ compileSdk 36
+ defaultConfig { applicationId 'com.freebiblereader.nativepoc'; minSdk 24; targetSdk 36; versionCode 1; versionName '0.3.0-poc' }
+ compileOptions { sourceCompatibility JavaVersion.VERSION_21; targetCompatibility JavaVersion.VERSION_21 }
+}
+dependencies { implementation project(':capacitor'); implementation 'androidx.appcompat:appcompat:1.7.1' }

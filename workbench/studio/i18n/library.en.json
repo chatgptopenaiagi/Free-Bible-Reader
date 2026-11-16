@@ -56,7 +56,7 @@
   "library.bibliaHelp": "Choose your existing BIBLIA corpus SQLite file. The source is read-only; search actual source editions, choose one, then preview and confirm. No original database is modified or included in a public release.",
   "library.importHelp": "Choose a local SQLite, CSV, JSON/JSONL, ZIP or literal-only SQL dump. Inspect first, map columns, preview original text, then confirm. Closing this dialog does not cancel a running job.",
   "library.chooseSource": "No source selected.",
-  "library.chooseNative": "Choose a local file with Windows",
+  "library.chooseNative": "Choose a local database file",
   "library.upload": "Browser upload fallback (up to 256 MiB)",
   "library.uploadLimit": "Use the native file picker for files larger than 256 MiB.",
   "library.failed": "The operation failed.",
@@ -95,7 +95,7 @@
   "library.exportEdition": "Export this edition as SQLite",
   "library.exportConfirm": "Export only “{name}” as a separate SQLite package? Other private editions and workspace items are excluded. Redistribution rights are not implied.",
   "library.exportReady": "Selected edition package: {bytes} bytes · SHA-256 {sha256}",
-  "library.savePackage": "Save package with Windows…",
+  "library.savePackage": "Save library package…",
   "library.downloadPackage": "Download this SQLite package",
   "library.previewChanged": "The mapping changed while the preview loaded. Review a fresh preview before confirming."
 }

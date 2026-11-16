@@ -78,5 +78,14 @@
   "audio.error.ESPEAK_RUNTIME_UNAVAILABLE": "Motorul eSpeak NG inclus nu este disponibil.",
   "audio.error.INVALID_TEXT": "Selectează un pasaj nevid de cel mult 25.000 de caractere.",
   "audio.error.INVALID_SPEED": "Alege o viteză de vorbire între 0,5 și 2.",
-  "audio.savedVoiceUnavailable": "Vocea salvată nu este disponibilă. A fost aleasă o voce instalată."
+  "audio.savedVoiceUnavailable": "Vocea salvată nu este disponibilă. A fost aleasă o voce instalată.",
+  "audio.provider.android-native": "Android · voci ale dispozitivului",
+  "audio.androidSettings": "Deschide setările vocilor Android",
+  "audio.androidOpened": "S-au deschis setările de vorbire Android. Vocile dispozitivului se gestionează acolo.",
+  "audio.androidVoicesHelp": "Vocile Piper și eSpeak incluse în Ultimate funcționează offline. Vocile Android sunt afișate numai dacă au fost detectate; cele marcate ca necesitând rețea pot să nu funcționeze offline.",
+  "audio.androidPlayer": "Lectură audio biblică · Android",
+  "audio.offlineVoice": "Voce offline",
+  "audio.networkVoice": "Necesită rețea",
+  "audio.bundledVoice": "Voce offline inclusă",
+  "audio.voiceAvailabilityUnknown": "Disponibilitatea offline nu este verificată"
 }

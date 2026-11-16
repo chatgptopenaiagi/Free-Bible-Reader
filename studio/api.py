@@ -19,6 +19,13 @@ class FileResult:
 
 _sources = {}
 _source_lock = threading.RLock()
+NOT_HANDLED = object()
+_platform = None
+
+def configure_platform(platform=None):
+    """Optional OS adapter returns NOT_HANDLED for the portable routes."""
+    global _platform
+    _platform = platform
 
 def register_source(path):
     path = pathlib.Path(path).resolve()
@@ -68,9 +75,14 @@ def _audio_result(result):
     return dict(result, download_url='/api/studio/audio/file?id='+result['artifact_id'])
 
 def get(path, q):
+    if _platform is not None:
+        result = _platform('GET', path, q)
+        if result is not NOT_HANDLED:
+            return result
     one = lambda key, default=None:q.get(key,[default])[0]
     if path == '/api/studio/capabilities':
-        return {'native_dialogs':native.available(), 'personal_data_separate':True, 'upload_limit_bytes':256*1024*1024, 'version':'0.2.0'}
+        import os
+        return {'native_dialogs':native.available(), 'platform':os.name, 'native_share':False, 'sql_server':os.name=='nt', 'personal_data_separate':True, 'upload_limit_bytes':256*1024*1024, 'version':'0.3.0'}
     if path == '/api/studio/voices':
         from . import audio
         return audio.voice_catalog(refresh=one('refresh') == 'true')
@@ -114,6 +126,10 @@ def get(path, q):
     return None
 
 def post(path, p):
+    if _platform is not None:
+        result = _platform('POST', path, p)
+        if result is not NOT_HANDLED:
+            return result
     if path == '/api/studio/job/cancel':
         return jobs.cancel(p['id'])
     if path == '/api/studio/source/choose':

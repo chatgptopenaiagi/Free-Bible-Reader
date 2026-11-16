@@ -26,4 +26,9 @@ reports/**/evidence/
 /reports/MISSION-FBR-003/
 /runtime/voices/
 /studio-data/
+/free_bible_reader/assets/
+/.wheel-test-venv/
+/.wheel-final-venv/
+/free_bible_reader.egg-info/
+/DELIVERY/
 /screenshots/v0.1.1/installed-test-reading-20261116T083554Z-0dc5eca4/

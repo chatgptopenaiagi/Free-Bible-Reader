@@ -1,7 +1,8 @@
 """Portable pinned upstream reference parser; the shipped seed is read-only."""
 from __future__ import annotations
-import contextlib,datetime,json,pathlib,re,shutil,sqlite3,subprocess,sys
-ROOT=pathlib.Path(getattr(sys,'_MEIPASS',pathlib.Path(__file__).resolve().parents[1]))
+import contextlib,datetime,json,os,pathlib,re,shutil,sqlite3,subprocess,sys
+from free_bible_reader.resources import asset_root
+ROOT=asset_root()
 DB=ROOT/'data/xref_reference.sqlite'
 BOOK_PAIRS='Gen:GEN Exod:EXO Lev:LEV Num:NUM Deut:DEU Josh:JOS Judg:JDG Ruth:RUT 1Sam:1SA 2Sam:2SA 1Kgs:1KI 2Kgs:2KI 1Chr:1CH 2Chr:2CH Ezra:EZR Neh:NEH Esth:EST Job:JOB Ps:PSA Prov:PRO Eccl:ECC Song:SNG Isa:ISA Jer:JER Lam:LAM Ezek:EZK Dan:DAN Hos:HOS Joel:JOL Amos:AMO Obad:OBA Jonah:JON Mic:MIC Nah:NAM Hab:HAB Zeph:ZEP Hag:HAG Zech:ZEC Mal:MAL Matt:MAT Mark:MRK Luke:LUK John:JHN Acts:ACT Rom:ROM 1Cor:1CO 2Cor:2CO Gal:GAL Eph:EPH Phil:PHP Col:COL 1Thess:1TH 2Thess:2TH 1Tim:1TI 2Tim:2TI Titus:TIT Phlm:PHM Heb:HEB Jas:JAS 1Pet:1PE 2Pet:2PE 1John:1JN 2John:2JN 3John:3JN Jude:JUD Rev:REV'
 BOOK_TO_NATIVE=dict(part.split(':')for part in BOOK_PAIRS.split())
@@ -15,7 +16,20 @@ def node_executable():
     found=shutil.which('node')
     if found:return found
     raise RuntimeError('REFERENCE_PARSER_RUNTIME_UNAVAILABLE')
-def parse_many(requests):
+_platform_parser=None
+
+def configure_parser(delegate=None):
+    """Explicit platform adapter: callable(list[request]) -> list[result].
+
+    Android may delegate to the pinned full ESM parser. No callable is loaded
+    from a preference file or remote source. None restores ordinary selection.
+    """
+    if delegate is not None and not callable(delegate):raise TypeError('PARSER_DELEGATE_CALLABLE_REQUIRED')
+    global _platform_parser
+    _platform_parser=delegate
+
+def parse_many_upstream(requests):
+    """Full pinned upstream grammar; requires a separately available Node runtime."""
     if not isinstance(requests,list)or len(requests)>100:raise ValueError('PARSER_REQUEST_BOUND')
     payload=''.join(json.dumps(value,ensure_ascii=False)+'\n'for value in requests)
     command=[node_executable(),str(ROOT/'parser/parse.mjs')]
@@ -24,6 +38,24 @@ def parse_many(requests):
     values=[json.loads(line)for line in result.stdout.splitlines()if line.strip()]
     if len(values)!=len(requests):raise RuntimeError('REFERENCE_PARSER_RESPONSE_COUNT')
     return values
+
+def parse_many(requests):
+    if not isinstance(requests,list)or len(requests)>100:raise ValueError('PARSER_REQUEST_BOUND')
+    if _platform_parser is not None:
+        result=_platform_parser(requests)
+        if not isinstance(result,list)or len(result)!=len(requests):raise RuntimeError('REFERENCE_PARSER_RESPONSE_COUNT')
+        return result
+    # A universal wheel has no bundled Node runtime. Its default is genuinely
+    # self-contained; source/frozen desktop deployments retain upstream auto.
+    mode=os.environ.get('FBR_PARSER','portable' if (ROOT/'PUBLIC-ASSET-MANIFEST.json').is_file() else 'auto')
+    if mode not in ('auto','portable','upstream'):raise ValueError('INVALID_PARSER_BACKEND')
+    if mode!='portable':
+        try:node_executable()
+        except RuntimeError:
+            if mode=='upstream':raise
+        else:return parse_many_upstream(requests)
+    from free_bible_reader.reference import parse_many as portable
+    return portable(requests)
 def parse_reference(reference,language='en',record=False):
     # record is accepted for interface compatibility, never a seed database write.
     return parse_many([{'reference':reference,'language':language}])[0]

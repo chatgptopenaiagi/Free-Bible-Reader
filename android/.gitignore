@@ -1,0 +1,13 @@
+.gradle/
+.local/
+node_modules/
+local.properties
+**/build/
+**/.cxx/
+**/.externalNativeBuild/
+**/src/main/assets/fbr/
+**/src/*/assets/fbr/
+evidence/*
+!evidence/README.md
+RESUME-CHECKPOINT.md
+speech/CHECKPOINT.md

@@ -4,11 +4,13 @@ No corpus mutation, translation equivalence, invented edges or hidden database b
 CLI: python engines/visual/engine.py John.1.1 --direction both --limit 25
 """
 from pathlib import Path
-import argparse,json,sqlite3,hashlib,re,time
+import argparse,json,sqlite3,hashlib,re,time,sys
 try:from .layout import compute_layout,point,arc_geometry
 except ImportError:from layout import compute_layout,point,arc_geometry
 
-LAB=Path(__file__).resolve().parents[2]
+if not __package__:sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
+from free_bible_reader.resources import asset_root
+LAB=asset_root()
 DATABASE=LAB/'data'/'xref_visual.sqlite'
 NORMALIZED=re.compile(r'^[1-3]?[A-Za-z]+\.\d+\.\d+(?:-[1-3]?[A-Za-z]+\.\d+\.\d+)?$')
 MAX_LINKS=100

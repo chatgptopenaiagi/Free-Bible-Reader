@@ -15,7 +15,7 @@ if(!['source','frozen','installed'].includes(runtimeKind))throw Error('Invalid R
 const modulePath=process.env.PLAYWRIGHT_MODULE;
 const {chromium}=await import(modulePath?(modulePath.startsWith('file:')?modulePath:pathToFileURL(path.resolve(modulePath)).href):'playwright-core');
 const stamp=new Date().toISOString().replace(/[-:.]/g,'')+'-'+crypto.randomUUID().slice(0,8);
-const run=path.resolve(process.env.FBR_AUDIO_EVIDENCE_DIR||path.join(root,'reports/MISSION-FBR-003/evidence','audio-browser-'+stamp));
+const run=path.resolve(process.env.FBR_AUDIO_EVIDENCE_DIR||path.join(root,'reports/MISSION-FBR-004/evidence','audio-browser-'+stamp));
 await fs.mkdir(path.dirname(run),{recursive:true});await fs.mkdir(run,{recursive:false});
 const allowModelChanges=process.env.FBR_AUDIO_ALLOW_MODEL_CHANGES==='1';
 let modelLifecycleAllowed=false,modelOwned=false,modelSkipReason='Model changes were not explicitly enabled.',verifiedProfile=null,runtimeEvidence=null;
@@ -25,7 +25,7 @@ const inside=(value,parent)=>{const rel=path.relative(parent,value);return rel!=
 const same=(a,b)=>process.platform==='win32'?path.resolve(a).toLowerCase()===path.resolve(b).toLowerCase():path.resolve(a)===path.resolve(b);
 async function exists(p){try{await fs.lstat(p);return true;}catch(e){if(e.code==='ENOENT')return false;throw e;}}
 async function verifyRuntime(){
- const health=await api('/api/health');assert.equal(health.product,'FREE BIBLE READER');assert.equal(health.version,process.env.EXPECTED_READER_VERSION||'0.2.0');assert.ok(Number.isSafeInteger(health.pid)&&health.pid>0);
+ const health=await api('/api/health');assert.equal(health.product,'FREE BIBLE READER');assert.equal(health.version,process.env.EXPECTED_READER_VERSION||'0.3.0');assert.ok(Number.isSafeInteger(health.pid)&&health.pid>0);
  const statePath=process.env.READER_RUNTIME_STATE;
  if((runtimeKind==='installed'||allowModelChanges)&&!statePath)throw Error('Installed verification/model changes require READER_RUNTIME_STATE from the actual running application.');
  if(!statePath)return{health,runtime_kind:runtimeKind,process_identity_verified:false};
@@ -48,7 +48,7 @@ async function verifyRuntime(){
  if(process.env.READER_EXECUTABLE_SHA256)assert.equal(sha,process.env.READER_EXECUTABLE_SHA256.toLowerCase());
  if(allowModelChanges){
   const requested=process.env.FBR_AUDIO_TEST_PROFILE;if(!requested||!path.isAbsolute(requested))throw Error('Explicit absolute FBR_AUDIO_TEST_PROFILE is required for model changes.');
-  const profile=await fs.realpath(requested),allowedRoots=[path.resolve(root,'reports/MISSION-FBR-003/evidence')];
+  const profile=await fs.realpath(requested),allowedRoots=[path.resolve(root,'reports/MISSION-FBR-004/evidence')];
   if(process.env.LOCALAPPDATA)allowedRoots.push(path.resolve(process.env.LOCALAPPDATA,'FBRVerification'));
   if(!allowedRoots.some(parent=>inside(profile,parent)))throw Error('Model test profile must be below this project mission evidence or LOCALAPPDATA/FBRVerification.');
   assert.ok(same(await fs.realpath(path.dirname(statePath)),profile),'Use this profile\'s actual default runtime.json state file');

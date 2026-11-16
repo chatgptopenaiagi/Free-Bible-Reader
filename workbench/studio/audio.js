@@ -5,7 +5,7 @@ export function chooseDefaultVoice(voices,sourceLanguage,stored=null){
   const saved=actual.find(v=>v.provider===stored?.provider&&v.id===stored?.voice);if(saved)return saved;
   const lang=canonicalSpeechLanguage(sourceLanguage),matching=actual.filter(v=>canonicalSpeechLanguage(v.language)===lang);
   const david=(items,provider)=>items.find(v=>v.provider===provider&&v.name.toLowerCase().includes('david'));
-  return matching.find(v=>v.provider==='piper')||david(matching,'windows-sapi')||david(matching,'windows-media')||matching.find(v=>v.provider==='windows-sapi')||matching.find(v=>v.provider==='windows-media')||matching.find(v=>v.provider==='espeak-ng'&&v.id===(lang==='en'?'en-us':lang))||matching.find(v=>v.provider==='espeak-ng'&&v.id===lang)||matching[0]||david(actual,'windows-sapi')||david(actual,'windows-media')||actual[0]||null;
+  return matching.find(v=>v.provider==='piper')||matching.find(v=>v.provider==='android-native'&&v.network_required===false)||david(matching,'windows-sapi')||david(matching,'windows-media')||matching.find(v=>v.provider==='windows-sapi')||matching.find(v=>v.provider==='windows-media')||matching.find(v=>v.provider==='espeak-ng'&&v.id===(lang==='en'?'en-us':lang))||matching.find(v=>v.provider==='espeak-ng'&&v.id===lang)||matching[0]||david(actual,'windows-sapi')||david(actual,'windows-media')||actual[0]||null;
 }
 export async function createAudioStudio(common,{reader,getSelection}){
   await common.namespace('audio');
@@ -36,8 +36,10 @@ export async function createAudioStudio(common,{reader,getSelection}){
   const managerStatus=node('p');managerStatus.id='studio-voice-status';managerStatus.setAttribute('role','status');
   const managerProgress=node('progress');managerProgress.id='studio-voice-progress';managerProgress.hidden=true;managerProgress.setAttribute('aria-label',t('audio.downloadProgress'));
   const managerCancel=button('common.cancel',()=>{managerAbort?.abort();if(managerJob)request('job/cancel',{id:managerJob}).catch(()=>{});});managerCancel.id='studio-voice-job-cancel';managerCancel.hidden=true;
-  const windows=button('audio.windowsSettings',()=>request('windows-voices').then(()=>notify(t('audio.windowsOpened'))));windows.id='studio-windows-voices';
-  voicesDialog.body.append(text('p','audio.voicesHelp','notice'),voiceFilter.label,previewField.label,managerStatus,managerProgress,managerCancel,voiceList);
+  const isAndroid=()=>catalog.platform==='android'||catalog.providers.some(p=>p.id==='android-native');
+  const windows=button('audio.windowsSettings',()=>request(isAndroid()?'android-voices':'windows-voices').then(()=>notify(t(isAndroid()?'audio.androidOpened':'audio.windowsOpened'))));windows.id='studio-windows-voices';
+  const voicesHelp=text('p','audio.voicesHelp','notice');
+  voicesDialog.body.append(voicesHelp,voiceFilter.label,previewField.label,managerStatus,managerProgress,managerCancel,voiceList);
   const previewStop=button('audio.stop',()=>stop());previewStop.id='studio-voice-preview-stop';
   voicesDialog.footer.append(previewStop,button('audio.refresh',()=>refreshVoices(true)),windows,text('small','audio.closeCancels'));
   voicesDialog.onClose(()=>managerAbort?.abort());
@@ -60,10 +62,12 @@ export async function createAudioStudio(common,{reader,getSelection}){
   function highlight(item){clearHighlight();if(item?.edition_id!=null&&editionId(reader.getCurrent())!==item.edition_id)return;if(item?.reference)for(const el of document.querySelectorAll('.scripture-verse'))if(el.dataset.reference===item.reference)el.classList.add('narrating');}
   function renderStatus(){status.textContent=t('audio.state.'+state,{reference:describe(currentItem)});previous.disabled=!plan||preparing;next.disabled=!plan||preparing;pausing.disabled=!plan;stopping.disabled=!plan&&!activeJob;playing.setAttribute('aria-pressed',String(!!plan&&!paused&&!finished));}
   function selectedVoice(){return catalog.voices.find(v=>v.provider===settings.provider&&v.id===settings.voice);}
+  function renderPlatform(){const key=isAndroid()?'audio.androidSettings':'audio.windowsSettings';windows.dataset.studioKey=key;windows.textContent=t(key);voicesHelp.dataset.studioKey=isAndroid()?'audio.androidVoicesHelp':'audio.voicesHelp';voicesHelp.textContent=t(voicesHelp.dataset.studioKey);player.setAttribute('aria-label',t(isAndroid()?'audio.androidPlayer':'audio.player'));}
   function renderSelectors(){
+    renderPlatform();
     options(provider,catalog.providers.filter(p=>p.available).map(p=>[p.id,providerName(p.id)]),settings.provider);
     const candidates=catalog.voices.filter(v=>v.provider===settings.provider&&v.installed&&v.runtime_available!==false);
-    options(voice,candidates.map(v=>[v.id,`${v.name} · ${v.language}`]),settings.voice);
+    options(voice,candidates.map(v=>[v.id,`${v.name} · ${v.language}${isAndroid()?' · '+t(v.network_required===true?'audio.networkVoice':v.network_required===false?'audio.offlineVoice':'audio.voiceAvailabilityUnknown'):''}`]),settings.voice);
     if(settings.voice&&!candidates.some(v=>v.id===settings.voice)){const missing=node('option',t('audio.voiceMissing'));missing.value=settings.voice;missing.disabled=true;voice.append(missing);voice.value=settings.voice;}
     provider.disabled=!catalog.providers.some(p=>p.available);voice.disabled=!candidates.length;
   }
@@ -200,6 +204,7 @@ export async function createAudioStudio(common,{reader,getSelection}){
       if(item.managed&&item.removable){const remove=button('audio.remove',()=>manageRemove(item));remove.dataset.voiceRemove=item.id;actions.append(remove);}
       if(item.installed&&item.runtime_available!==false){const previewButton=button('audio.preview',()=>preview(item));previewButton.dataset.voicePreview=item.id;actions.append(previewButton);}
       for(const control of actions.querySelectorAll('button'))control.disabled=managerBusy||refreshingVoices;
+      if(isAndroid())card.append(text('p',item.network_required===true?'audio.networkVoice':item.bundled?'audio.bundledVoice':item.network_required===false?'audio.offlineVoice':'audio.voiceAvailabilityUnknown','meta'));
       if(item.license)card.append(node('p',item.license,'meta'));card.append(actions);voiceList.append(card);
     }
     if(!list.length)voiceList.append(text('p','audio.noVoices'));

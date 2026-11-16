@@ -12,12 +12,12 @@ import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const expectedVersion=process.env.EXPECTED_READER_VERSION||'0.2.0';
+const expectedVersion=process.env.EXPECTED_READER_VERSION||'0.3.0';
 if(!process.env.READER_URL)throw new Error('READER_URL must identify an already-running runtime.');
 const base=new URL(process.env.READER_URL);
 if(base.protocol!=='http:'||!['127.0.0.1','localhost'].includes(base.hostname)||base.username||base.password)throw new Error('Only unauthenticated loopback test targets are accepted.');
 const runId='reading-'+new Date().toISOString().replace(/[-:.]/g,'')+'-'+crypto.randomUUID().slice(0,8);
-const evidence=path.resolve(process.env.READER_EVIDENCE||path.join(root,'reports/MISSION-FBR-003/evidence',runId));
+const evidence=path.resolve(process.env.READER_EVIDENCE||path.join(root,'reports/MISSION-FBR-004/evidence',runId));
 const screenshots=path.resolve(process.env.READER_SCREENSHOTS||path.join(root,'screenshots','v'+expectedVersion,runId));
 await fs.mkdir(evidence,{recursive:true});await fs.mkdir(screenshots,{recursive:true});
 await fs.writeFile(path.join(evidence,'reading-run.json'),JSON.stringify({run_id:runId,started_utc:new Date().toISOString(),target:base.href})+'\n',{flag:'wx'});

@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#234e44"><title>FREE BIBLE READER LITE</title><script src="/platform-bootstrap.js"></script><link rel="stylesheet" href="/lite/style.css"><script type="module" src="/lite/app.js"></script></head>
+<body><a class="skip" href="#verses">Skip to Scripture</a>
+<header><span class="book-mark" aria-hidden="true">▤</span><div><strong>FREE BIBLE READER <small>LITE</small></strong><p id="tagline"></p></div><button id="settings" type="button" aria-label="Settings">⚙</button></header>
+<main>
+<form id="navigation" aria-label="Bible navigation"><label><span data-t="edition"></span><select id="edition"></select></label><label><span data-t="book"></span><select id="book"></select></label><label class="chapter-field"><span data-t="chapter"></span><select id="chapter"></select></label></form>
+<div id="status" role="status" aria-live="polite"></div>
+<section id="reading" aria-labelledby="title"><div class="chapter-heading"><div><h1 id="title"></h1><p id="source"></p></div><button id="bookmark" type="button" data-t="save"></button></div><article id="verses" tabindex="-1" dir="auto"></article><p id="edition-note"></p></section>
+<section id="results" hidden><h2 data-t="results"></h2><div id="result-list"></div><button id="more" data-t="more" type="button"></button></section>
+</main>
+<nav class="bottom" aria-label="Reading controls"><button id="previous" type="button" data-t="previous"></button><button id="play" type="button" data-t="listen"></button><button id="stop" type="button" data-t="stop" hidden></button><button id="search-open" type="button" data-t="search"></button><button id="next" type="button" data-t="next"></button></nav>
+<dialog id="settings-dialog"><form method="dialog"><header><h2 data-t="settings"></h2><button value="close" data-t="close"></button></header><label><span data-t="language"></span><select id="language"><option value="en">English</option><option value="ro">Română</option><option value="de">Deutsch</option></select></label><label><span data-t="theme"></span><select id="theme"><option value="light" data-t="light"></option><option value="dark" data-t="dark"></option><option value="system" data-t="system"></option></select></label><label><span data-t="size"></span><input id="font-size" type="range" min="16" max="32" step="1"></label><label><span data-t="voice"></span><select id="voice"></select></label><label><span data-t="speed"></span><input id="speed" type="range" min="0.5" max="2" step="0.1"></label><p id="voice-info"></p><button id="voice-settings" type="button" data-t="voices"></button><h3 data-t="saved"></h3><div id="bookmarks"></div></form></dialog>
+<dialog id="search-dialog"><form id="search-form"><header><h2 data-t="search"></h2><button id="search-close" type="button" data-t="close"></button></header><label><span data-t="query"></span><input id="query" type="search" maxlength="200" required></label><button data-t="search"></button></form></dialog>
+<audio id="audio"></audio>
+</body></html>

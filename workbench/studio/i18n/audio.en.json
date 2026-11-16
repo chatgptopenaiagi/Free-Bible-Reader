@@ -78,5 +78,14 @@
   "audio.error.ESPEAK_RUNTIME_UNAVAILABLE": "The bundled eSpeak NG engine is unavailable.",
   "audio.error.INVALID_TEXT": "Select a nonempty passage of at most 25,000 characters.",
   "audio.error.INVALID_SPEED": "Choose a speaking speed between 0.5 and 2.",
-  "audio.savedVoiceUnavailable": "The saved voice is unavailable. An installed voice has been selected."
+  "audio.savedVoiceUnavailable": "The saved voice is unavailable. An installed voice has been selected.",
+  "audio.provider.android-native": "Android · device voices",
+  "audio.androidSettings": "Open Android voice settings",
+  "audio.androidOpened": "Android speech settings opened. Device voices are managed there.",
+  "audio.androidVoicesHelp": "Piper and eSpeak voices bundled with Ultimate work offline. Android device voices are listed only when discovered; voices marked as requiring a network may not work offline.",
+  "audio.androidPlayer": "Bible audio · Android",
+  "audio.offlineVoice": "Offline voice",
+  "audio.networkVoice": "Network required",
+  "audio.bundledVoice": "Bundled offline voice",
+  "audio.voiceAvailabilityUnknown": "Offline availability not verified"
 }

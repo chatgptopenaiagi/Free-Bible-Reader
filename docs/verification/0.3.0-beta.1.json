@@ -1,0 +1,279 @@
+{
+  "product": "FREE BIBLE READER",
+  "version": "0.3.0",
+  "release_tag": "v0.3.0-beta.1",
+  "classification": "development-signed prerelease",
+  "assets": [
+    {
+      "file": "Free-Bible-Reader-LITE-0.3.0-arm64.apk",
+      "delivery_path": "ANDROID-LITE/Free-Bible-Reader-LITE-0.3.0-arm64.apk",
+      "bytes": 39545760,
+      "sha256": "51673b0928ae5b85275cc153a9d25d26dcbdf2b10408baea66b2b2e5791d184b"
+    },
+    {
+      "file": "Free-Bible-Reader-ULTIMATE-0.3.0-arm64.apk",
+      "delivery_path": "ANDROID-ULTIMATE/Free-Bible-Reader-ULTIMATE-0.3.0-arm64.apk",
+      "bytes": 446393687,
+      "sha256": "84cb59e763fcb68cfa60c8bbce0321f2aafdddcb90bc3a3e67da0f5b6e9f170f"
+    },
+    {
+      "file": "free_bible_reader-0.3.0-py3-none-any.whl",
+      "delivery_path": "PYTHON/free_bible_reader-0.3.0-py3-none-any.whl",
+      "bytes": 223102823,
+      "sha256": "2e0eeb9fa1605665aa7ab3f10180d03f3b3843b69dadbd217b26984e1c27b5af"
+    },
+    {
+      "file": "free_bible_reader-0.3.0.tar.gz",
+      "delivery_path": "PYTHON/free_bible_reader-0.3.0.tar.gz",
+      "bytes": 217383942,
+      "sha256": "4309515629f3dd2fab836eb3e29bd84f3a3b3df986dd96d004de81c153d1024a"
+    },
+    {
+      "file": "Free-Bible-Reader-0.3.0-Android-Speech-Sources.zip",
+      "delivery_path": "SOURCES/Free-Bible-Reader-0.3.0-Android-Speech-Sources.zip",
+      "bytes": 302100990,
+      "sha256": "e60d87e2400fc58a7c9bdcc76ee4b5ec950235b6cea450323266e29c16c35cff"
+    }
+  ],
+  "android": {
+    "product_version": "0.3.0",
+    "release_classification": "development-signed prerelease",
+    "runtime": {
+      "android_api": 37,
+      "guest_abi": "x86_64",
+      "tested_application_abi": "arm64-v8a",
+      "native_bridge": "libndk_translation.so",
+      "physical_device": false,
+      "offline_airplane_mode": true
+    },
+    "packages": [
+      {
+        "variant": "lite",
+        "application_id": "com.freebiblereader.lite",
+        "bytes": 39545760,
+        "sha256": "51673b0928ae5b85275cc153a9d25d26dcbdf2b10408baea66b2b2e5791d184b",
+        "sqlite_databases": 2,
+        "bundled_neural_voice_models": 0,
+        "debuggable": false,
+        "signature_verified": true,
+        "installed": true,
+        "release_reading_screen_verified": true
+      },
+      {
+        "variant": "ultimate",
+        "application_id": "com.freebiblereader.ultimate",
+        "bytes": 446393687,
+        "sha256": "84cb59e763fcb68cfa60c8bbce0321f2aafdddcb90bc3a3e67da0f5b6e9f170f",
+        "sqlite_databases": 6,
+        "bundled_neural_voice_models": 3,
+        "debuggable": false,
+        "signature_verified": true,
+        "installed": true,
+        "release_reading_screen_verified": true
+      }
+    ],
+    "certificate": {
+      "nature": "Android Debug development certificate",
+      "sha256": "d77e623706f0146bc495904affe310cb492d67277ecf70b28455d1f5e138e419"
+    },
+    "functional_tests": {
+      "installed_arm64_lite_debug": {
+        "passed": 8,
+        "failed": 0
+      },
+      "installed_arm64_ultimate_debug": {
+        "passed": 8,
+        "failed": 0
+      },
+      "research_engines_returning_real_results": 3,
+      "sqlite_import": "3 unchanged public Romanian verse records imported into private emulator storage, reopened and searched",
+      "pdf_docx": "actual exports independently reopened; source text and Romanian diacritics verified",
+      "piper_voices_verified": [
+        "ro_RO-mihai-medium",
+        "en_US-joe-medium",
+        "de_DE-thorsten-medium"
+      ],
+      "espeak_language_verified": "ro",
+      "speech_cancellation": "CANCELLED returned"
+    },
+    "scope": {
+      "final_release_install_startup_screenshots_and_normal_close": true,
+      "debug_probe_activity_absent_in_release": true,
+      "windows_binaries_in_apks": 0,
+      "native_abis_in_apks": [
+        "arm64-v8a"
+      ],
+      "physical_audio_listening": false,
+      "continuous_narration_suite": false,
+      "native_document_picker_end_to_end": false,
+      "installed_storage_measured": false,
+      "production_signed": false,
+      "aab_built": false
+    },
+    "romanian_edition": {
+      "id": "ronbl",
+      "coverage": "New Testament only",
+      "draft": true,
+      "script": "Latin",
+      "books": 27
+    },
+    "original_corpus_included": false,
+    "private_user_data_included": false,
+    "publication_by_android_runtime_agent": false
+  },
+  "python": {
+    "product": "FREE BIBLE READER",
+    "version": "0.3.0",
+    "scope": "Python distributions",
+    "verified_utc": "2026-11-16T21:48:17.214679+00:00",
+    "status": "VERIFIED",
+    "artifacts": [
+      {
+        "file": "free_bible_reader-0.3.0-py3-none-any.whl",
+        "bytes": 223102823,
+        "sha256": "2e0eeb9fa1605665aa7ab3f10180d03f3b3843b69dadbd217b26984e1c27b5af"
+      },
+      {
+        "file": "free_bible_reader-0.3.0.tar.gz",
+        "bytes": 217383942,
+        "sha256": "4309515629f3dd2fab836eb3e29bd84f3a3b3df986dd96d004de81c153d1024a"
+      }
+    ],
+    "wheel_tag": "py3-none-any",
+    "public_database_count": 6,
+    "public_database_bytes": 929001472,
+    "private_corpus_included": false,
+    "native_runtime_or_voice_models_included": false,
+    "tests": {
+      "windows": {
+        "python": "3.14.10",
+        "architecture": "x64",
+        "fresh_virtual_environment": true,
+        "outside_source_working_directory": true,
+        "passed_groups": 11,
+        "failed_groups": 0,
+        "checks": [
+          {
+            "name": "installed_metadata",
+            "status": "PASS"
+          },
+          {
+            "name": "real_edition_catalog",
+            "status": "PASS"
+          },
+          {
+            "name": "complete_chapters_and_unicode",
+            "status": "PASS"
+          },
+          {
+            "name": "node_free_parser",
+            "status": "PASS"
+          },
+          {
+            "name": "real_scripture_search",
+            "status": "PASS"
+          },
+          {
+            "name": "three_real_research_engines",
+            "status": "PASS"
+          },
+          {
+            "name": "personal_sqlite_import_native_labels",
+            "status": "PASS"
+          },
+          {
+            "name": "pdf_docx_export_and_unicode",
+            "status": "PASS"
+          },
+          {
+            "name": "cli_real_commands",
+            "status": "PASS"
+          },
+          {
+            "name": "local_server_reading_and_shutdown",
+            "status": "PASS"
+          },
+          {
+            "name": "all_six_public_database_integrity_and_preservation",
+            "status": "PASS"
+          }
+        ]
+      },
+      "linux": {
+        "python": "3.14.10",
+        "architecture": "x86_64",
+        "runtime": "Existing python:3.14-slim Docker image; no Node",
+        "fresh_virtual_environment": true,
+        "outside_source_working_directory": true,
+        "passed_groups": 11,
+        "failed_groups": 0,
+        "checks": [
+          {
+            "name": "installed_metadata",
+            "status": "PASS"
+          },
+          {
+            "name": "real_edition_catalog",
+            "status": "PASS"
+          },
+          {
+            "name": "complete_chapters_and_unicode",
+            "status": "PASS"
+          },
+          {
+            "name": "node_free_parser",
+            "status": "PASS"
+          },
+          {
+            "name": "real_scripture_search",
+            "status": "PASS"
+          },
+          {
+            "name": "three_real_research_engines",
+            "status": "PASS"
+          },
+          {
+            "name": "personal_sqlite_import_native_labels",
+            "status": "PASS"
+          },
+          {
+            "name": "pdf_docx_export_and_unicode",
+            "status": "PASS"
+          },
+          {
+            "name": "cli_real_commands",
+            "status": "PASS"
+          },
+          {
+            "name": "local_server_reading_and_shutdown",
+            "status": "PASS"
+          },
+          {
+            "name": "all_six_public_database_integrity_and_preservation",
+            "status": "PASS"
+          }
+        ]
+      }
+    },
+    "limitations": [
+      "Strict portable parser is not the complete upstream grammar",
+      "Romanian Biblia Libera is a draft New Testament only",
+      "Optional speech synthesis is not newly verified by these Python tests",
+      "Document structure and Unicode verified; visual document review not repeated",
+      "No physical mobile-device or macOS claim",
+      "Windows 0.3.0 installer GUI was not tested in this final pass"
+    ]
+  },
+  "speech_source": {
+    "name": "Free-Bible-Reader-0.3.0-Android-Speech-Sources.zip",
+    "bytes": 302100990,
+    "sha256": "e60d87e2400fc58a7c9bdcc76ee4b5ec950235b6cea450323266e29c16c35cff",
+    "manifest_files": 3017,
+    "all_manifest_sha256_verified": true,
+    "zip_crc_verified": true,
+    "public_source_scopes_only": true,
+    "first_party_license_included": true
+  },
+  "private_data_included": false,
+  "windows_0_2_0_preserved": true
+}

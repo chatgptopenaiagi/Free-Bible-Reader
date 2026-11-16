@@ -1,5 +1,31 @@
 # FREE BIBLE READER
 
+## Android and Python preview — 0.3.0
+
+The multiplatform prerelease provides two independent, offline Android apps and
+an installable Python package. **Windows users should keep the verified
+[Windows v0.2.0 release](https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/tag/v0.2.0).**
+
+- **Lite:** a compact, mobile-first reader with English Scripture, the Romanian
+  draft New Testament, book/chapter navigation, search, bookmarks and saved position.
+- **Ultimate:** the larger reading and research studio, with all six public Bible
+  and reference databases, three source-specific research engines, local speech
+  resources, personal libraries and PDF/DOCX documents.
+- **Python:** a pure-Python wheel with the public offline data, a real `fbr` CLI,
+  reading/search/research services and optional document dependencies.
+
+[Multiplatform downloads](https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/tag/v0.3.0-beta.1)
+· [Installation and limitations](docs/MULTIPLATFORM.md)
+· [Python commands](PYTHON-PACKAGE.md)
+
+Android APKs are **development-signed testing builds**, not Play Store releases.
+Android verification uses an emulator executing ARM64 code through translation;
+it does not establish physical Vivo compatibility. Bundled voice models are
+distinguished from tested synthesis and from audible pronunciation assessment.
+The Romanian edition remains a **draft New Testament, not a complete Bible**.
+
+## Windows reading studio — 0.2.0
+
 A free, offline Windows Bible reader and personal study studio. Read English and Romanian Scripture, listen with local voices, search personal editions, keep private notes, and export editable DOCX or searchable PDF documents.
 
 [Download Windows x64 v0.2.0](https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/tag/v0.2.0) · [Installation](docs/INSTALLATION.md) · [Library guide](docs/LIBRARY-GUIDE.md) · [Study and export](docs/STUDIO-GUIDE.md) · [Audio guide](docs/AUDIO-GUIDE.md) · [Verification](docs/VERIFICATION.md)

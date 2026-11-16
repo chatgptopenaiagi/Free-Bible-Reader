@@ -9,13 +9,21 @@ from .paths import data_root, public_root
 
 _requests = queue.Queue(maxsize=8)
 _active = False
+_adapter = None
 _protected_paths = set()
+
+def configure_adapter(adapter=None):
+    """Supply a platform-owned dialog adapter; no database/UI coupling."""
+    global _adapter
+    if adapter is not None and not callable(adapter):
+        raise TypeError('Native adapter must be callable')
+    _adapter = adapter
 
 def protect(path):
     _protected_paths.add(pathlib.Path(path).resolve())
 
 def available():
-    return _active
+    return _active or _adapter is not None
 
 def install(window):
     global _active
@@ -77,6 +85,8 @@ def uninstall():
         task['done'].set()
 
 def request(action, **values):
+    if _adapter is not None:
+        return _adapter(action, values)
     if not _active:
         raise ValueError('NATIVE_DIALOG_UNAVAILABLE')
     task = {'action':action, 'done':threading.Event(), **values}

@@ -64,7 +64,7 @@ def _emit(progress, **values):
 def _folder(name):
     root = data_root().resolve()
     target = root / name
-    if target.exists() and (target.is_symlink() or target.is_junction()):
+    if target.exists() and (target.is_symlink() or getattr(target,'is_junction',lambda:False)()):
         raise AudioError('UNSAFE_STUDIO_PATH')
     target.mkdir(exist_ok=True)
     if not target.resolve().is_relative_to(root):
@@ -87,7 +87,7 @@ def _voice(voice_id):
 
 def _voice_path(voice_id):
     target = _folder('voices') / voice_id
-    if target.is_symlink() or target.is_junction() or not target.resolve().is_relative_to(_folder('voices').resolve()):
+    if target.is_symlink() or getattr(target,'is_junction',lambda:False)() or not target.resolve().is_relative_to(_folder('voices').resolve()):
         raise AudioError('UNSAFE_VOICE_PATH')
     return target
 
@@ -150,6 +150,8 @@ def _run_owned(command, cancellation=None, timeout=300, environment=None, expect
         _process_lock.release()
 
 def _native_command(action):
+    if sys.platform != 'win32':
+        raise AudioError('WINDOWS_SPEECH_UNAVAILABLE')
     executable = pathlib.Path(os.environ.get('SystemRoot', r'C:\Windows')) / 'System32/WindowsPowerShell/v1.0/powershell.exe'
     if not executable.is_file():
         raise AudioError('WINDOWS_SPEECH_UNAVAILABLE')
@@ -160,6 +162,8 @@ def _native_command(action):
 
 def _native_catalog(refresh=False):
     global _native_cache, _native_cache_time
+    if sys.platform != 'win32':
+        return {'voices':[],'errors':[{'provider':'windows-native','error':'WINDOWS_SPEECH_UNAVAILABLE'}]}
     if _native_cache is not None and (not refresh or _process_lock.locked()) and time.monotonic() - _native_cache_time < 300:
         return _native_cache
     try:
@@ -172,6 +176,10 @@ def _native_catalog(refresh=False):
         return {'voices':[],'errors':[{'provider':'windows-native','error':getattr(error,'code','WINDOWS_SPEECH_UNAVAILABLE')}]}
 
 def _espeak_runtime():
+    # This preserved bundled runtime is specifically the Windows build. Other
+    # platforms supply a native adapter; they must not try to execute its EXE.
+    if sys.platform != 'win32':
+        raise AudioError('ESPEAK_RUNTIME_UNAVAILABLE')
     folder = public_root()/'runtime/espeak-ng'
     metadata_path = public_root()/'runtime/espeak-ng-runtime.json'
     if not metadata_path.is_file():
@@ -412,8 +420,7 @@ def synthesize(request, cancellation=None, progress=None):
             if getattr(sys,'frozen',False):
                 command = [sys.executable,'--tts-worker',str(job)]
             else:
-                executable = public_root()/'.build-venv/Scripts/python.exe'
-                command = [str(executable if executable.is_file() else pathlib.Path(sys.executable)),'-m','studio.piper_worker',str(job)]
+                command = [sys.executable,'-m','studio.piper_worker',str(job)]
             environment = {}
         elif provider == 'espeak-ng':
             voice = next((item for item in _espeak_catalog()['voices'] if item['id']==voice_id),None)

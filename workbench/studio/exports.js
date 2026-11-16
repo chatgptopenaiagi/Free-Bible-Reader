@@ -76,7 +76,7 @@ export async function createExporter(common,{reader,getSelection=()=>null,getSea
     const nativeSave=button('export.saveAs',async()=>{nativeSave.disabled=true;try{const saved=await request('export/save',{id:artifact.artifact_id,language:common.language()});common.notify(t(saved.cancelled?'export.saveCancelled':'export.saved'));}catch(error){fail(error);}finally{nativeSave.disabled=false;}});nativeSave.id='export-native-save';
     nativeSave.disabled=capabilities.native_dialogs!==true;
     const download=node('a',t('export.download'),'button');download.id='export-download';download.href='/api/studio/document/file?id='+encodeURIComponent(artifact.artifact_id);download.download=artifact.filename;
-    result.append(nativeSave,download);if(!capabilities.native_dialogs)result.append(text('p','export.nativeUnavailable','notice'));
+    result.append(nativeSave);if(capabilities.native_share){const share=button('export.share',async()=>{share.disabled=true;try{await request('export/share',{id:artifact.artifact_id});}catch(error){fail(error);}finally{share.disabled=false;}});share.id='export-native-share';result.append(share);}else result.append(download);if(!capabilities.native_dialogs)result.append(text('p','export.nativeUnavailable','notice'));
   }
   async function loadHistory(){
     const value=await request('documents'),items=value.items||value.artifacts?.items||value.artifacts||[];history.replaceChildren();

@@ -1,0 +1,6 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- Debug-only native runtime diagnostics. Not included in a release variant. -->
+        <activity android:name="com.freebiblereader.speech.SpeechProbeActivity" android:exported="true" />
+    </application>
+</manifest>

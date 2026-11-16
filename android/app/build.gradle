@@ -1,0 +1,33 @@
+plugins { id 'com.android.application'; id 'com.chaquo.python' }
+android {
+    namespace 'com.freebiblereader.android'
+    compileSdk 36
+    defaultConfig {
+        minSdk 26
+        targetSdk 36
+        versionCode 300
+        versionName '0.3.0'
+        ndk { abiFilters(*(project.findProperty('targetAbi') ?: 'arm64-v8a,x86_64').split(',')) }
+        buildConfigField 'String', 'PRODUCT_VARIANT', '"lite"'
+    }
+    flavorDimensions += 'edition'
+    productFlavors {
+        lite { dimension 'edition'; applicationId 'com.freebiblereader.lite'; resValue 'string','app_name','Free Bible Reader Lite'; buildConfigField 'String','PRODUCT_VARIANT','"lite"' }
+        ultimate { dimension 'edition'; applicationId 'com.freebiblereader.ultimate'; resValue 'string','app_name','Free Bible Reader Ultimate'; buildConfigField 'String','PRODUCT_VARIANT','"ultimate"' }
+    }
+    buildFeatures { buildConfig true; resValues true }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_21; targetCompatibility JavaVersion.VERSION_21 }
+    buildTypes { release { minifyEnabled false; signingConfig signingConfigs.debug } }
+    sourceSets { main { python.srcDirs = ['src/main/python'] } }
+    packaging { jniLibs { useLegacyPackaging false } }
+}
+chaquopy {
+    defaultConfig {
+        version '3.14'
+        buildPython(project.findProperty('buildPython') ?: System.getenv('FBR_BUILD_PYTHON') ?: 'C:/Users/LOVE/AppData/Local/Programs/Python/Python314/python.exe')
+        pyc { src = false }
+    }
+}
+dependencies {
+    if (findProject(':speech') != null) { ultimateImplementation project(':speech') }
+}

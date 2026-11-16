@@ -42,7 +42,7 @@
   "export.openGenerated": "Dieses Dokument verwenden",
   "export.create": "Dokument erstellen",
   "export.generating": "Das lokale Dokument wird erstellt…",
-  "export.complete": "Dokument erstellt. Windows Speichern unter oder Browserdownload wählen.",
+  "export.complete": "Dokument erstellt. Wählen Sie Speichern unter oder Herunterladen.",
   "export.previewCount": "Vorschau: {count} Quellenblöcke und {notes} Notizen.",
   "export.previewLimited": "Die Vorschau zeigt die ersten fünf Blöcke; das Dokument enthält die gesamte gewählte Auswahl.",
   "export.chapterLimit": "Einen geordneten Bereich von höchstens zwanzig Kapiteln wählen.",
@@ -54,12 +54,13 @@
   "export.notesLimit": "Eine kleinere Notizsammlung wählen, statt mehr als zweihundert Notizen gleichzeitig zu exportieren.",
   "export.missingNative": "Für {reference} war in {edition} kein Text nach eigener Zählung verfügbar.",
   "export.comparisonNotice": "Gleiche Stellenangaben belegen keine identischen Versgrenzen oder Textgleichheit zwischen Ausgaben.",
-  "export.saveAs": "Windows Speichern unter",
+  "export.saveAs": "Speichern unter…",
   "export.download": "Browserdownload",
-  "export.saved": "Am im Windows-Dialog gewählten Speicherort gespeichert.",
+  "export.saved": "Am gewählten Dokumentenspeicherort gespeichert.",
   "export.saveCancelled": "Speichern unter wurde abgebrochen; das erstellte Dokument bleibt im Verlauf.",
-  "export.nativeUnavailable": "Windows Speichern unter ist in dieser Sitzung ohne native Oberfläche nicht verfügbar. Browserdownload ist eine separate Alternative.",
+  "export.nativeUnavailable": "Ein nativer Speicherdialog ist in dieser Sitzung nicht verfügbar. Nutzen Sie den separaten Browserdownload.",
   "export.ready": "Lokal erstellt: {bytes} Byte.",
   "export.failed": "Das Dokument konnte nicht erstellt oder gespeichert werden. Inhalt und Einstellungen prüfen und erneut versuchen.",
-  "export.defaultTitle": "Studiendokument {reference}"
+  "export.defaultTitle": "Studiendokument {reference}",
+  "export.share": "Dokument teilen…"
 }

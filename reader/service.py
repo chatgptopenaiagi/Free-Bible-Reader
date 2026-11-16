@@ -1,7 +1,8 @@
 """Portable read-only Bible reading/search API. No research engine dependency."""
 from __future__ import annotations
 import contextlib,json,pathlib,re,sqlite3
-DATABASE=pathlib.Path(__file__).resolve().parents[1]/'data/reader.sqlite'
+from free_bible_reader.resources import asset_root
+DATABASE=asset_root()/'data/reader.sqlite'
 def connect():
     db=sqlite3.connect(DATABASE.as_uri()+'?mode=ro',uri=True);db.row_factory=sqlite3.Row;db.execute('PRAGMA query_only=ON');return db
 def _bundled_catalog(edition='web'):

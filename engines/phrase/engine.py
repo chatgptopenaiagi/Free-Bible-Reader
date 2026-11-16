@@ -13,7 +13,9 @@ import sqlite3
 import sys
 import unicodedata
 
-ROOT = Path(__file__).resolve().parents[2]
+if not __package__:sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
+from free_bible_reader.resources import asset_root
+ROOT = asset_root()
 DATABASE = ROOT / 'data/xref_phrase.sqlite'
 REPOSITORY = 'https://github.com/CrossReferences-org/bible-cross-references'
 COMMIT = 'a80ab3d8bcc4ed53c86bae2e2a5ef183b9316653'

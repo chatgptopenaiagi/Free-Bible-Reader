@@ -1,0 +1,24 @@
+plugins { id 'com.android.library' }
+
+android {
+    namespace 'com.freebiblereader.speech'
+    compileSdk 36
+    ndkVersion '28.2.13676358'
+    defaultConfig {
+        minSdk 26
+        externalNativeBuild {
+            cmake {
+                arguments "-DFBR_WORKSPACE=${rootProject.projectDir.parentFile.absolutePath.replace('\\', '/')}"
+                arguments "-DONNXRUNTIME_DIR=${rootProject.projectDir.parentFile.absolutePath.replace('\\', '/')}/build-support/android-speech/onnxruntime-${project.findProperty('speechOrtVersion') ?: '1.22.0'}"
+                abiFilters 'arm64-v8a', 'x86_64'
+                cppFlags '-std=c++17'
+            }
+        }
+    }
+    externalNativeBuild { cmake { path file('src/main/cpp/CMakeLists.txt'); version '3.22.1' } }
+    sourceSets.main.assets.srcDir '../../build-support/android-assets/speech'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

@@ -10,7 +10,7 @@ const root=process.cwd(),target=new URL(process.env.READER_URL||'http://127.0.0.
 if(!['127.0.0.1','localhost'].includes(target.hostname))throw Error('Loopback runtime required');
 const namespaces=['core','audio','library','search','workspace','export'];
 const uid=crypto.randomUUID().slice(0,8),stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+Z$/,'Z');
-const evidence=path.resolve(process.env.FBR_STUDIO_INIT_EVIDENCE_DIR||path.join(root,'reports/MISSION-FBR-003/evidence',`studio-init-${stamp}-${uid}`));
+const evidence=path.resolve(process.env.FBR_STUDIO_INIT_EVIDENCE_DIR||path.join(root,'reports/MISSION-FBR-004/evidence',`studio-init-${stamp}-${uid}`));
 await fs.mkdir(evidence,{recursive:true});
 const modulePath=process.env.PLAYWRIGHT_MODULE;
 const {chromium}=await import(modulePath?(modulePath.startsWith('file:')?modulePath:pathToFileURL(path.resolve(modulePath)).href):'playwright-core');
@@ -19,7 +19,7 @@ const browser=await chromium.launch({headless:true,executablePath:executable});
 const checks=[],external=[];
 const savedPosition={version:1,edition:'kjv',book:'John',chapter:3,verse:16,selectedVerse:16};
 const health=await fetch(new URL('/api/health',target)).then(r=>r.json());
-assert.equal(health.product,'FREE BIBLE READER');assert.equal(health.version,process.env.EXPECTED_READER_VERSION||'0.2.0');
+assert.equal(health.product,'FREE BIBLE READER');assert.equal(health.version,process.env.EXPECTED_READER_VERSION||'0.3.0');
 let runtimeEvidence=null;
 if(process.env.READER_RUNTIME_STATE){const state=JSON.parse(await fs.readFile(process.env.READER_RUNTIME_STATE,'utf8'));assert.equal(state.pid,health.pid);assert.equal(new URL(state.url).origin,target.origin);runtimeEvidence={pid:state.pid,executable:state.executable,sha256:crypto.createHash('sha256').update(await fs.readFile(state.executable)).digest('hex'),pid_matches_health:true};if(process.env.READER_EXPECTED_EXECUTABLE_SHA256)assert.equal(runtimeEvidence.sha256,process.env.READER_EXPECTED_EXECUTABLE_SHA256.toLowerCase());}
 else assert.notEqual(process.env.READER_RUNTIME_KIND,'installed','Installed classification requires actual runtime state proof');

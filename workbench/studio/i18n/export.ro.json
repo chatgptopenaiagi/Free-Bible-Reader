@@ -42,7 +42,7 @@
   "export.openGenerated": "Folosește acest document",
   "export.create": "Generează documentul",
   "export.generating": "Se generează documentul local…",
-  "export.complete": "Document generat. Alegeți Salvare ca în Windows sau descărcarea prin browser.",
+  "export.complete": "Document generat. Alegeți Salvare ca sau descărcarea.",
   "export.previewCount": "Previzualizare: {count} blocuri sursă și {notes} însemnări.",
   "export.previewLimited": "Previzualizarea arată primele cinci blocuri; documentul folosește întregul set ales.",
   "export.chapterLimit": "Alegeți un interval ordonat de cel mult douăzeci de capitole native.",
@@ -54,12 +54,13 @@
   "export.notesLimit": "Alegeți o colecție mai mică de însemnări în loc să exportați peste două sute simultan.",
   "export.missingNative": "Nu a fost disponibil text nativ pentru {reference} în {edition}.",
   "export.comparisonNotice": "Etichetele de referință identice nu stabilesc limite identice ale versetelor sau echivalență textuală între ediții.",
-  "export.saveAs": "Salvare ca în Windows",
+  "export.saveAs": "Salvare ca…",
   "export.download": "Descărcare prin browser",
-  "export.saved": "Salvat în locația aleasă în dialogul Windows.",
+  "export.saved": "Salvat în locația de documente aleasă.",
   "export.saveCancelled": "Salvarea a fost anulată; documentul generat rămâne în istoric.",
-  "export.nativeUnavailable": "Salvarea ca în Windows nu este disponibilă în această sesiune fără interfață nativă. Descărcarea prin browser este o alternativă separată.",
+  "export.nativeUnavailable": "Dialogul nativ de salvare nu este disponibil în această sesiune. Folosiți descărcarea separată prin browser.",
   "export.ready": "Generat local: {bytes} octeți.",
   "export.failed": "Documentul nu a putut fi generat sau salvat. Verificați conținutul și setările, apoi reîncercați.",
-  "export.defaultTitle": "Document de studiu {reference}"
+  "export.defaultTitle": "Document de studiu {reference}",
+  "export.share": "Distribuie documentul…"
 }

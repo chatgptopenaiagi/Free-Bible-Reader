@@ -8,6 +8,7 @@ import {createAudioStudio} from './audio.js';
 
 export async function createStudio({reader,core,translator,layout,research}){
   const common=createCommon({preferences:core.preferences});await Promise.all(['core','audio','library','search','workspace','export'].map(name=>common.namespace(name)));
+  const platform=await common.request('capabilities').catch(()=>({}));
   let held=null,currentKey='',exporter,personal,search,audio;
   const currentSelection=()=>captureSelection(reader)||held||selectedOrCurrent(reader);
   function normalized(value){if(value?.blocks)return value;const current=reader.getCurrent();if(!value)return currentSelection();return{blocks:[{text:value.text,selected_text:value.text,edition_id:value.edition_id||value.edition||current?.edition.id,edition_name:value.edition_name||(current?.edition.id===(value.edition_id||value.edition)?current.edition.name:undefined),language:value.language,origin:value.origin,license:value.license,source_record_id:value.source_record_id,book:value.book,chapter:value.chapter,verse_start:value.verse??value.number,verse_end:value.verse??value.number,reference:value.reference,label:value.label??String(value.verse??value.number),start_utf16:0,end_utf16:value.text.length}],text:value.text,reference:value.reference,edition_id:value.edition_id||value.edition};}
@@ -46,9 +47,16 @@ export async function createStudio({reader,core,translator,layout,research}){
     ['settings',[['appearance',settings],['interfaceLanguage',settings],['playback',()=>audio.openPlayback()],['storage',()=>library.open()]]],
     ['help',[['guide',()=>showGuide()],['shortcuts',()=>showGuide('shortcuts')],['about',()=>showGuide('about')]]]
   ];
+  for(const menu of menus)menu[1]=menu[1].filter(([key])=>(key!=='sqlServer'||platform.sql_server!==false)&&!(platform.platform==='android'&&['downloadVoices','windowsVoices'].includes(key)));
   for(const [name,actions]of menus){const menu=node('details',null,'studio-menu'),summary=common.text('summary','menu.'+name),list=node('div',null,'studio-menu-items');menu.dataset.menu=name;summary.id='studio-menu-'+name;for(const[key,run]of actions)list.append(common.button('action.'+key,()=>{menu.open=false;return run();}));menu.append(summary,list);menu.addEventListener('toggle',()=>{if(menu.open)for(const other of nav.querySelectorAll('details'))if(other!==menu)other.open=false;});nav.append(menu);}
   const more=node('details',null,'studio-menu studio-tools');more.append(common.text('summary','core.more'));const moreList=node('div',null,'studio-menu-items');for(const[name,actions]of menus){moreList.append(common.text('h3','menu.'+name));for(const[key,run]of actions)moreList.append(common.button('action.'+key,()=>{more.open=false;return run();}));}more.append(moreList);nav.append(more);
   document.querySelector('.app-header').append(nav);
+  if(platform.platform==='android'&&platform.variant==='ultimate'){
+    document.body.classList.add('android-ultimate');
+    const bottom=node('nav',null,'android-product-nav');bottom.setAttribute('aria-label','FREE BIBLE READER ULTIMATE');
+    for(const [key,run]of [['bible',()=>{layout.setMode('reading');reader.reveal();}],['research',()=>{layout.setMode('research');}],['library',()=>library.open()],['documents',()=>personal.open('notes')],['audio',()=>audio.openVoices()]])bottom.append(common.button('menu.'+key,run));
+    document.body.append(bottom);
+  }
   document.addEventListener('pointerdown',event=>{if(!nav.contains(event.target))for(const menu of nav.querySelectorAll('details'))menu.open=false;});
   function focus(id){layout.setMode('reading');const control=document.getElementById(id);control?.scrollIntoView({block:'center'});control?.focus();}
   const languageField=common.field('core.language','select');languageField.input.id='studio-bible-language';languageField.label.htmlFor=languageField.input.id;document.getElementById('reader-navigation').prepend(languageField.label);

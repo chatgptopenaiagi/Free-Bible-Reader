@@ -1,0 +1,48 @@
+{
+  "piper_kotlin": {
+    "repository": "https://github.com/piper-tts-apps/piper-kotlin",
+    "revision": "287b89079336d0d02f02d2bc96e93b7ca1e72bc5"
+  },
+  "submodules": {
+    "espeak-ng": "699e79690f23e2558d990a3a78b0050745b96932",
+    "piper1-gpl": "74ac24e7e8e2e57a5e1fada5505c74e3d9c1843a",
+    "sonic": "b93885dcb70aae50c6f76b0fe4e0868f029a077e"
+  },
+  "onnxruntime": {
+    "version": "1.22.0",
+    "url": "https://repo1.maven.org/maven2/com/microsoft/onnxruntime/onnxruntime-android/1.22.0/onnxruntime-android-1.22.0.aar",
+    "sha256": "04a4617a9c797cf49225595e45b5546081cb34c86ac817581141577d3b7dbfe2",
+    "bytes": 28515295,
+    "source": "https://github.com/microsoft/onnxruntime/tree/f217402897f40ebba457e2421bc0a4702771968e",
+    "source_commit": "f217402897f40ebba457e2421bc0a4702771968e"
+  },
+  "patches": [
+    {
+      "path": "piper-engine/src/main/cpp/patches/piper1-gpl/0001-espeak-refcount-no-throw-create.patch",
+      "sha256": "cfb8bb53a6023e7bb97aaa80757e326948875e86183dbb26e5bdc1eb47ceffb8"
+    },
+    {
+      "path": "piper-engine/src/main/cpp/patches/piper1-gpl/0002-ort-intraop-threads-from-cpu-count.patch",
+      "sha256": "dcc6e6680f739b17cc9f0f9afd4c164e33ffd4896c9ee3d7df0c64616e38e136"
+    }
+  ],
+  "abis": [
+    "arm64-v8a",
+    "x86_64"
+  ],
+  "pristine_upstream_preserved": true,
+  "licenses": {
+    "piper-kotlin": "GPL-3.0-or-later",
+    "piper1-gpl": "GPL-3.0-or-later",
+    "espeak-ng": "GPL-3.0-or-later; individual files retain additional notices",
+    "sonic": "Apache-2.0",
+    "onnxruntime": "MIT"
+  },
+  "runtime_selection": {
+    "tested_version": "1.22.0",
+    "previous_failed_version": "1.31.0",
+    "reason": "ARM64 emulator native-bridge library initializer failure in1.31; corrected Piper RO/EN/DE, eSpeak RO and cancellation passed with1.22",
+    "physical_device_tested": false,
+    "audible_pronunciation_verified": false
+  }
+}

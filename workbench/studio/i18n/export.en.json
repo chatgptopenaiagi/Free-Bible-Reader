@@ -42,7 +42,7 @@
   "export.openGenerated": "Use this document",
   "export.create": "Generate document",
   "export.generating": "Generating the local document…",
-  "export.complete": "Document generated. Choose Windows Save As or browser download.",
+  "export.complete": "Document generated. Choose Save As or download.",
   "export.previewCount": "Preview: {count} source blocks and {notes} notes.",
   "export.previewLimited": "The preview shows the first five blocks; the document uses the full chosen set.",
   "export.chapterLimit": "Choose an ordered range of at most twenty native chapters.",
@@ -54,12 +54,13 @@
   "export.notesLimit": "Choose a smaller collection of notes rather than exporting more than two hundred at once.",
   "export.missingNative": "No native text was available for {reference} in {edition}.",
   "export.comparisonNotice": "Matching reference labels do not establish identical verse boundaries or textual equivalence between editions.",
-  "export.saveAs": "Windows Save As",
+  "export.saveAs": "Save As…",
   "export.download": "Browser download",
-  "export.saved": "Saved to the location chosen in the Windows dialog.",
+  "export.saved": "Saved to your chosen document location.",
   "export.saveCancelled": "Save As was cancelled; the generated document remains in history.",
-  "export.nativeUnavailable": "Windows Save As is unavailable in this headless session. Browser download is a separate alternative.",
+  "export.nativeUnavailable": "A native save dialog is unavailable in this session. Use the separate browser download.",
   "export.ready": "Generated locally: {bytes} bytes.",
   "export.failed": "Could not generate or save the document. Check the selected content and settings, then try again.",
-  "export.defaultTitle": "Study document {reference}"
+  "export.defaultTitle": "Study document {reference}",
+  "export.share": "Share document…"
 }
