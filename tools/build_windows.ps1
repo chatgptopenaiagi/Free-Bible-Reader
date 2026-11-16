@@ -19,7 +19,7 @@ $DistPrefix=[IO.Path]::GetFullPath((Join-Path $ProductRoot 'dist'))+[IO.Path]::D
 if(!$ArtifactDirectory.StartsWith($DistPrefix,[StringComparison]::OrdinalIgnoreCase)){throw 'Versioned artifact directory must remain under this project dist directory'}
 if(!$RunId){$RunId='build-'+$Version.Replace('.','-')+'-'+[DateTime]::UtcNow.ToString('yyyyMMddTHHmmssZ')+'-'+[Guid]::NewGuid().ToString('N').Substring(0,6)}
 if($RunId -notmatch '^[a-zA-Z0-9_-]{1,100}$'){throw 'Invalid run ID'}
-$Evidence=Join-Path $ProductRoot ('reports\MISSION-FBR-002\evidence\'+$RunId)
+$Evidence=Join-Path $ProductRoot ('reports\MISSION-FBR-003\evidence\'+$RunId)
 if(Test-Path -LiteralPath $Evidence){throw 'Create-only build run already exists; choose another RunId'}
 New-Item -ItemType Directory -Path $Evidence | Out-Null
 function Write-NewJson([string]$Path,$Value){if(Test-Path -LiteralPath $Path){throw "Evidence already exists: $Path"};$Value | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath $Path -Encoding utf8}
@@ -27,9 +27,9 @@ function Hash([string]$Path){(Get-FileHash -LiteralPath $Path -Algorithm SHA256)
 function Get-PyInstallerArguments([string]$ProjectRoot,[string]$OutputPath,[string]$WorkPath){
     # PyInstaller resolves data sources against the generated spec location, not cwd.
     $ArgsList=@('-m','PyInstaller','--noupx','--windowed','--onedir','--name','FreeBibleReader','--icon',(Join-Path $ProjectRoot 'assets\brand.ico'),'--distpath',$OutputPath,'--workpath',$WorkPath,'--specpath',$WorkPath)
-    $Mappings=[ordered]@{'workbench'='workbench';'ui-core'='ui-core';'data'='data';'parser'='parser';'runtime'='runtime';'licenses'='licenses';'engines\visual\component.js'='engines/visual';'engines\visual\component.css'='engines/visual'}
+    $Mappings=[ordered]@{'workbench'='workbench';'ui-core'='ui-core';'studio'='studio';'data'='data';'parser'='parser';'runtime'='runtime';'licenses'='licenses';'engines\visual\component.js'='engines/visual';'engines\visual\component.css'='engines/visual'}
     foreach($Mapping in $Mappings.GetEnumerator()){$Source=[IO.Path]::GetFullPath((Join-Path $ProjectRoot $Mapping.Key));$ArgsList+='--add-data';$ArgsList+=($Source+';'+$Mapping.Value)}
-    $ArgsList+=@('--hidden-import','engines.visual.engine','--hidden-import','engines.visual.layout','--hidden-import','engines.aggregate.engine','--hidden-import','engines.phrase.engine',(Join-Path $ProjectRoot 'app.py'))
+    $ArgsList+=@('--hidden-import','engines.visual.engine','--hidden-import','engines.visual.layout','--hidden-import','engines.aggregate.engine','--hidden-import','engines.phrase.engine','--hidden-import','studio.piper_worker','--collect-all','piper','--collect-all','onnxruntime','--collect-all','numpy','--collect-all','docx','--collect-all','reportlab',(Join-Path $ProjectRoot 'app.py'))
     return $ArgsList
 }
 
@@ -38,8 +38,8 @@ function Get-PinnedBuildInputs([string]$ProjectRoot,[string]$ApplicationVersion)
     $InputManifest=Join-Path $ProjectRoot 'data\build-inputs.json'
     $Config=Get-Content -LiteralPath $InputManifest -Raw | ConvertFrom-Json
     if($Config.kind -ne 'free-bible-reader-build-inputs' -or $Config.schema_version -ne 1 -or $Config.application_version -ne $ApplicationVersion){throw 'Unsupported portable build-input manifest kind/schema/application version'}
-    $Allowed=@('data/reader.sqlite','data/xref_visual.sqlite','data/xref_aggregate.sqlite','data/xref_phrase.sqlite','data/xref_reference.sqlite','runtime/node.exe')
-    if(@($Config.inputs).Count -ne 6 -or @($Config.inputs.path | Sort-Object -Unique).Count -ne 6){throw 'Portable build-input manifest must contain exactly six unique inputs'}
+    $Allowed=@('data/reader.sqlite','data/xref_visual.sqlite','data/xref_aggregate.sqlite','data/xref_phrase.sqlite','data/xref_reference.sqlite','runtime/node.exe','data/romanian.sqlite')
+    if(@($Config.inputs).Count -ne 7 -or @($Config.inputs.path | Sort-Object -Unique).Count -ne 7){throw 'Portable build-input manifest must contain exactly seven unique inputs'}
     $Research=Get-Content -LiteralPath (Join-Path $ProjectRoot 'data\research-release.json') -Raw | ConvertFrom-Json
     if($Config.research_data_version -ne $Research.version){throw 'Research data release version differs from pinned build inputs'}
     $Checks=@(foreach($InputFile in $Config.inputs){
@@ -54,6 +54,33 @@ function Get-PinnedBuildInputs([string]$ProjectRoot,[string]$ApplicationVersion)
     return $Checks
 }
 
+function Get-VerifiedEspeakRuntime([string]$ProjectRoot){
+    $RuntimeRoot=[IO.Path]::GetFullPath((Join-Path $ProjectRoot 'runtime\espeak-ng'))
+    $RuntimeManifest=Join-Path $ProjectRoot 'runtime\espeak-ng-runtime.json'
+    $Config=Get-Content -LiteralPath $RuntimeManifest -Raw | ConvertFrom-Json
+    if($Config.component -ne 'eSpeak NG' -or $Config.runtime_version -ne '1.52.0' -or $Config.source_msi_sha256 -ne '7f673c709ea5dd579d3b5ebb98688cc575328a6ab7438d2bc405b88cedaeafb9'){throw 'Unsupported pinned eSpeak runtime provenance'}
+    if(!(Test-Path -LiteralPath $RuntimeRoot -PathType Container)){throw 'Missing bundled eSpeak runtime; restore the committed runtime/espeak-ng tree'}
+    if((Get-Item -LiteralPath $RuntimeRoot).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Bundled eSpeak runtime must not be a filesystem link'}
+    $Entries=@($Config.files)
+    if($Entries.Count -ne 444 -or @($Entries.path | ForEach-Object {$_.ToLowerInvariant()} | Sort-Object -Unique).Count -ne 444){throw 'eSpeak manifest must contain exactly 444 unique payload files'}
+    $Tree=@(Get-ChildItem -LiteralPath $RuntimeRoot -Recurse -Force)
+    if(@($Tree | Where-Object { $_.Attributes -band [IO.FileAttributes]::ReparsePoint }).Count){throw 'Bundled eSpeak runtime contains a filesystem link'}
+    $ActualFiles=@($Tree | Where-Object { !$_.PSIsContainer })
+    if($ActualFiles.Count -ne 444){throw 'Bundled eSpeak runtime has missing or additional files'}
+    $Checks=@(foreach($Entry in $Entries){
+        $Relative=[string]$Entry.path
+        if(!$Relative -or $Relative.Contains('\') -or $Relative.Contains(':') -or $Relative.StartsWith('/') -or @($Relative.Split('/') | Where-Object {$_ -in @('','.','..')}).Count -or $Entry.sha256 -notmatch '^[0-9a-fA-F]{64}$' -or $Entry.bytes -lt 0){throw 'Unsafe or invalid eSpeak payload entry'}
+        $Path=[IO.Path]::GetFullPath((Join-Path $RuntimeRoot $Relative))
+        if(!$Path.StartsWith($RuntimeRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase) -or !(Test-Path -LiteralPath $Path -PathType Leaf)){throw "Missing or unsafe eSpeak payload: $Relative"}
+        $Bytes=(Get-Item -LiteralPath $Path).Length
+        $Actual=Hash $Path
+        if($Bytes -ne $Entry.bytes -or $Actual -ne $Entry.sha256){throw "Bundled eSpeak payload changed: $Relative"}
+        [ordered]@{relative_path=('runtime/espeak-ng/'+$Relative);bytes=$Bytes;sha256=$Actual;matches_manifest=$true}
+    })
+    foreach($Required in @('espeak-ng.exe','libespeak-ng.dll','COPYING')){if($Required -cnotin @($Entries.path)){throw "Missing required eSpeak payload entry: $Required"}}
+    return [ordered]@{component='eSpeak NG';version='1.52.0';manifest_sha256=Hash $RuntimeManifest;files_checked=$Checks.Count;bytes=($ActualFiles | Measure-Object -Property Length -Sum).Sum;all_files_match=$true;files=$Checks}
+}
+
 $BuildRoot=Join-Path $ArtifactDirectory 'FreeBibleReader'
 $BuildManifest=Join-Path $ArtifactDirectory 'app-build-manifest.json'
 $Result=[ordered]@{phase=$Phase;version=$Version;run_id=$RunId;evidence_directory=$Evidence;artifact_directory=$ArtifactDirectory;started_utc=[DateTime]::UtcNow.ToString('o');status='RUNNING';build_executed=$false;install_executed=$false}
@@ -64,6 +91,7 @@ try{
     $InstallerVersion=[regex]::Match((Get-Content -LiteralPath (Join-Path $ProductRoot 'installer\FreeBibleReader.iss') -Raw),'#define MyAppVersion "([^"]+)"').Groups[1].Value
     if($AppVersion -ne $Version -or $HealthVersion -ne $Version -or $InstallerVersion -ne $Version){throw 'Application/package/health/installer versions differ'}
     $Result.preserved_input_checks=@(Get-PinnedBuildInputs $ProductRoot $Version)
+    $Result.speech_runtime_checks=Get-VerifiedEspeakRuntime $ProductRoot
     $Result.portable_input_manifest_sha256=Hash (Join-Path $ProductRoot 'data\build-inputs.json')
     New-Item -ItemType Directory -Path $ArtifactDirectory -Force | Out-Null
     Push-Location $ProductRoot

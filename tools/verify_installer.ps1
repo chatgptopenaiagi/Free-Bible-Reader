@@ -20,7 +20,7 @@ $OwnerDirectory=[IO.Path]::GetFullPath((Join-Path $env:LOCALAPPDATA 'Programs\Fr
 $VerificationRoot=[IO.Path]::GetFullPath((Join-Path $env:LOCALAPPDATA 'FBRVerification'))
 if(!$RunId){if($Phase -notin @('InstallTest','UpdateOwner')){throw 'Use the RunId returned by InstallTest'};$RunId='verify-'+$Version.Replace('.','-')+'-'+[DateTime]::UtcNow.ToString('yyyyMMddTHHmmssZ')+'-'+[Guid]::NewGuid().ToString('N').Substring(0,6)}
 if($RunId -notmatch '^[a-zA-Z0-9_-]{1,100}$'){throw 'Invalid run ID'}
-$Evidence=Join-Path $ProductRoot ('reports\MISSION-FBR-002\evidence\'+$RunId)
+$Evidence=Join-Path $ProductRoot ('reports\MISSION-FBR-003\evidence\'+$RunId)
 New-Item -ItemType Directory -Path $Evidence -Force | Out-Null
 $TestDirectory=[IO.Path]::GetFullPath((Join-Path $VerificationRoot $RunId))
 if(!$TestDirectory.StartsWith($VerificationRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase) -or $TestDirectory -eq $OwnerDirectory){throw 'Test destination escaped the dedicated verification directory'}
@@ -42,7 +42,7 @@ function Owner-Snapshot {
 function Assert-OwnerSame($Before,$After){if(($Before | ConvertTo-Json -Depth 15 -Compress) -ne ($After | ConvertTo-Json -Depth 15 -Compress)){throw 'Existing owner application, uninstall identity or shortcut snapshot changed during test phase'}}
 function Assert-ReceiptOwner($Prior,$Before,[string]$ExpectedSha){
     # A current EXE alone is not evidence for a previously verified installation.
-    if($ExpectedSha -notmatch '^[a-fA-F0-9]{64}$' -or $Prior.status -ne 'PASS' -or $Prior.phase -ne 'UpdateOwner' -or !$Prior.owner_upgrade_performed -or $Prior.version -ne '0.1.1' -or $Prior.owner_directory -ne $OwnerDirectory -or $Prior.owner_after.directory -ne $OwnerDirectory){throw 'Expected owner receipt is not a successful, path-bound prior 0.1.1 production upgrade'}
+    if($ExpectedSha -notmatch '^[a-fA-F0-9]{64}$' -or $Prior.status -ne 'PASS' -or $Prior.phase -ne 'UpdateOwner' -or !$Prior.owner_upgrade_performed -or $Prior.version -notin @('0.1.1','0.2.0') -or $Prior.owner_directory -ne $OwnerDirectory -or $Prior.owner_after.directory -ne $OwnerDirectory){throw 'Expected owner receipt is not a successful, path-bound prior supported production upgrade'}
     $Metadata=$Prior.installer_manifest
     if($Metadata.kind -ne 'production' -or $Metadata.app_id -ne $ProductionAppId -or $Metadata.version -ne $Prior.version -or $Metadata.app_executable_sha256 -ne $ExpectedSha){throw 'Prior owner installer identity/version/executable hash mismatch'}
     $PriorFiles=@($Prior.owner_after.files | Where-Object relative_path -eq 'FreeBibleReader.exe');$ProvenFiles=@($Prior.bundle_checks | Where-Object relative_path -eq 'FreeBibleReader.exe');$CurrentFiles=@($Before.files | Where-Object relative_path -eq 'FreeBibleReader.exe')

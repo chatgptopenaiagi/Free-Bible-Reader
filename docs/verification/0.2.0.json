@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0.0",
+  "product": "FREE BIBLE READER",
+  "version": "0.2.0",
+  "checked_utc": "2026-11-16T17:57:49.562562+00:00",
+  "status": "PASS",
+  "scope": "Local Windows execution and installer verification; publication/download evidence is recorded separately.",
+  "executable_sha256": "6991bfc392235261c7a1d8494a81fd84e420e7e72c6d0930c5d8b3df6a679eeb",
+  "installer": {
+    "bytes": 251084255,
+    "sha256": "ac69a3c86d2444785cfa1af12308ed280bec13ee03d39f7ab5ed9e50aeaeb5dd"
+  },
+  "tests": {
+    "source_python": {
+      "passed": 88,
+      "failed": 0
+    },
+    "formal_node_runner": {
+      "passed": 35,
+      "failed": 0
+    },
+    "owner_receipt_guards": {
+      "passed": 25,
+      "failed": 0
+    },
+    "build_input_guards": {
+      "passed": 8,
+      "failed": 0
+    },
+    "production_browser": {
+      "reading": 68,
+      "acceptance": 24,
+      "studio_startup": 13,
+      "bootstrap_recovery": 8,
+      "failed": 0
+    },
+    "verification_installer": {
+      "library_search": 16,
+      "audio_full_lifecycle": 16,
+      "workspace_exports": 19,
+      "responsive": 114,
+      "failed": 0
+    },
+    "production_audio": {
+      "passed": 13,
+      "failed": 0,
+      "skipped_model_mutations": 3
+    },
+    "real_https_download_import": {
+      "passed": 6,
+      "failed": 0
+    }
+  },
+  "installation": {
+    "final_bundle_files": 2799,
+    "standalone_checks": 10,
+    "normal_owner_updated": true,
+    "dedicated_test_uninstalls": 2,
+    "restart_required": false,
+    "private_files_unchanged_during_update": 17
+  },
+  "data": {
+    "bundled_editions": 4,
+    "original_public_database_hashes_preserved": 5,
+    "english_source_rows": 93307,
+    "romanian_source_rows": 7958,
+    "romanian_books": 27,
+    "romanian_chapters": 260,
+    "romanian_coverage": "Draft New Testament only, Latin script",
+    "private_native_import_rows_exactly_verified": 1149,
+    "private_source_hash_unchanged": true,
+    "private_source_contents_distributed": false
+  },
+  "screenshots": [
+    {
+      "name": "advanced-search.png",
+      "bytes": 107879,
+      "sha256": "a5ea33a431f4388c9712bfcd0fddc2e39a137ba3775534cc34870f2afa464f69"
+    },
+    {
+      "name": "context-menu.png",
+      "bytes": 148252,
+      "sha256": "53ce6eda2712622bb30b2b3a6297091f4c4d49ddf2f381b7f6a38be3db9846d5"
+    },
+    {
+      "name": "desktop-dark.png",
+      "bytes": 110049,
+      "sha256": "f2bb8acf950ea4e962bf4f4d6fe9ef322c72a587b41cb2fc1e2a08680e48f971"
+    },
+    {
+      "name": "draft-coverage.png",
+      "bytes": 84541,
+      "sha256": "1f1efd14ab02527ec6c8c65de182ad7d7923393b9b3e18bdd97eb76f6a2dfcbf"
+    },
+    {
+      "name": "german-interface.png",
+      "bytes": 112165,
+      "sha256": "35e3f29f8d80d823e04cbf373ec83e9a0d2ddefbfa9c5fa1ca28f4753a086330"
+    },
+    {
+      "name": "library-import.png",
+      "bytes": 123780,
+      "sha256": "e08fad0535d50ad77c0e0d05a1085aebd7e615133a4903d1f2ee0fa1dd44f77e"
+    },
+    {
+      "name": "mobile-reader.png",
+      "bytes": 55038,
+      "sha256": "a3a8cb6a8898ad298f8ed32b33e937e3d4c8475b8017e8bb7b668329a52835fe"
+    },
+    {
+      "name": "notes-public-sample.png",
+      "bytes": 89448,
+      "sha256": "c9a2681d24812cc9ff39822a270270648f864893feebf009939ecdd415cee7aa"
+    },
+    {
+      "name": "pdf-settings.png",
+      "bytes": 63353,
+      "sha256": "380fb24eada43db00360cd79db54fb28b6069a6f2d17fc7bdad1482e51bd3908"
+    },
+    {
+      "name": "romanian-john3.png",
+      "bytes": 108923,
+      "sha256": "fbea8a634852fc906bc05ffa5bb5db02b5eb58c20f6e2418c7688098519f9440"
+    },
+    {
+      "name": "tablet-reader.png",
+      "bytes": 94494,
+      "sha256": "04648934629f7b3fa9755cbbc78d41aeb29c5b110e5999b8878dcdf69af9e7db"
+    },
+    {
+      "name": "voice-manager.png",
+      "bytes": 72745,
+      "sha256": "c4173c4f6950c8bfb1465a05791e315837fb07fd706cb76a620d6445398087c5"
+    }
+  ],
+  "audio": {
+    "providers_verified": [
+      "Windows SAPI",
+      "Windows.Media",
+      "Piper Romanian Mihai",
+      "eSpeak NG Romanian"
+    ],
+    "additional_espeak_languages_verified": [
+      "English",
+      "German"
+    ],
+    "windows_romanian_voice_installed": false,
+    "models_bundled": false,
+    "human_speaker_listening_verified": false
+  },
+  "limitations": [
+    "Romanian bundled text is a draft New Testament, not a complete Bible.",
+    "Physical speaker listening and physical mobile devices remain unverified.",
+    "Piper English/German models are offered with pinned metadata but were not downloaded/synthesized in these tests.",
+    "Native Windows voices depend on actual installed packages.",
+    "Some large Unicode searches explicitly return partial results.",
+    "Arbitrary SQL schemas require guided mapping; SQL dumps are parsed as data.",
+    "Guided edition imports are performed individually; mass group selection is not supplied.",
+    "No native APK/IPA, universal complex-script PDF shaping or independent WCAG certification is claimed.",
+    "The Windows package is unsigned."
+  ]
+}

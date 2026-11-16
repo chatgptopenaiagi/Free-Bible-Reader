@@ -2,8 +2,10 @@ import contextlib,hashlib,pathlib,sqlite3,sys,unittest
 ROOT=pathlib.Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT))
 from reader import service
 class ReaderTests(unittest.TestCase):
- def test_complete_catalog_three_source_editions(self):
-  c=service.catalog();self.assertEqual({e['id'] for e in c['editions']},{'web','kjv','bsb'});self.assertEqual(len(c['books']),66);self.assertEqual(sum(len(b['chapters']) for b in c['books']),1189)
+ def test_complete_catalog_preserves_english_and_adds_labeled_romanian_nt(self):
+  c=service.catalog();self.assertEqual({e['id'] for e in c['editions']},{'web','kjv','bsb','ronbl'});self.assertEqual(len(c['books']),66);self.assertEqual(sum(len(b['chapters']) for b in c['books']),1189)
+ def test_romanian_coverage_and_source_diacritics(self):
+  c=service.catalog('ronbl');self.assertEqual(len(c['books']),27);self.assertEqual(sum(len(b['chapters']) for b in c['books']),260);self.assertNotIn('Gen',{b['id'] for b in c['books']});self.assertTrue(next(e for e in c['editions'] if e['id']=='ronbl')['metadata']['draft']);self.assertIn('Dumnezeu',service.chapter('ronbl','John',3)['verses'][15]['text'])
  def test_first_and_last_chapters(self):
   a=service.chapter(book='Gen',chapter=1);b=service.chapter(book='Rev',chapter=22)
   self.assertEqual(len(a['verses']),31);self.assertIsNone(a['previous']);self.assertIsNone(b['next']);self.assertEqual(b['verses'][-1]['reference'],'Rev.22.21')

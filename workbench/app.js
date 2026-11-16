@@ -1,3 +1,4 @@
+import {createStudio} from '/studio-ui/index.js';
 import {createUICore,PALETTES,COLOR_FIELDS,FONT_OPTIONS} from '/ui-core/index.js';
 import {createTranslator} from '/ui-core/i18n/translator.js';
 import {$,element as el,options,api} from '/ui-core/components/dom.js';
@@ -50,3 +51,5 @@ $('settings-reset').addEventListener('click',()=>{prefs.reset();renderSettings()
 localize();syncSidebar();if(isMobile()&&prefs.get().panelVisibility.sidebar)sidebar(false);
 const healthPromise=api('/api/health').catch(()=>({lab_engines_available:false}));await Promise.all([reader.init(),healthPromise.then(health=>research.init(health))]);
 
+
+createStudio({reader,core,translator:t,layout,research}).catch(error=>{console.error('[Reading Studio]',error);const messages={en:['The reading studio could not load. Your Bible text is still available.','Retry studio'],ro:['Studioul de lectură nu s-a încărcat. Textul biblic rămâne disponibil.','Reîncearcă'],de:['Das Lesestudio konnte nicht geladen werden. Der Bibeltext bleibt verfügbar.','Erneut versuchen']};const message=messages[prefs.get().interfaceLanguage]||messages.en;const notice=el('aside',undefined,'notice studio-init-notice');notice.setAttribute('role','alert');notice.append(el('p',message[0]));const retry=el('button',message[1]);retry.type='button';retry.addEventListener('click',()=>location.reload());notice.append(retry);document.querySelector('.app-header').after(notice);});

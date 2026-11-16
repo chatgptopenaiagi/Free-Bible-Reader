@@ -9,8 +9,11 @@ FREE BIBLE READER combines its own application code with separately licensed Scr
 | World English Bible, Protestant Edition (WEB) | [eBible.org published verse-per-line edition](https://ebible.org/Scriptures/engwebp_vpl.zip); [edition information](https://ebible.org/find/details.php?id=engwebp) | The publisher identifies the text as public domain. “World English Bible” is an eBible.org trademark; retaining this name identifies the source edition rather than a modified translation. |
 | King James Version (KJV), CrossReferences source edition | [CrossReferences.org repository at the pinned source revision](https://github.com/CrossReferences-org/bible-cross-references/tree/a80ab3d8bcc4ed53c86bae2e2a5ef183b9316653); [KJV territorial notice](https://ebible.org/Scriptures/details.php?id=eng-kjv2006) | The KJV is public domain outside the United Kingdom. The source notice identifies a separate United Kingdom rights position; this application does not claim worldwide unrestricted ownership of the KJV. |
 | Berean Standard Bible (BSB), CrossReferences source edition | The same pinned CrossReferences.org source; [Berean Bible terms](https://berean.bible/terms.htm) | The publisher dedicates the BSB text to the public domain under CC0. The included edition label identifies the actual source text. |
+| Biblia Liberă (ronbl), Romanian Latin script | [eBible.org edition information](https://ebible.org/Scriptures/details.php?id=ronbl), [source VPL archive](https://ebible.org/Scriptures/ronbl_vpl.zip) | The publisher identifies the text as public domain. This is a **draft New Testament under revision**, not a complete Bible. The bundled source revision is dated 2026-10-28. |
 
 The reader contains 31,103 WEB rows, 31,102 KJV rows and 31,102 BSB rows. These are source edition counts, not a claim that every translation has identical verse segmentation. WEB’s source Romans 14:24–26 and its Romans 16 ending at verse 25 are preserved. Text was compared against all 93,307 included source records without normalizing the wording into another edition.
+
+The separate Romanian package contains 7,958 source text units in 27 books and 260 chapters. Its source manifest and unchanged source-text verification stream are included in `data/romanian-manifest.json` and `data/romanian-source.jsonl.gz`. Missing Old Testament books are not supplied or invented. Personal imported editions are private user data and are not included in this distribution.
 
 ## Cross-reference research and reference parser
 
@@ -39,7 +42,11 @@ These changes are described more precisely in the provenance record. Upstream fi
 
 SQLite is used through Python’s bundled SQLite support. [SQLite’s project declaration](https://www.sqlite.org/copyright.html) places its deliverable code in the public domain. This statement concerns the database engine, not the separately licensed contents of the database files.
 
-The application names system font families as optional local font choices. It does not redistribute Microsoft, Noto or other font files, and a named font may be unavailable on a particular computer. The browser resolves the documented fallback stack.
+The interface names system font families as optional local font choices. It does not redistribute Microsoft or Noto fonts, and a named font may be unavailable on a particular computer. The browser resolves the documented fallback stack. PDF export separately embeds subsets of the included, openly licensed DejaVu fonts; see the [document and font notices](licenses/studio-documents-NOTICES.md).
+
+## Reading studio additions
+
+Document libraries and embedded font notices are recorded in [studio-documents-NOTICES.md](licenses/studio-documents-NOTICES.md). Offline narration uses separately licensed Piper and eSpeak NG components; their [GPL notices, exact sources and corresponding-source archive](licenses/TTS-SOURCES.md) are preserved with this distribution. These components are not relicensed under the application's own MIT license. Downloadable voice models retain their individual model-card licenses and are installed only on the user's request in the private application-data directory. Windows voices are supplied by Windows and are not redistributed here.
 
 ## Redistribution
 

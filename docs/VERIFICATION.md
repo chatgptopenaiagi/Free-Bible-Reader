@@ -1,85 +1,62 @@
-# Release 0.1.1 verification
+# Verification — FREE BIBLE READER 0.2.0
 
-The final production Windows x64 application passed its reading, search, research, startup-recovery, integrity and lifecycle checks on 16 November 2026. Local application verification is complete; public asset delivery is verified separately. The observations below apply to the exact tested executable and package, not every device or browser.
+This record distinguishes source tests, a frozen application, a verification installer and the ordinary production installation. Earlier [v0.1.1 evidence](verification/v0.1.1.md) is preserved; it is not counted as a new 0.2.0 result.
 
-The [0.1.0 verification record](verification/v0.1.0.md) is preserved byte for byte. Earlier candidate attempts and their failures remain historical evidence; they are not counted as final passes. A sanitized [machine-readable verification summary](verification/0.1.1.json) accompanies this record.
+## Recorded 0.2.0 checks
 
-## Final results
-
-| Check | Observed result |
-|---|---|
-| Source Python reading/research/asset/HTTP tests | 29/29 passed, including a 96-fetch HTTP regression |
-| Shared preferences/theme/typography tests | 24/24 passed |
-| Focused reader state/search/comparison tests | 14/14 internal checks passed |
-| Localization | 15/15 checks; 521 matching EN/RO/DE keys |
-| Actual production reading-experience browser suite | 68/68 passed |
-| Actual production existing browser acceptance | 24/24 passed |
-| Actual production startup/retry fault scenarios | 8/8 passed |
-| Actual production repeated fresh-page diagnostic | 16/16 ready pages; zero refused requests in 120 bounded static requests |
-| Isolated installation, clean-runtime self-test and uninstall | Passed; 9/9 self-tests and all 180 bundle-file hashes matched |
-| Ordinary update and actual production uninstall/reinstall | Passed, uninstall/reinstall exit 0/0; no restart |
-| Normal native restart and reading-state retention | Passed without retry or browser-state injection |
-| Production screenshots | 13 valid PNGs; 12 original suite captures unchanged plus one curated mobile view |
-| Public asset delivery | Verified separately from local application tests |
-
-The recorded environment used Windows 11 x64, Python 3.14.10, bundled Node 26.12.1 and Edge 157.0.4341.42. These are observed versions, not an assertion that every other version is incompatible. Counts describe different scopes and are not an exhaustive certification score.
-
-The final installer is **171,933,773 bytes**, SHA-256 `690b384125667c1816b579f7ab006e52b6bd001bdc3153cd7a4d97b916b02059`. The installed executable SHA-256 is `6a7a7baec1e1f4467857b6e0af05e74070228005f5035ff0a043e846852d4d4b`. These hashes identify the locally verified application/package; independent public-download checks belong to the delivery record.
-
-## Complete chapters, search and reading continuity
-
-All displayed verses in seven required chapters were compared independently across WEB, KJV and BSB:
-
-| Chapter | Verse count in each of these examples |
+| Scope | Result |
 |---|---:|
-| Genesis 1 | 31 |
-| Psalm 23 | 6 |
-| Matthew 5 | 48 |
-| John 1 | 51 |
-| John 3 | 36 |
-| Romans 8 | 39 |
-| Revelation 21 | 27 |
+| Source Python unittest suite | 88 passed |
+| Formal Node test runner | 35 passed |
+| Installer owner-receipt guard fixtures | 25 passed |
+| Pinned input/eSpeak guard scenarios | 8 passed |
+| Installed verification runtime: reading experience | 68 passed |
+| Installed verification runtime: original acceptance | 24 passed |
+| Installed verification runtime: original bootstrap recovery | 8 passed |
+| Installed verification runtime: Studio startup resilience | 13 passed |
+| Installed verification runtime: library/search workflows | 16 passed |
+| Installed verification runtime: speech/player/voice installation | 16 passed |
+| Installed verification runtime: workspace and document exports | 19 passed |
+| Installed verification runtime: Studio viewport/menu/dialog matrix | 114 passed |
 
-These **21 complete-chapter cases** made **714 exact UTF-8 text comparisons** against the compressed source records. Eighteen searches used love, faith, forgiveness, Jesus, God and spirit in each edition, with source-checked selected results. Pagination retained the submitted query/edition/book despite draft edits.
+These are scenario counts with different scopes, not a count of independent users or a universal reliability percentage. The formal Node runner includes wrapper files whose internal assertions have their own counts; they are not added again as independent formal tests.
 
-The final suite also verified John 3:16 across edition changes and reload, chapter grid and bottom navigation, keyboard/focus behavior, three actual comparison texts, stale-response protection and independent research provenance. Dropdown and sidebar book→chapter journeys at 320×568 and 1440×900 measured controls before any locator scrolling, then used an actual pointer click and native keyboard selection to open John 21.
+The verification runtime's executable SHA-256 is `6991bfc392235261c7a1d8494a81fd84e420e7e72c6d0930c5d8b3df6a679eeb`. Its separate test AppId did not replace the owner's program. The final staging bundle retains all 2,797 tested files exactly and adds only two completed TTS source-notice files, for 2,799 files. A fresh complete manifest records the additions; no recompilation is claimed for that promotion. All 553 plain source resources, seven pinned database/Node inputs and 444 eSpeak files were independently compared.
 
-Real production uninstall/reinstall and normal restart retained Romanian, sepia, Georgia, BSB John 3, selected verse 16 and visible verse 11 without injecting browser storage. A separate persistent Edge close/reopen check also retained state. Reading position and display preferences remain separate browser-origin records containing no copied Scripture text.
+## Reading, text and references
 
-## Startup repair and recovery
+The seven requested chapters across three original English editions produce 714 exact UTF-8 verse comparisons. Romanian John 3 supplies all 36 available source verses. Biblia Liberă's separate package preserves all 7,958 original XML text nodes, including trailing spaces, in 27 New Testament books and 260 chapters. It is explicitly a Latin-script draft New Testament without an Old Testament.
 
-An earlier production walkthrough found intermittent local module-connection failures. A controlled same-handler test recorded 67 refused requests out of 280 with pending queue five, versus zero out of 280 with queue 128. This supports the bounded queue repair under those conditions, without assigning every historical incident a proven cause or estimating a general failure rate.
+The original five public SQLite database hashes remain unchanged. Personal native chapter labels, verse zero, suffixes and ranges were exercised without forcing invented canonical alignment. Comparing native coordinates does not prove that versification agrees.
 
-The final server uses queue 128. A dependency-free bootstrap catches module and initial localization failures. Static EN/RO/DE messages and fixed readable colors work without translation catalogs or application CSS. Retry is an explicit page reload, with no automatic reload loop or storage clearing.
+## Real Windows journeys
 
-Eight installed recovery scenarios cover module and initial English-catalog failures under EN/RO/DE, bootstrap failure and malformed display preferences. Each intentionally blocked a local resource, verified visible recovery and then used Retry to recover the saved passage. Expected injected network/console failures are recorded separately from unexpected errors. The final repeated-start sample saw all 16 pages become ready and zero refused requests across eight bounded burst rounds containing 120 static requests.
+A normally launched installer-deployed application opened actual Windows file dialogs. An exact 68-UTF-16-unit Romanian John 3:16 selection was exported to a real searchable PDF, with source attribution and an embedded licensed font. A complete Romanian John 3 DOCX preserved all 36 exact verse bodies and native references in order. An existing LibreOffice installation opened it using an isolated profile; all three rendered pages were inspected. Both original saved documents remained unchanged.
 
-## Responsive layout and larger text
+The native picker opened a 3.17 GiB personal source read-only. The guided catalog, preview and confirmation imported only one selected 1,149-record edition. Independent comparison verified every text, source ID, native coordinate, raw row, order and UTF-8 hash; the original source SHA-256 stayed unchanged. The public repository/installer does not include that source or the imported private edition. A separate explicitly selected SQL Server source was also read and compared without database changes.
 
-Reading and triple-engine layouts were checked at eight CSS-pixel sizes:
+## Audio
 
-`320×568`, `390×844`, `768×1024`, `1024×768`, `1440×900`, `1920×1080`, `2560×1440`, `3840×2160`.
+Actual installed discovery distinguished Windows SAPI and Windows.Media voices. This machine supplied English voices and no installed Romanian Andrei. Piper Mihai was downloaded, cancelled, installed, removed and reinstalled through the GUI in an isolated test profile. Piper, eSpeak Romanian, SAPI and Windows.Media each generated real non-silent PCM WAVs; delivered bytes and hashes matched, HTTP range playback worked and browser audio time progressed.
 
-Nine further cases combined EN/RO/DE, interface scale 1.6 and each of `320×568` portrait, `568×320` landscape and `320×256` equivalent 400% CSS reflow. Each checked visible/clickable Close, label overflow and scroll/focus/hit-test access to all **31 settings/color/footer controls**. This is nine repetitions of 31 controls, not 279 distinct controls or physical browser-zoom certification.
+Player tests covered the exact selected source text, lazy chapter/book generation, pause during pending synthesis, resume, stale-response Stop, verse stepping and chapter transitions. Only one synthesis process is allowed per provider operation. No claim of human-heard sound or physical speaker/driver verification is made.
 
-Theme/language/typography changes preserved source text without reading/research API requests in the measured sequence. Normal final acceptance observed no JavaScript exceptions or missing-translation warnings. Non-loopback requests were blocked in the test browser context; operating-system networking was not disabled.
+## Imports, search, documents and privacy
 
-## Data, screenshots and reproducibility
+Real GUI tests mapped imported synthetic records with explicit labels, preserved Unicode/native ranges, searched exact/folded text, saved selected results, exported a one-edition SQLite package and reopened it for integrity, foreign-key, FTS5 and exact source comparisons. SQL dumps are parsed as bounded data; no dump is executed as an unrestricted script. Downloads stage content before confirmed import.
 
-All **93,307** reading records passed exact source comparison in 0.1.0. The five SQLite snapshots retain those pinned hashes in 0.1.1, as recorded in [build-inputs.json](../data/build-inputs.json). WEB contains 31,103 native rows; KJV and BSB each contain 31,102. Each has 66 books and 1,189 chapters. Matching references do not establish identical verse boundaries.
+Notes, highlights, bookmarks, collections and personal corrections survive reload. Correction text is separate from the immutable source snapshot. Generated documents preserve selection boundaries and source labels. Private library/model/document data is outside the program installation directory.
 
-The 18 new reader labels bring each catalog from 503 to 521 keys with the existing values preserved. No additional fonts or application frameworks were installed for this update.
+## Responsive and recovery coverage
 
-The [main reader](../screenshots/v0.1.1/production-reading-final/main.png), [actual comparison](../screenshots/v0.1.1/production-reading-final/comparison.png) and [clean mobile view](../screenshots/v0.1.1/production-reading-final/mobile-reading.png) are final production captures. All thirteen PNGs passed size/hash, chunk-CRC and decode checks and visual inspection. The twelve suite captures were preserved unchanged; the thirteenth was captured through ordinary GUI controls. See the complete gallery in [README.md](../README.md).
+Recorded Edge viewports are 320×568, 390×844, 768×1024, 1024×768, 1440×900, 1920×1080, 2560×1440 and 3840×2160. New Studio checks exercised menus, dialogs, context actions, close controls and original-text preservation. Existing large-type checks include EN/RO/DE and narrow portrait, landscape and equivalent 400% CSS reflow.
 
-Use [DEVELOPMENT.md](DEVELOPMENT.md) to reproduce source/browser checks. Installed claims require a matching installed process, executable hash and installation evidence, rather than a source URL or a runtime-kind label alone. Build, isolated verification, ordinary installation and publication are explicit separate operations.
+All six Studio translation namespaces passed EN/RO/DE key/placeholder parity. Transient GET failures recover with bounded retries; persistent initialization errors show localized user-triggered Retry without clearing reading position. Writes are not automatically retried. Initial failures and their corrections remain in private mission evidence: the large-font mobile Tools overflow was repaired; a native voice catalog refresh race was repaired; old three-edition/request-count assertions were updated to the real expanded contract. One first responsive run observed ERR_NO_BUFFER_SPACE without a captured URL; its later independent full run passed with zero failed requests, and no unproven cause is asserted.
 
-## Limits
+## Limits and delivery stages
 
-Recorded browser coverage is Edge on Windows x64. Physical phones/tablets, other browser engines, manual screen-reader behavior and independent WCAG certification remain unverified. Accessibility checks cover the recorded keyboard, focus, reflow and contrast behaviors. No native Android/iOS package is supplied; local font glyph coverage varies.
+Tests used Windows 11 x64 and Microsoft Edge 157.0.4341.42. Physical Android/iPhone/tablets, native mobile builds, other browser engines, every arbitrary database schema, independent WCAG certification and universal complex-script PDF shaping are unverified. Some large searches explicitly return partial results. The package is unsigned.
 
-The package is unsigned. Installer controls are English/German; reader and companion controls are English/Romanian/German. The main reading editions are English. Cross-references remain attributed source assertions, not automatic textual or theological equivalence. No private corpus or SQL Server instance is a release input or runtime dependency.
+Production installer lifecycle and public-download checks have their own machine-readable receipts. They must be consulted separately from the verification-installer results above. [Installation](INSTALLATION.md), [development](DEVELOPMENT.md) and [component notices](../THIRD-PARTY-NOTICES.md) describe the supported routes and boundaries.
 
-## Public delivery verification
-
-On 16 November 2026, the v0.1.1 release was published and its Windows installer downloaded anonymously. All 171,933,773 bytes matched SHA-256 `690b384125667c1816b579f7ab006e52b6bd001bdc3153cd7a4d97b916b02059`, the tested local installer, GitHub’s asset digest and the published checksum. The previous v0.1.0 release remains available. See the [public delivery receipt](verification/0.1.1-delivery.json). This delivery check complements the installed acceptance above.
+The final production setup is 251,084,255 bytes, SHA-256 `ac69a3c86d2444785cfa1af12308ed280bec13ee03d39f7ab5ed9e50aeaeb5dd`. The normal production update passed all 2,799 file comparisons; 17 existing private files retained their hashes. Production reading 68, acceptance 24, Studio recovery 13 and bootstrap recovery eight passed again. Production audio passed 13 scenarios with three explicit model-changing skips to protect the existing voice. Two separate verification uninstallations returned exit 0 and preserved the production program/registration and private-storage sentinel. No owner uninstall or automatic restart occurred. [Sanitized local verification receipt](verification/0.2.0.json).

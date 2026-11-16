@@ -9,6 +9,7 @@ class ThreadingHTTPServer(_ThreadingHTTPServer):
 ROOT=pathlib.Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 from bridge import hub,reference,corpus_adapter
 from reader import service as reader
+from studio import api as studio_api
 STATIC={'/':('workbench/index.html','text/html; charset=utf-8'),'/favicon.ico':('workbench/favicon.svg','image/svg+xml'),'/app.js':('workbench/app.js','text/javascript; charset=utf-8'),'/style.css':('workbench/style.css','text/css; charset=utf-8'),'/visual.js':('engines/visual/component.js','text/javascript; charset=utf-8'),'/visual.css':('engines/visual/component.css','text/css; charset=utf-8')}
 def unique_object(pairs):
     value={}
@@ -24,13 +25,46 @@ class Handler(BaseHTTPRequestHandler):
         raw=json.dumps(data,ensure_ascii=False,allow_nan=False).encode('utf-8') if isinstance(data,(dict,list)) else data
         self.send_response(status);self.send_header('Content-Type',kind);self.send_header('Content-Length',str(len(raw)));self.send_header('Cache-Control','no-store');self.send_header('X-Content-Type-Options','nosniff');self.send_header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'");self.end_headers();self.wfile.write(raw)
     def host_ok(self):return self.headers.get('Host','') in {f'127.0.0.1:{self.server.server_port}',f'localhost:{self.server.server_port}'}
+    def send_file(self,value):
+        path=pathlib.Path(value.path);length=path.stat().st_size;start=0;end=length-1;status=200
+        requested=self.headers.get('Range')
+        if requested:
+            import re
+            match=re.fullmatch(r'bytes=(\d*)-(\d*)',requested)
+            if not match or not any(match.groups()):return self.send(416,{'error':'Invalid byte range'})
+            if match[1]:start=int(match[1]);end=min(int(match[2]) if match[2] else end,end)
+            else:start=max(0,length-int(match[2]))
+            if not 0<=start<=end<length:return self.send(416,{'error':'Unsatisfied byte range'})
+            status=206
+        self.send_response(status);self.send_header('Content-Type',value.mime);self.send_header('Content-Length',str(end-start+1));self.send_header('Accept-Ranges','bytes');self.send_header('Cache-Control','no-store');self.send_header('X-Content-Type-Options','nosniff')
+        if status==206:self.send_header('Content-Range',f'bytes {start}-{end}/{length}')
+        if value.attachment:self.send_header('Content-Disposition',"attachment; filename*=UTF-8''"+urllib.parse.quote(pathlib.Path(value.filename).name,safe=''))
+        self.end_headers()
+        try:
+            with path.open('rb') as stream:
+                stream.seek(start);remaining=end-start+1
+                while remaining:
+                    chunk=stream.read(min(65536,remaining))
+                    if not chunk:break
+                    self.wfile.write(chunk);remaining-=len(chunk)
+        except (BrokenPipeError,ConnectionResetError):pass
     def do_GET(self):
         if not self.host_ok():return self.send(400,{'error':'Local host header required'})
         path=urllib.parse.urlsplit(self.path).path
+        if path.startswith('/api/studio/'):
+            try:
+                answer=studio_api.get(path,urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query))
+                if isinstance(answer,studio_api.FileResult):return self.send_file(answer)
+                return self.send(200,studio_api.jobs.public(answer)) if answer is not None else self.send(404,{'error':'Unknown studio route'})
+            except (ValueError,TypeError,KeyError) as error:return self.send(400,{'error':str(error),'code':getattr(error,'code','INVALID_REQUEST')})
+            except Exception as error:return self.send(500,{'error':str(error)[:500],'code':'STUDIO_UNAVAILABLE'})
         if path in STATIC:
             file,kind=STATIC[path];return self.send(200,(ROOT/file).read_bytes(),kind)
         asset=None
-        if path.startswith('/ui-core/'):
+        if path.startswith('/studio-ui/'):
+            candidate=(ROOT/'workbench/studio'/path.removeprefix('/studio-ui/')).resolve()
+            if candidate.is_relative_to((ROOT/'workbench/studio').resolve()) and candidate.suffix in ('.js','.css','.json','.svg'):asset=candidate
+        elif path.startswith('/ui-core/'):
             candidate=(ROOT/path.lstrip('/')).resolve()
             if candidate.is_relative_to((ROOT/'ui-core').resolve()) and candidate.suffix in ('.js','.css','.json','.svg'):asset=candidate
         elif path.count('/')==1 and pathlib.Path(path).suffix in ('.js','.css','.svg'):
@@ -46,7 +80,7 @@ class Handler(BaseHTTPRequestHandler):
                 if path=='/api/reader/chapter':return self.send(200,reader.chapter(edition,options.get('book',['John'])[0],options.get('chapter',['1'])[0]))
             except (ValueError,TypeError) as error:return self.send(400,{'status':'QUERY_ERROR','error':str(error)})
             except (OSError,Exception) as error:return self.send(500,{'status':'QUERY_ERROR','error':'READER_UNAVAILABLE'})
-        if path=='/api/health':return self.send(200,{'status':'OK','scope':'FREE BIBLE READER desktop application','product':'FREE BIBLE READER','version':'0.1.1','lab_engines_available':True,'reader_available':reader.DATABASE.exists(),'allowed_engine':self.server.allowed_engine,'pid':os.getpid(),'bind':'127.0.0.1','contract_version':'1.0'})
+        if path=='/api/health':return self.send(200,{'status':'OK','scope':'FREE BIBLE READER desktop application','product':'FREE BIBLE READER','version':'0.2.0','lab_engines_available':True,'reader_available':reader.DATABASE.exists(),'allowed_engine':self.server.allowed_engine,'pid':os.getpid(),'bind':'127.0.0.1','contract_version':'1.0'})
         if path=='/api/editions':return self.send(200,{'editions':hub.editions(urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query).get('all',['false'])[0]=='true')})
         if path=='/api/books':
             with contextlib.closing(reference.connect_registry()) as db:rows=db.execute('SELECT osis,chapters_json FROM BookRegistry WHERE native_source_code IS NOT NULL ORDER BY book_order').fetchall()
@@ -58,9 +92,16 @@ class Handler(BaseHTTPRequestHandler):
         if origin and origin!=expected:return self.send(403,{'error':'Same-origin local requests only'})
         try:
             size=int(self.headers.get('Content-Length','0'))
-            if not 0<size<=16384:return self.send(413,{'error':'JSON body required, maximum16384bytes'})
-            payload=json.loads(self.rfile.read(size),object_pairs_hook=unique_object,parse_constant=invalid_constant);path=urllib.parse.urlsplit(self.path).path
+            path=urllib.parse.urlsplit(self.path).path
+            if path=='/api/studio/upload':
+                return self.send(200,studio_api.upload(self.rfile,size,urllib.parse.unquote(self.headers.get('X-Filename','source.sqlite'))))
+            maximum=8*1024*1024 if path.startswith('/api/studio/') else 16384
+            if not 0<size<=maximum:return self.send(413,{'error':f'JSON body required, maximum {maximum} bytes'})
+            payload=json.loads(self.rfile.read(size),object_pairs_hook=unique_object,parse_constant=invalid_constant)
             if not isinstance(payload,dict):return self.send(400,{'error':'JSON object required'})
+            if path.startswith('/api/studio/'):
+                answer=studio_api.post(path,payload)
+                return self.send(200,studio_api.jobs.public(answer)) if answer is not None else self.send(404,{'error':'Unknown studio route'})
             if path=='/api/reader/search':return self.send(200,reader.search(payload.get('query',''),payload.get('edition','web'),payload.get('book'),payload.get('limit',25),payload.get('offset',0)))
             if path=='/api/parse':return self.send(200,reference.parse_reference(payload.get('reference',''),payload.get('language','en')))
             if path=='/api/resolve':return self.send(200,corpus_adapter.resolve_reference(payload.get('reference',''),payload.get('edition_id','eng-kjv')))

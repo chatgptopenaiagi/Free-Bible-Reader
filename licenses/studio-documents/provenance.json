@@ -1,0 +1,129 @@
+{
+  "runtime_wheels": [
+    {
+      "name": "python-docx",
+      "version": "1.2.0",
+      "url": "https://files.pythonhosted.org/packages/d0/00/1e03a4989fa5795da308cd774f05b704ace555a70f9bf9d3be057b680bcf/python_docx-1.2.0-py3-none-any.whl",
+      "sha256": "3fd478f3250fbbbfd3b94fe1e985955737c145627498896a8a6bf81f4baf66c7"
+    },
+    {
+      "name": "reportlab",
+      "version": "5.1.0",
+      "url": "https://files.pythonhosted.org/packages/4a/3c/bf68d44f160b44685fc714f746a954c71d0091b3dc4fd3c8670154b44841/reportlab-5.1.0-py3-none-any.whl",
+      "sha256": "59fdbaec5efe437095ad1d7292ec9a271c8ca2d3ec75e889c6e61400929b90df"
+    },
+    {
+      "name": "lxml",
+      "version": "6.1.3",
+      "url": "https://files.pythonhosted.org/packages/0f/bc/5811cc73cac05e324e05ba9b0924e1a163a317a167ede8a9c748b11db30a/lxml-6.1.3-cp314-cp314-win_amd64.whl",
+      "sha256": "66299564c046bc7e0cc5de5106601eae907e9fa5904cd68a323380a8502f7861"
+    },
+    {
+      "name": "pillow",
+      "version": "13.0.0",
+      "url": "https://files.pythonhosted.org/packages/50/e2/7ad17747517e4c813dca78257d6bb593466f8231baf1384bc98d92745edb/pillow-13.0.0-cp314-cp314-win_amd64.whl",
+      "sha256": "f7cbb7a64e7ec664775195e4f81923bc8a93d9451b963f844e59118f63147a7a"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0",
+      "url": "https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl",
+      "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+    },
+    {
+      "name": "charset-normalizer",
+      "version": "3.5.2",
+      "url": "https://files.pythonhosted.org/packages/d1/78/5ed86f743d4bc350db307e7636419a0a5ee1d91806d30c7f667bd5c80dae/charset_normalizer-3.5.2-cp314-cp314-win_amd64.whl",
+      "sha256": "e4e81e09c1578b8df602e3db08b0b3ea0a6947ad612f52bf8dc5ea8d47691f0c"
+    }
+  ],
+  "license_copies": [
+    {
+      "package": "python-docx",
+      "version": "1.2.0",
+      "license": "MIT",
+      "file": "licenses/studio-documents/python-docx-LICENSE",
+      "sha256": "7652f271e46d0d533e9dc463f3b5fcbdcacf4d6a9c8d6b554d15efd0f37f6132"
+    },
+    {
+      "package": "reportlab",
+      "version": "5.1.0",
+      "license": "BSD license (see license.txt for details), Copyright (c) 2000-2025, ReportLab Inc.",
+      "file": "licenses/studio-documents/reportlab-LICENSE",
+      "sha256": "ef831761646313921375fc2cb888e8eeaf7da213d0b92852c10c42f3a0b4d138"
+    },
+    {
+      "package": "lxml",
+      "version": "6.1.3",
+      "license": "BSD-3-Clause",
+      "file": "licenses/studio-documents/lxml-LICENSE.txt",
+      "sha256": "e7c3ce8d76331b0101cc46790ab43958ea90a364bcf962ed8763d5a818340e69"
+    },
+    {
+      "package": "lxml",
+      "version": "6.1.3",
+      "license": "BSD-3-Clause",
+      "file": "licenses/studio-documents/lxml-LICENSES.txt",
+      "sha256": "df682c668de65321677b5e4861dca4128a8bad8067f230956e9da3f985b3d398"
+    },
+    {
+      "package": "Pillow",
+      "version": "13.0.0",
+      "license": "MIT-CMU",
+      "file": "licenses/studio-documents/Pillow-LICENSE",
+      "sha256": "988ffe8ab3480b0f4e9a0ab2702bffd73d9fb6b47198043fb3ba101a62fac236"
+    },
+    {
+      "package": "typing_extensions",
+      "version": "4.16.0",
+      "license": "PSF-2.0",
+      "file": "licenses/studio-documents/typing-extensions-LICENSE",
+      "sha256": "3b2f81fe21d181c499c59a256c8e1968455d6689d269aa85373bfb6af41da3bf"
+    },
+    {
+      "package": "charset-normalizer",
+      "version": "3.5.2",
+      "license": "MIT",
+      "file": "licenses/studio-documents/charset-normalizer-LICENSE",
+      "sha256": "18577485d3704f1a479ded8e573c0976cfed315fd2fd17983fa988da4c2f70d1"
+    }
+  ],
+  "font": {
+    "source": "https://github.com/dejavu-fonts/dejavu-fonts/releases/tag/version_2_37",
+    "official_checksums": "https://dejavu-fonts.github.io/Download.html",
+    "archive_sha256": "7576310b219e04159d35ff61dd4a4ec4cdba4f35c00e002a136f00e96a908b0a",
+    "matches_publisher_sha256": true,
+    "files": [
+      {
+        "file": "studio/fonts/DejaVuSans.ttf",
+        "bytes": 757076,
+        "sha256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+        "archive_member": "dejavu-fonts-ttf-2.37/ttf/DejaVuSans.ttf"
+      },
+      {
+        "file": "studio/fonts/DejaVuSerif.ttf",
+        "bytes": 380132,
+        "sha256": "42d1edeb7952f31b1f96d767ed7030b08a39e0c372b0071641518864e2bffb51",
+        "archive_member": "dejavu-fonts-ttf-2.37/ttf/DejaVuSerif.ttf"
+      },
+      {
+        "file": "studio/fonts/DejaVuSansMono.ttf",
+        "bytes": 340712,
+        "sha256": "b4a6c3e4faab8773f4ff761d56451646409f29abedd68f05d38c2df667d3c582",
+        "archive_member": "dejavu-fonts-ttf-2.37/ttf/DejaVuSansMono.ttf"
+      },
+      {
+        "file": "studio/fonts/LICENSE-DejaVu.txt",
+        "bytes": 8816,
+        "sha256": "7a083b136e64d064794c3419751e5c7dd10d2f64c108fe5ba161eae5e5958a93",
+        "archive_member": "dejavu-fonts-ttf-2.37/LICENSE"
+      }
+    ],
+    "retrieved_utc": "2026-11-16T16:02:18.295231+00:00",
+    "font_installation_performed": false
+  },
+  "verification_only_not_required_at_runtime": [
+    "pypdf==7.1.0",
+    "pypdfium2==5.15.2"
+  ]
+}

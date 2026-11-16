@@ -1,4 +1,4 @@
-"""Create 0.1.1 release metadata while reusing the immutable published data asset.
+"""Create release metadata while reusing the immutable published research asset.
 
 This utility never rebuilds databases, changes data/research-release.json, or
 repackages the existing ~200 MB research ZIP. New outputs are create-only.
@@ -21,9 +21,13 @@ def main():
     old_archive=ROOT/'dist'/data['archive']
     if old_archive.exists() and sha(old_archive).lower()!=data['sha256'].lower():raise ValueError('Existing published data archive hash mismatch')
     installer_hash=sha(installer)
-    result={'application_version':version,'created_utc':datetime.datetime.now(datetime.UTC).isoformat(),'installer':{'name':installer.name,'bytes':installer.stat().st_size,'sha256':installer_hash},'research_data':data,'research_asset_reused':True,'new_research_archive_created':False,'verified_local_research_files':observed,'data_manifest_modified':False,'publication_performed':False}
+    speech=json.loads((ROOT/'licenses/TTS-SOURCES.json').read_text(encoding='utf-8-sig'))['release_source_bundle']
+    speech_file=folder/speech['name']
+    if not speech_file.is_file() or speech_file.stat().st_size!=speech['bytes'] or sha(speech_file)!=speech['sha256']:
+        raise ValueError('Verified speech corresponding-source release asset is required')
+    result={'application_version':version,'created_utc':datetime.datetime.now(datetime.UTC).isoformat(),'installer':{'name':installer.name,'bytes':installer.stat().st_size,'sha256':installer_hash},'speech_corresponding_source':{'name':speech_file.name,'bytes':speech['bytes'],'sha256':speech['sha256']},'research_data':data,'research_asset_reused':True,'new_research_archive_created':False,'verified_local_research_files':observed,'data_manifest_modified':False,'publication_performed':False}
     folder.mkdir(parents=True,exist_ok=True)
     with manifest_path.open('x',encoding='utf-8') as target:json.dump(result,target,indent=2)
-    with checksums.open('x',encoding='ascii') as target:target.write(f'{installer_hash}  {installer.name}\n')
+    with checksums.open('x',encoding='ascii') as target:target.write(f'{installer_hash}  {installer.name}\n{speech["sha256"]}  {speech_file.name}\n')
     print(json.dumps({'status':'PASS','manifest':str(manifest_path),'checksums':str(checksums),'research_asset_reused':data['url'],'research_sha256':data['sha256']},indent=2))
 if __name__=='__main__':main()

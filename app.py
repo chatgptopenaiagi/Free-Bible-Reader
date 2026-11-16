@@ -1,10 +1,11 @@
 """FREE BIBLE READER: local-only desktop launcher and portable HTTP application."""
 from __future__ import annotations
 import argparse,contextlib,json,os,pathlib,socket,sys,threading,time,urllib.parse,urllib.request,webbrowser
-VERSION='0.1.1'
+VERSION='0.2.0'
+_PROFILE_DIRECTORY=None
 ROOT=pathlib.Path(getattr(sys,'_MEIPASS',pathlib.Path(__file__).resolve().parent))
 sys.path.insert(0,str(ROOT))
-def user_directory():return pathlib.Path(os.environ.get('LOCALAPPDATA',pathlib.Path.home()/'.local/share'))/'FreeBibleReader'
+def user_directory():return _PROFILE_DIRECTORY or pathlib.Path(os.environ.get('LOCALAPPDATA',pathlib.Path.home()/'.local/share'))/'FreeBibleReader'
 def existing_instance(state_path):
     try:
         state=json.loads(state_path.read_text(encoding='utf-8'));url=urllib.parse.urlsplit(state['url'])
@@ -16,7 +17,8 @@ def existing_instance(state_path):
     return None
 def self_test():
     from reader.service import catalog,chapter,search
-    checks={'three_editions':len(catalog()['editions'])==3,'books66':len(catalog()['books'])==66,'john3_36verses':len(chapter('web','John',3)['verses'])==36,'real_john3_16':'God so loved' in chapter('web','John',3)['verses'][15]['text'],'search':any(x['reference']=='John.3.16' for x in search('"God so loved"')['results']),'last_book':chapter('web','Rev',22)['next'] is None,'static_frontend':(ROOT/'workbench/index.html').is_file(),'ui_core':(ROOT/'ui-core/index.js').is_file()}
+    checks={'three_english_editions':{'web','kjv','bsb'}.issubset({e['id'] for e in catalog()['editions']}),'books66':len(catalog()['books'])==66,'john3_36verses':len(chapter('web','John',3)['verses'])==36,'real_john3_16':'God so loved' in chapter('web','John',3)['verses'][15]['text'],'search':any(x['reference']=='John.3.16' for x in search('"God so loved"')['results']),'last_book':chapter('web','Rev',22)['next'] is None,'static_frontend':(ROOT/'workbench/index.html').is_file(),'ui_core':(ROOT/'ui-core/index.js').is_file()}
+    checks['romanian_new_testament']=len(catalog('ronbl')['books'])==27 and len(chapter('ronbl','John',3)['verses'])==36
     try:
         from bridge import hub
         answer=hub.query({'reference':'John 1:1','engine':'all','edition_id':'crossreferences:KJV','limit':1})
@@ -28,6 +30,8 @@ def native_window(server,open_reader):
     import tkinter as tk
     from tkinter import ttk
     window=tk.Tk();window.title('FREE BIBLE READER');window.geometry('460x265');window.minsize(400,245);window.configure(bg='#f4f1e8')
+    from studio import native
+    native.install(window)
     languages={'en':{'ready':'Your offline Bible reader is ready.','open':'Open reader','quit':'Close application','note':'Keep this window open while reading.','language':'Language'},'ro':{'ready':'Cititorul biblic offline este pregătit.','open':'Deschide cititorul','quit':'Închide aplicația','note':'Păstrați această fereastră deschisă în timpul lecturii.','language':'Limbă'},'de':{'ready':'Ihr Offline-Bibelleser ist bereit.','open':'Bibelleser öffnen','quit':'Anwendung schließen','note':'Dieses Fenster beim Lesen geöffnet lassen.','language':'Sprache'}}
     locale_path=user_directory()/'launcher-language.json'
     try:initial=json.loads(locale_path.read_text()).get('language','en')
@@ -46,9 +50,21 @@ def native_window(server,open_reader):
         text=languages[language.get()];ready.configure(text=text['ready']);opening.configure(text=text['open']);closing.configure(text=text['quit']);note.configure(text=text['note']);label.configure(text=text['language'])
         try:locale_path.parent.mkdir(parents=True,exist_ok=True);locale_path.write_text(json.dumps({'language':language.get()}),encoding='utf-8')
         except OSError:pass
-    language.trace_add('write',translate);translate();window.protocol('WM_DELETE_WINDOW',stop);window.after(500,open_reader);window.mainloop()
+    language.trace_add('write',translate);translate();window.protocol('WM_DELETE_WINDOW',stop);window.after(500,open_reader)
+    try:window.mainloop()
+    finally:native.uninstall()
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--headless',action='store_true');parser.add_argument('--no-browser',action='store_true');parser.add_argument('--port',type=int,default=0);parser.add_argument('--state-file');parser.add_argument('--self-test',action='store_true');parser.add_argument('--self-test-output');args=parser.parse_args()
+    if '--tts-worker' in sys.argv:
+        index=sys.argv.index('--tts-worker')
+        if index+1>=len(sys.argv):return 2
+        from studio.piper_worker import main as worker
+        return worker(sys.argv[index+1])
+    parser=argparse.ArgumentParser();parser.add_argument('--headless',action='store_true');parser.add_argument('--no-browser',action='store_true');parser.add_argument('--port',type=int,default=0);parser.add_argument('--state-file');parser.add_argument('--self-test',action='store_true');parser.add_argument('--self-test-output');parser.add_argument('--profile-dir',help='Independent local settings and personal-library profile');args=parser.parse_args()
+    if args.profile_dir:
+        global _PROFILE_DIRECTORY
+        _PROFILE_DIRECTORY=pathlib.Path(args.profile_dir).expanduser().resolve()
+        from studio.paths import configure_root
+        configure_root(_PROFILE_DIRECTORY/'studio')
     if args.self_test:
         result=self_test()
         if args.self_test_output:pathlib.Path(args.self_test_output).write_text(json.dumps(result,indent=2),encoding='utf-8')

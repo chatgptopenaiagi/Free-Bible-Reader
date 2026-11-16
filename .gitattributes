@@ -5,3 +5,11 @@
 *.png binary
 *.jpg binary
 *.ico binary
+
+# Keep publisher runtime/font/license bytes identical to their recorded hashes.
+runtime/espeak-ng/** -text
+licenses/** -text
+studio/fonts/** -text
+data/*.sqlite -text
+data/*.gz -text
+screenshots/** -text

@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "provider": "piper",
+  "engine_version": "1.8.0",
+  "retrieved_utc": "2026-11-16T16:04:16.344959+00:00",
+  "voices": [
+    {
+      "id": "ro_RO-mihai-medium",
+      "provider": "piper",
+      "name": "Mihai",
+      "language": "ro-RO",
+      "quality": "medium",
+      "sample_rate": 22050,
+      "license": "CC0-1.0 (model card dataset/base declarations)",
+      "license_url": "https://huggingface.co/rhasspy/piper-voices/blob/e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c/ro/ro_RO/mihai/medium/MODEL_CARD",
+      "repository": "https://huggingface.co/rhasspy/piper-voices",
+      "commit": "e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c",
+      "files": [
+        {
+          "name": "ro_RO-mihai-medium.onnx",
+          "url": "https://huggingface.co/rhasspy/piper-voices/resolve/e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c/ro/ro_RO/mihai/medium/ro_RO-mihai-medium.onnx",
+          "bytes": 63221984,
+          "sha256": "ac9e1be65c059279c53500f11e8c276657c7e48a2d33b733add35dbe75748e29"
+        },
+        {
+          "name": "ro_RO-mihai-medium.onnx.json",
+          "url": "https://huggingface.co/rhasspy/piper-voices/resolve/e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c/ro/ro_RO/mihai/medium/ro_RO-mihai-medium.onnx.json",
+          "bytes": 5460,
+          "sha256": "9fbd3514535fa11fe01c41f0b7277ac6a32e08b2580c799c4f1fc86bb9c30841"
+        },
+        {
+          "name": "MODEL_CARD",
+          "url": "https://huggingface.co/rhasspy/piper-voices/resolve/e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c/ro/ro_RO/mihai/medium/MODEL_CARD",
+          "bytes": 420,
+          "sha256": "40fc63296c26be3d826390102a39e6e90b299b6431210c33a368338a3f9f2a8b"
+        }
+      ]
+    },
+    {
+      "id": "en_US-joe-medium",
+      "provider": "piper",
+      "name": "Joe",
+      "language": "en-US",
+      "quality": "medium",
+      "sample_rate": 22050,
+      "license": "CC0-1.0 (model card dataset/base declarations)",
+      "license_url": "https://huggingface.co/rhasspy/piper-voices/blob/e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c/en/en_US/joe/medium/MODEL_CARD",
+      "repository": "https://huggingface.co/rhasspy/piper-voices",
+      "commit": "e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c",
+      "files": [
+        {
+          "name": "en_US-joe-medium.onnx",
+          "url": "https://huggingface.co/rhasspy/piper-voices/resolve/e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c/en/en_US/joe/medium/en_US-joe-medium.onnx",
+          "bytes": 63221984,
+          "sha256": "abf4b998e34045cbd00eaf050de2de620f81ded6eb8b85a24b022a1c2b3f08d2"
+        },
+        {
+          "name": "en_US-joe-medium.onnx.json",
+          "url": "https://huggingface.co/rhasspy/piper-voices/resolve/e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c/en/en_US/joe/medium/en_US-joe-medium.onnx.json",
+          "bytes": 5465,
+          "sha256": "7b5f0293c0bf5bda8e377be1696da84af798befeef31038e43beefc01fe858da"
+        },
+        {
+          "name": "MODEL_CARD",
+          "url": "https://huggingface.co/rhasspy/piper-voices/resolve/e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c/en/en_US/joe/medium/MODEL_CARD",
+          "bytes": 423,
+          "sha256": "4b319248135916e8f5433ce7a9fe5271026b05cb598bab05807b22cb17fd129b"
+        }
+      ]
+    },
+    {
+      "id": "de_DE-thorsten-medium",
+      "provider": "piper",
+      "name": "Thorsten",
+      "language": "de-DE",
+      "quality": "medium",
+      "sample_rate": 22050,
+      "license": "CC0-1.0 (model card dataset/base declarations)",
+      "license_url": "https://huggingface.co/rhasspy/piper-voices/blob/e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c/de/de_DE/thorsten/medium/MODEL_CARD",
+      "repository": "https://huggingface.co/rhasspy/piper-voices",
+      "commit": "e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c",
+      "files": [
+        {
+          "name": "de_DE-thorsten-medium.onnx",
+          "url": "https://huggingface.co/rhasspy/piper-voices/resolve/e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c/de/de_DE/thorsten/medium/de_DE-thorsten-medium.onnx",
+          "bytes": 63221984,
+          "sha256": "fd270eb3d1ebf91d763f8a0f949b1b1bebdfefaea18c3aaf8577dd34536e064f"
+        },
+        {
+          "name": "de_DE-thorsten-medium.onnx.json",
+          "url": "https://huggingface.co/rhasspy/piper-voices/resolve/e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c/de/de_DE/thorsten/medium/de_DE-thorsten-medium.onnx.json",
+          "bytes": 5460,
+          "sha256": "cf245c91668e74cb6716f38647ae3d6d9bac42965872596f65f9ab2b7d7221ed"
+        },
+        {
+          "name": "MODEL_CARD",
+          "url": "https://huggingface.co/rhasspy/piper-voices/resolve/e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c/de/de_DE/thorsten/medium/MODEL_CARD",
+          "bytes": 427,
+          "sha256": "c638118fb06eb07d59e60270097c250cf2de81a037320a8a6306fec652ad13b0"
+        }
+      ]
+    }
+  ]
+}

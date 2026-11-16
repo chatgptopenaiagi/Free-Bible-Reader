@@ -1,9 +1,9 @@
-#define MyAppVersion "0.1.1"
+#define MyAppVersion "0.2.0"
 #ifndef FBR_BUILD_ROOT
-  #define FBR_BUILD_ROOT "..\dist\0.1.1\FreeBibleReader"
+  #define FBR_BUILD_ROOT "..\dist\0.2.0\FreeBibleReader"
 #endif
 #ifndef FBR_OUTPUT_DIR
-  #define FBR_OUTPUT_DIR "..\dist\0.1.1"
+  #define FBR_OUTPUT_DIR "..\dist\0.2.0"
 #endif
 [Setup]
 #ifdef FBR_TEST_INSTALL

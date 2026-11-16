@@ -1,0 +1,23 @@
+{
+  "source_id": "ronbl",
+  "source_url": "https://ebible.org/details.php?id=ronbl",
+  "download_url": "https://ebible.org/Scriptures/ronbl_vpl.zip",
+  "source_date": "2026-10-28",
+  "script": "Latn",
+  "coverage": "New Testament only",
+  "draft": true,
+  "license": "Public Domain (eBible current edition and archive declaration)",
+  "format": "VPL XML: text-only; notes/paragraph formatting absent",
+  "text_policy": "Exact XML text nodes preserved, including trailing spaces; canonical book IDs mapped from source SIL/UBS codes; native labels retained",
+  "book_name_policy": "Romanian interface display labels, not a translation of source text",
+  "source_archive_sha256": "b7f1473a458ef8aea687d61a4ea73bac957e0563e04b40e91f8155897b95e26a",
+  "source_xml_sha256": "7f427a1c62b0a6fe677e2d2517ec092912ab402b13df1a8e6826957a89c84853",
+  "verse_count": 7958,
+  "book_count": 27,
+  "chapter_count": 260,
+  "generated_utc": "2026-11-16T16:05:03.814355+00:00",
+  "database_sha256": "34099b93da9df64c292bebed1e1cfedc640e50cd07e0e97c2a48ce53fb6be8b6",
+  "database_bytes": 3067904,
+  "source_jsonl_sha256": "a5cc672954e3f01a6cc7291bd27d81f96c4b448fb7b8bf128706ff4ce16f3c75",
+  "all_text_nodes_exact_roundtrip": true
+}

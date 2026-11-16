@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "application_version": "0.2.0",
+  "created_utc": "2026-11-16T17:07:31.887824+00:00",
+  "components": [
+    {
+      "component": "Piper",
+      "version": "1.8.0",
+      "archive": "piper1-gpl-v1.8.0.tar.gz",
+      "url": "https://github.com/OHF-Voice/piper1-gpl/archive/refs/tags/v1.8.0.tar.gz",
+      "license": "GPL-3.0-or-later",
+      "note": "Repository release source, including CMake and espeakbridge C source; the separate Python sdist omitted native bridge build inputs.",
+      "bytes": 24738865,
+      "sha256": "0a22987a6157f14e2fb7cf4aa702b547467fd0448bea9f233abd503c3ff4a0e1"
+    },
+    {
+      "component": "eSpeak NG standalone runtime",
+      "version": "1.52.0",
+      "archive": "espeak-ng-1.52.0.tar.gz",
+      "url": "https://github.com/espeak-ng/espeak-ng/archive/refs/tags/1.52.0.tar.gz",
+      "license": "GPL-3.0-or-later",
+      "bytes": 17739803,
+      "sha256": "bb4338102ff3b49a81423da8a1a158b420124b055b60fa76cfb4b18677130a23"
+    },
+    {
+      "component": "eSpeak NG embedded by Piper espeakbridge",
+      "commit": "724808c5a83f9ef95fdd0db886ba7ba537ff224a",
+      "archive": "espeak-ng-724808c5a83f9ef95fdd0db886ba7ba537ff224a.tar.gz",
+      "url": "https://github.com/espeak-ng/espeak-ng/archive/724808c5a83f9ef95fdd0db886ba7ba537ff224a.tar.gz",
+      "license": "GPL-3.0-or-later",
+      "note": "Exact external-project commit named in Piper v1.8.0 CMakeLists.txt; distinct from the standalone1.52.0 runtime.",
+      "bytes": 18647838,
+      "sha256": "7d8ebd78201923a443245362a928999977d1721c3eeba596eafc6ea8db7e243c"
+    }
+  ],
+  "release_source_bundle": {
+    "name": "Free-Bible-Reader-0.2.0-tts-sources.zip",
+    "bytes": 61200561,
+    "sha256": "d1a8007a5117b5eab4413482065076ccae29ae3ed0eb7a859a394c0b77d0293d",
+    "published": false
+  },
+  "runtime_origins": {
+    "piper_wheel_sha256": "5da9bfdb05dfe15da3536859d422e605483ffa6d2b3ec2c5b9593bae6b5aa6a4",
+    "piper_source_sdist_sha256": "830588aded347df579c91a32703e0fc2a3685d84f1e3533b14f2de69135d4904",
+    "standalone_espeak_msi_sha256": "7f673c709ea5dd579d3b5ebb98688cc575328a6ab7438d2bc405b88cedaeafb9"
+  },
+  "managed_voice_models_bundled": false,
+  "independent_upstream_source_rebuild_claimed": false
+}

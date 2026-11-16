@@ -1,0 +1,44 @@
+.app-header:has(.studio-menubar){flex-wrap:wrap;gap:.65rem 1rem;padding-block-end:.35rem}
+.studio-menubar{display:flex;flex:1 0 100%;align-items:center;gap:.15rem;min-inline-size:0;border-block-start:1px solid var(--ui-border);padding-block-start:.3rem}
+.studio-menu{position:relative;flex:1;min-inline-size:0}
+.studio-tools{display:none}.studio-menu-items h3{font-size:.72rem;letter-spacing:.08em;margin:.7rem .5rem .25rem;color:var(--ui-muted)}
+@media(min-width:900px){.header-actions .workspace-choice select{inline-size:14rem;max-inline-size:14rem}}
+.studio-menu>summary{cursor:pointer;list-style:none;min-block-size:38px;padding:.5rem .6rem;border-radius:.4rem;text-align:center;font-size:.83rem;font-weight:650;white-space:nowrap}
+.studio-menu>summary:hover,.studio-menu[open]>summary{background:var(--ui-selected);color:var(--ui-primary)}
+.studio-menu-items{position:absolute;z-index:80;inset-block-start:100%;inset-inline-start:0;inline-size:17rem;max-block-size:min(65dvh,32rem);overflow:auto;background:var(--ui-surface);border:1px solid var(--ui-border);border-radius:.6rem;box-shadow:0 12px 32px #0003;padding:.45rem}
+.studio-menu:nth-last-child(-n+3) .studio-menu-items{inset-inline-start:auto;inset-inline-end:0}
+.studio-menu-items button{display:block;inline-size:100%;text-align:start;font-size:.83rem;border:0;background:transparent}
+.studio-dialog{inline-size:min(48rem,calc(100vw - 1.5rem));max-inline-size:calc(100vw - 1.5rem);max-block-size:calc(100dvh - 1.5rem);padding:0;border:1px solid var(--ui-border);border-radius:.8rem;background:var(--ui-surface);color:var(--ui-text);overflow:auto;resize:both;box-shadow:0 20px 70px #0004}
+.studio-dialog.studio-wide{inline-size:min(70rem,calc(100vw - 1.5rem))}
+.studio-dialog::backdrop{background:#1118}
+.studio-dialog>header{display:flex;align-items:center;gap:1rem;justify-content:space-between;padding:1rem 1.3rem;position:sticky;inset-block-start:0;z-index:2;background:var(--ui-surface);border-block-end:1px solid var(--ui-border)}
+.studio-dialog>header h2{font-size:1.2rem;margin:0;overflow-wrap:anywhere}
+.studio-dialog>header button{min-inline-size:44px;min-block-size:44px;flex-shrink:0}
+.studio-dialog-body{padding:1.25rem;min-inline-size:0;overflow-wrap:anywhere}
+.studio-dialog footer{padding:.7rem 1.25rem;background:var(--ui-surface)}
+.studio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:1rem;align-items:start;margin-block-end:1rem}
+.studio-field{display:flex;flex-direction:column;gap:.35rem;min-inline-size:0;margin-block-end:.8rem;font-size:.88rem}
+.studio-field>span{font-weight:650}.studio-field input,.studio-field select,.studio-field textarea{inline-size:100%;min-inline-size:0}
+.studio-field textarea{min-block-size:8rem;resize:vertical}.studio-field input[type=checkbox]{inline-size:1.2rem;align-self:flex-start}
+.studio-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;margin-block:.75rem}.studio-actions button{min-block-size:44px;font-size:.83rem}
+.studio-card,.studio-voice-card{padding:1rem;border:1px solid var(--ui-border);border-radius:.65rem;margin-block:.7rem;background:var(--ui-background)}
+.studio-card h3,.studio-voice-card h3{font-size:1rem;overflow-wrap:anywhere;margin-block-end:.6rem}
+.studio-card p,.studio-voice-card p{white-space:pre-wrap;overflow-wrap:anywhere}.studio-dialog table{border-collapse:collapse;inline-size:100%;font-size:.8rem}.studio-dialog th,.studio-dialog td{text-align:start;vertical-align:top;border:1px solid var(--ui-border);padding:.5rem;overflow-wrap:anywhere;max-inline-size:25rem}
+.studio-table-wrap{overflow:auto;max-inline-size:100%}.studio-context-menu{position:fixed;z-index:160;inline-size:min(21rem,calc(100vw - 8px));max-block-size:calc(100dvh - 16px);overflow:auto;border:1px solid var(--ui-border);border-radius:.6rem;background:var(--ui-surface);box-shadow:0 12px 40px #0004;padding:.4rem}
+.studio-context-menu button{display:block;inline-size:100%;border:0;text-align:start;background:transparent;min-block-size:38px;font-size:.83rem}
+.studio-notifications{position:fixed;z-index:200;inset-inline:1rem;inset-block-end:6rem;max-inline-size:40rem;margin-inline:auto;padding:1rem;border:1px solid var(--ui-border);border-inline-start:4px solid var(--ui-primary);border-radius:.6rem;background:var(--ui-surface);box-shadow:0 8px 30px #0003;overflow-wrap:anywhere}
+.studio-notifications.is-error{border-inline-start-color:var(--ui-accent)}
+#reader-navigation:has(#studio-bible-language){grid-template-columns:minmax(8rem,.65fr) minmax(13rem,1.4fr) minmax(10rem,1fr) minmax(5rem,.45fr)}
+.library-sidebar{inset-block-start:var(--reader-header-height,120px);block-size:calc(100dvh - var(--reader-header-height,120px))}
+.studio-player{position:fixed;inset-inline:0;inset-block-end:0;z-index:45;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;padding:.55rem max(.75rem,env(safe-area-inset-right)) max(.55rem,env(safe-area-inset-bottom));background:var(--ui-surface);border-block-start:1px solid var(--ui-border);box-shadow:0 -4px 20px #0001;min-block-size:64px}
+.studio-player-controls,.studio-player-selectors{display:flex;gap:.35rem;align-items:center;min-inline-size:0}.studio-player button{min-inline-size:44px;min-block-size:44px}.studio-player select{inline-size:auto;max-inline-size:17rem;font-size:.8rem}.studio-player label{font-size:.75rem;min-inline-size:0}.studio-player [role=status]{font-size:.75rem;max-inline-size:20rem;overflow-wrap:anywhere;margin:0}
+body:has(.studio-player){padding-block-end:96px}.reader-context.has-selection{inset-block-end:80px}
+.scripture-verse.narrating{outline:2px solid var(--ui-primary);background:var(--ui-selected);border-radius:.5rem;scroll-margin-block-start:calc(var(--reader-header-height,120px) + 1rem)}
+.studio-search-text{font-family:var(--ui-scripture-font);font-size:1.1rem;line-height:1.7}.studio-search-text mark{background:var(--ui-highlight);color:var(--ui-text)}
+.studio-edition-note{font-size:.82rem;margin-block:.5rem 1rem}.studio-dialog progress{inline-size:100%;block-size:.8rem}
+@media(max-width:1000px){#reader-navigation:has(#studio-bible-language){grid-template-columns:1fr 1fr}.studio-menubar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.1rem}.studio-menu>summary{font-size:.75rem;padding-inline:.2rem}.studio-menu:nth-child(n+5) .studio-menu-items{inset-inline-start:auto;inset-inline-end:0}.studio-player [role=status]{flex-basis:100%;max-inline-size:100%}}
+@media(max-width:600px){.studio-menubar{grid-template-columns:repeat(3,minmax(0,1fr));max-block-size:7.5rem;overflow:visible}.studio-menu>summary{min-block-size:32px;padding:.3rem}.studio-menu-items{position:fixed;inset-inline:.5rem!important;inset-block-start:var(--reader-header-height,200px);inline-size:auto;max-block-size:calc(100dvh - var(--reader-header-height,200px) - 90px)}.studio-dialog{resize:none;inline-size:calc(100vw - 1rem)}.studio-dialog-body{padding:.8rem}.studio-dialog>header{padding:.65rem .8rem}.studio-grid{grid-template-columns:1fr}.studio-player{gap:.25rem;padding:.3rem .4rem}.studio-player-controls{flex:1;justify-content:space-evenly}.studio-player-selectors{inline-size:100%;justify-content:center}.studio-player select{max-inline-size:48%;font-size:.72rem}.studio-player [role=status]{font-size:.7rem}.reader-context.has-selection{inset-block-end:126px}body:has(.studio-player){padding-block-end:145px}#reader-navigation:has(#studio-bible-language){grid-template-columns:1fr 1fr}#reader-navigation:has(#studio-bible-language)>label:nth-child(2){grid-column:auto}.studio-context-menu button{min-block-size:44px}}
+@media print{.app-header,.library-sidebar,.studio-player,.reader-navigation,.reading-actions,.reader-context,.chapter-end-navigation,.reading-shortcuts,.reader-search,.studio-edition-note,dialog,.studio-notifications,.studio-context-menu{display:none!important}.app-shell,.workspace{display:block!important}.main-workspace{padding:0}.workspace-panel{border:0;box-shadow:none}.scripture-content{max-inline-size:none}.scripture-verse{break-inside:avoid}}
+@media(max-width:600px){.studio-menubar{grid-template-columns:repeat(4,minmax(0,1fr));max-block-size:none}.studio-menu[data-menu]{display:none}.studio-menu[data-menu=bible],.studio-menu[data-menu=audio],.studio-menu[data-menu=library],.studio-tools{display:block}.studio-player-selectors{display:none}.reader-context.has-selection{inset-block-end:82px}body:has(.studio-player){padding-block-end:100px}}
+@media(max-width:600px){.studio-menu>summary{white-space:normal;overflow-wrap:anywhere;line-height:1.3}.studio-player-controls{gap:.15rem}.studio-player-button{padding-inline:.3rem}}
+body[data-reading-focus=true] .studio-menubar{display:none}

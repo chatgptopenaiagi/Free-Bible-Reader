@@ -4,7 +4,7 @@ import contextlib,json,pathlib,re,sqlite3
 DATABASE=pathlib.Path(__file__).resolve().parents[1]/'data/reader.sqlite'
 def connect():
     db=sqlite3.connect(DATABASE.as_uri()+'?mode=ro',uri=True);db.row_factory=sqlite3.Row;db.execute('PRAGMA query_only=ON');return db
-def catalog(edition='web'):
+def _bundled_catalog(edition='web'):
     with contextlib.closing(connect()) as db:
         es=[dict(r) for r in db.execute('SELECT id,name,language,source,license,metadata_json FROM Edition ORDER BY CASE id WHEN \'web\' THEN 0 ELSE 1 END,id')]
         if edition not in {e['id'] for e in es}:raise ValueError('UNSUPPORTED_EDITION')
@@ -12,7 +12,7 @@ def catalog(edition='web'):
         books=[dict(r) for r in db.execute('SELECT id,name,chapters_json FROM Book WHERE edition=? ORDER BY sort_order',(edition,))]
         for b in books:b['chapters']=json.loads(b.pop('chapters_json'))
         return {'editions':es,'books':books,'default_edition':'web','selected_edition':edition}
-def chapter(edition='web',book='John',chapter=1):
+def _bundled_chapter(edition='web',book='John',chapter=1):
     if isinstance(chapter,bool):raise ValueError('INVALID_CHAPTER')
     chapter=int(chapter);c=catalog(edition);b=next((b for b in c['books'] if b['id']==book),None)
     if not b or not 1<=chapter<=len(b['chapters']):raise ValueError('REFERENCE_NOT_FOUND')
@@ -22,6 +22,9 @@ def chapter(edition='web',book='John',chapter=1):
     with contextlib.closing(connect()) as db:verses=[{'number':r['verse'],'reference':f"{book}.{chapter}.{r['verse']}",'text':r['text'],'text_sha256':r['text_sha256']} for r in db.execute('SELECT verse,text,text_sha256 FROM Verse WHERE edition=? AND book=? AND chapter=? ORDER BY verse',(edition,book,chapter))]
     return {'status':'VALID_RESULT','edition':next(e for e in c['editions'] if e['id']==edition),'book':b,'chapter':chapter,'verses':verses,'previous':previous,'next':next_}
 def search(query,edition='web',book=None,limit=25,offset=0):
+    if edition not in ('web','kjv','bsb'):
+        from studio.search import search as installed_search
+        return installed_search(query,edition=edition,book=book,mode='words',diacritics='exact',limit=limit,offset=offset)
     if not isinstance(query,str) or not 1<=len(query.strip())<=200:raise ValueError('INVALID_SEARCH')
     if isinstance(limit,bool) or not isinstance(limit,int) or not 1<=limit<=100 or isinstance(offset,bool) or not isinstance(offset,int) or not 0<=offset<=100000:raise ValueError('INVALID_PAGINATION')
     c=catalog(edition)
@@ -33,3 +36,11 @@ def search(query,edition='web',book=None,limit=25,offset=0):
         total=db.execute('SELECT COUNT(*) FROM VerseSearch f JOIN Verse v ON v.rowid=f.rowid WHERE VerseSearch MATCH ? AND '+where,params).fetchone()[0]
         rows=db.execute('SELECT v.book,v.chapter,v.verse,v.text FROM VerseSearch f JOIN Verse v ON v.rowid=f.rowid JOIN Book b ON b.edition=v.edition AND b.id=v.book WHERE VerseSearch MATCH ? AND '+where+' ORDER BY bm25(VerseSearch),b.sort_order,v.chapter,v.verse LIMIT ? OFFSET ?',params+[limit,offset]).fetchall()
     return {'status':'VALID_RESULT' if rows else 'NO_MATCH','edition':edition,'query':query,'total':total,'limit':limit,'offset':offset,'results':[dict(r,reference=f"{r['book']}.{r['chapter']}.{r['verse']}") for r in rows]}
+
+def catalog(edition='web'):
+    from studio.library import catalog as installed_catalog
+    return installed_catalog(edition)
+
+def chapter(edition='web',book='John',chapter=1):
+    from studio.library import chapter as installed_chapter
+    return installed_chapter(edition,book,chapter)
