@@ -1,7 +1,8 @@
 /** Offline narration: one cancellable synthesis job, one source unit at a time. */
 export function canonicalSpeechLanguage(value){const code=String(value||'').replaceAll('_','-').toLowerCase().split('-')[0];return ['ron','rum','ro'].includes(code)?'ro':['deu','ger','de'].includes(code)?'de':['eng','en'].includes(code)?'en':code;}
-export function chooseDefaultVoice(voices,sourceLanguage,stored=null){
-  const actual=voices.filter(v=>v.installed&&v.runtime_available!==false);
+export function chooseDefaultVoice(voices,sourceLanguage,stored=null,strictLanguage=false){
+  const source=canonicalSpeechLanguage(sourceLanguage);
+  const actual=voices.filter(v=>v.installed&&v.runtime_available!==false&&(!strictLanguage||canonicalSpeechLanguage(v.language)===source));
   const saved=actual.find(v=>v.provider===stored?.provider&&v.id===stored?.voice);if(saved)return saved;
   const lang=canonicalSpeechLanguage(sourceLanguage),matching=actual.filter(v=>canonicalSpeechLanguage(v.language)===lang);
   const david=(items,provider)=>items.find(v=>v.provider===provider&&v.name.toLowerCase().includes('david'));
@@ -11,8 +12,9 @@ export async function createAudioStudio(common,{reader,getSelection}){
   await common.namespace('audio');
   const {t,node,text,button,field,options,dialog,request,waitJob,notify}=common;
   const STORAGE='free-bible-reader.audio.v1';
-  let catalog={voices:[],providers:[]},settings={provider:null,voice:null,speed:1,volume:1,scope:'selection'};
-  try{const saved=JSON.parse(localStorage.getItem(STORAGE)||'null');if(saved?.version===1){for(const k of ['provider','voice','scope'])if(typeof saved[k]==='string')settings[k]=saved[k];if(Number.isFinite(saved.speed)&&saved.speed>=.5&&saved.speed<=2)settings.speed=saved.speed;if(Number.isFinite(saved.volume)&&saved.volume>=0&&saved.volume<=1)settings.volume=saved.volume;}}catch{}
+  let catalog={voices:[],providers:[]},settings={provider:null,voice:null,speed:1,volume:1,scope:'selection',speechMode:'auto',systemEnginePackage:''};
+  try{const saved=JSON.parse(localStorage.getItem(STORAGE)||'null');if(saved?.version===1){for(const k of ['provider','voice','scope','speechMode','systemEnginePackage'])if(typeof saved[k]==='string')settings[k]=saved[k];if(Number.isFinite(saved.speed)&&saved.speed>=.5&&saved.speed<=2)settings.speed=saved.speed;if(Number.isFinite(saved.volume)&&saved.volume>=0&&saved.volume<=1)settings.volume=saved.volume;}}catch{}
+  if(!['auto','piper','android-native'].includes(settings.speechMode))settings.speechMode='auto';
   let plan=null,epoch=0,clipEpoch=0,activeJob=null,serial=Promise.resolve(),paused=false,preparing=false,generating=false,finished=false,currentItem=null,managerJob=null,managerAbort=null,managerBusy=false,refreshingVoices=false,refreshPromise=null,selectionSnapshot=null,state='idle';
   const media=node('audio');media.id='studio-audio-source';media.hidden=true;media.preload='auto';media.volume=settings.volume;
   const player=node('section',null,'studio-player');player.id='studio-player';player.setAttribute('aria-label',t('audio.player'));
@@ -30,6 +32,8 @@ export async function createAudioStudio(common,{reader,getSelection}){
   const status=node('p',null,'studio-player-status');status.id='studio-audio-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   player.append(controls,selectors,status,media);document.body.append(player);
   const voicesDialog=dialog('audio.voices',{id:'studio-voices-dialog',wide:true});
+  const speechMode=field('audio.speechMode','select'),systemEngine=field('audio.systemEngine','select'),engineDiagnostics=node('p',null,'notice');
+  speechMode.input.id='studio-speech-mode';systemEngine.input.id='studio-system-engine';engineDiagnostics.id='studio-engine-diagnostics';
   const voiceFilter=field('audio.filter','search'),previewField=field('audio.previewText','textarea',t('audio.sampleRo'));
   voiceFilter.input.id='studio-voice-filter';voiceFilter.label.htmlFor=voiceFilter.input.id;previewField.input.id='studio-voice-preview-text';previewField.label.htmlFor=previewField.input.id;previewField.input.maxLength=2000;
   const voiceList=node('div',null,'studio-voice-list');voiceList.id='studio-voice-list';
@@ -39,7 +43,7 @@ export async function createAudioStudio(common,{reader,getSelection}){
   const isAndroid=()=>catalog.platform==='android'||catalog.providers.some(p=>p.id==='android-native');
   const windows=button('audio.windowsSettings',()=>request(isAndroid()?'android-voices':'windows-voices').then(()=>notify(t(isAndroid()?'audio.androidOpened':'audio.windowsOpened'))));windows.id='studio-windows-voices';
   const voicesHelp=text('p','audio.voicesHelp','notice');
-  voicesDialog.body.append(voicesHelp,voiceFilter.label,previewField.label,managerStatus,managerProgress,managerCancel,voiceList);
+  voicesDialog.body.append(voicesHelp,speechMode.label,systemEngine.label,engineDiagnostics,voiceFilter.label,previewField.label,managerStatus,managerProgress,managerCancel,voiceList);
   const previewStop=button('audio.stop',()=>stop());previewStop.id='studio-voice-preview-stop';
   voicesDialog.footer.append(previewStop,button('audio.refresh',()=>refreshVoices(true)),windows,text('small','audio.closeCancels'));
   voicesDialog.onClose(()=>managerAbort?.abort());
@@ -60,13 +64,31 @@ export async function createAudioStudio(common,{reader,getSelection}){
   function describe(item){return item?.reference||t('audio.preview');}
   function clearHighlight(){document.querySelectorAll('.scripture-verse.narrating').forEach(el=>el.classList.remove('narrating'));}
   function highlight(item){clearHighlight();if(item?.edition_id!=null&&editionId(reader.getCurrent())!==item.edition_id)return;if(item?.reference)for(const el of document.querySelectorAll('.scripture-verse'))if(el.dataset.reference===item.reference)el.classList.add('narrating');}
-  function renderStatus(){status.textContent=t('audio.state.'+state,{reference:describe(currentItem)});previous.disabled=!plan||preparing;next.disabled=!plan||preparing;pausing.disabled=!plan;stopping.disabled=!plan&&!activeJob;playing.setAttribute('aria-pressed',String(!!plan&&!paused&&!finished));}
+  let producedBy=null;
+  function renderStatus(){status.textContent=t('audio.state.'+state,{reference:describe(currentItem)})+(producedBy?' · '+t('audio.producedBy',{engine:producedBy}):'');previous.disabled=!plan||preparing;next.disabled=!plan||preparing;pausing.disabled=!plan;stopping.disabled=!plan&&!activeJob;playing.setAttribute('aria-pressed',String(!!plan&&!paused&&!finished));}
   function selectedVoice(){return catalog.voices.find(v=>v.provider===settings.provider&&v.id===settings.voice);}
+  function sourceLanguage(){return reader.getCurrent()?.edition?.language||common.language();}
+  function matchingVoices(){return catalog.voices.filter(v=>v.installed&&v.runtime_available!==false&&(!isAndroid()||language(v.language)===language(sourceLanguage())));}
+  function ensureLanguageVoice(){
+    if(!isAndroid())return;
+    let values=matchingVoices();if(settings.speechMode==='piper')values=values.filter(v=>v.provider==='piper');
+    if(settings.speechMode==='android-native')values=values.filter(v=>v.provider==='android-native'&&(!settings.systemEnginePackage||v.engine_package===settings.systemEnginePackage));
+    const chosen=chooseDefaultVoice(values,sourceLanguage(),{provider:settings.provider,voice:settings.voice},true);
+    if(chosen){settings.provider=chosen.provider;settings.voice=chosen.id;if(chosen.provider==='android-native')settings.systemEnginePackage=chosen.engine_package||'';}
+    else{settings.provider=settings.speechMode==='android-native'?'android-native':settings.speechMode==='piper'?'piper':null;settings.voice=null;}
+    save();
+  }
   function renderPlatform(){const key=isAndroid()?'audio.androidSettings':'audio.windowsSettings';windows.dataset.studioKey=key;windows.textContent=t(key);voicesHelp.dataset.studioKey=isAndroid()?'audio.androidVoicesHelp':'audio.voicesHelp';voicesHelp.textContent=t(voicesHelp.dataset.studioKey);player.setAttribute('aria-label',t(isAndroid()?'audio.androidPlayer':'audio.player'));}
   function renderSelectors(){
     renderPlatform();
+    speechMode.label.hidden=!isAndroid();systemEngine.label.hidden=!isAndroid();engineDiagnostics.hidden=!isAndroid();
+    if(isAndroid()){
+      options(speechMode.input,['piper','android-native','auto'].map(id=>[id,t('audio.mode.'+id)]),settings.speechMode);
+      const engines=catalog.engines||[];options(systemEngine.input,[['',t('audio.deviceDefault')],...engines.map(e=>[e.engine_package||e.id,`${e.name||e.engine_package} · ${t(e.romanian_offline_available?'audio.romanianOffline':e.romanian_available?'audio.romanianAvailable':'audio.romanianMissing')}`])],settings.systemEnginePackage);
+      engineDiagnostics.textContent=t('audio.engineCount',{count:engines.length});
+    }
     options(provider,catalog.providers.filter(p=>p.available).map(p=>[p.id,providerName(p.id)]),settings.provider);
-    const candidates=catalog.voices.filter(v=>v.provider===settings.provider&&v.installed&&v.runtime_available!==false);
+    const candidates=matchingVoices().filter(v=>v.provider===settings.provider&&(v.provider!=='android-native'||!settings.systemEnginePackage||v.engine_package===settings.systemEnginePackage));
     options(voice,candidates.map(v=>[v.id,`${v.name} · ${v.language}${isAndroid()?' · '+t(v.network_required===true?'audio.networkVoice':v.network_required===false?'audio.offlineVoice':'audio.voiceAvailabilityUnknown'):''}`]),settings.voice);
     if(settings.voice&&!candidates.some(v=>v.id===settings.voice)){const missing=node('option',t('audio.voiceMissing'));missing.value=settings.voice;missing.disabled=true;voice.append(missing);voice.value=settings.voice;}
     provider.disabled=!catalog.providers.some(p=>p.available);voice.disabled=!candidates.length;
@@ -75,9 +97,10 @@ export async function createAudioStudio(common,{reader,getSelection}){
     if(refreshPromise)return refreshPromise;
     refreshingVoices=true;renderVoices();
     const pending=(async()=>{catalog=await request('voices'+(refresh?'?refresh=true':''));
-    if(!catalog.voices.some(v=>v.provider===settings.provider&&v.id===settings.voice&&v.installed&&v.runtime_available!==false)){
+    if(isAndroid())ensureLanguageVoice();
+    if(!isAndroid()&&!catalog.voices.some(v=>v.provider===settings.provider&&v.id===settings.voice&&v.installed&&v.runtime_available!==false)){
       const wasSelected=!!settings.provider&&!!settings.voice;
-      const chosen=chooseDefaultVoice(catalog.voices,reader.getCurrent()?.edition?.language||common.language());
+      const chosen=chooseDefaultVoice(catalog.voices,sourceLanguage(),null,isAndroid());
       if(chosen){settings.provider=chosen.provider;settings.voice=chosen.id;save();}
       if(wasSelected&&chosen)notify(t('audio.savedVoiceUnavailable'));
     }
@@ -86,16 +109,17 @@ export async function createAudioStudio(common,{reader,getSelection}){
     try{return await pending;}finally{if(refreshPromise===pending)refreshPromise=null;refreshingVoices=false;renderVoices();}
   }
   function cancelJob(){if(activeJob)request('job/cancel',{id:activeJob}).catch(()=>{});}
-  function clearClip(){media.pause();media.removeAttribute('src');media.load();clearHighlight();}
-  function stop(){epoch++;cancelJob();plan=null;paused=false;finished=false;preparing=false;generating=false;currentItem=null;clearClip();state='idle';renderStatus();}
-  function pause(){paused=true;media.pause();state=generating?'pausedPending':'paused';renderStatus();}
-  async function resume(){paused=false;if(generating||preparing){state='generating';renderStatus();return;}if(media.getAttribute('src')&&!media.ended){try{await media.play();state='playing';highlight(currentItem);}catch{paused=true;state='ready';}renderStatus();}}
+  let nativeStop=Promise.resolve();
+  function clearClip(){media.pause();media.removeAttribute('src');media.load();if(isAndroid()&&catalog.native_playback)nativeStop=nativeStop.catch(()=>{}).then(()=>request('playback/stop',{})).catch(()=>{});clearHighlight();}
+  function stop(){epoch++;cancelJob();plan=null;paused=false;finished=false;preparing=false;generating=false;currentItem=null;producedBy=null;clearClip();state='idle';renderStatus();}
+  function pause(){paused=true;media.pause();if(isAndroid()&&catalog.native_playback)request('playback/pause',{}).catch(issue);state=generating?'pausedPending':'paused';renderStatus();}
+  async function resume(){paused=false;if(isAndroid()&&catalog.native_playback){await request('playback/resume',{volume:settings.volume});state=generating?'generating':'playing';renderStatus();return;}if(generating||preparing){state='generating';renderStatus();return;}if(media.getAttribute('src')&&!media.ended){try{await media.play();state='playing';highlight(currentItem);}catch{paused=true;state='ready';}renderStatus();}}
   function editionId(current){return current?.edition?.id??current?.edition_id??null;}
   function labels(book){return Array.isArray(book?.chapter_labels)?book.chapter_labels.slice():Array.isArray(book?.chapters)?book.chapters.map((_,index)=>index+1):[];}
-  function unitFromVerse(current,v){return{text:v.text,reference:v.reference,edition_id:editionId(current),book:typeof current.book==='object'?current.book.id:current.book,chapter:current.chapter,verse:v.nativeVerseStart??v.number};}
+  function unitFromVerse(current,v){return{text:v.text,reference:v.reference,edition_id:editionId(current),language:current.edition?.language,book:typeof current.book==='object'?current.book.id:current.book,chapter:current.chapter,verse:v.nativeVerseStart??v.number};}
   function selectionUnits(selection){
     if(!selection||!Array.isArray(selection.blocks)||!selection.blocks.length)throw Error(t('audio.noSelection'));
-    return selection.blocks.map(block=>({text:block.text??block.selected_text,reference:block.reference??selection.reference,edition_id:block.edition_id??selection.edition_id,book:block.book??selection.book,chapter:block.chapter??selection.chapter,verse:block.verse_start??null}));
+    return selection.blocks.map(block=>({text:block.text??block.selected_text,reference:block.reference??selection.reference,edition_id:block.edition_id??selection.edition_id,language:block.language||selection.language||sourceLanguage(),voice_preview:!!block.voice_preview,book:block.book??selection.book,chapter:block.chapter??selection.chapter,verse:block.verse_start??null}));
   }
   async function ensureUnits(token){
     if(plan.units)return;
@@ -110,21 +134,30 @@ export async function createAudioStudio(common,{reader,getSelection}){
     if(thisPlan.unitIndex===-1)thisPlan.unitIndex=thisPlan.units.length-1;preparing=false;renderStatus();
   }
   function schedule(){
-    const token=++epoch;cancelJob();clearClip();generating=true;state=paused?'pausedPending':'generating';renderStatus();
+    const token=++epoch;cancelJob();clearClip();producedBy=null;generating=true;state=paused?'pausedPending':'generating';renderStatus();
     serial=serial.catch(()=>{}).then(async()=>{
       if(token!==epoch||!plan)return;
       let jobId=null;
       try{
         if(refreshPromise)await refreshPromise;
+        await nativeStop;
         if(token!==epoch||!plan)return;
         await ensureUnits(token);if(token!==epoch||!plan)return;
         const item=plan.units[plan.unitIndex];if(typeof item?.text!=='string'||!item.text.trim())throw Error(t('audio.noText'));if(item.text.length>25000)throw Error(t('audio.textTooLong'));
-        currentItem=item;const selected=selectedVoice();if(!selected?.installed||selected.runtime_available===false)throw Object.assign(Error(),{code:'VOICE_NOT_INSTALLED_OR_CORRUPT'});
-        const initial=await request('audio/synthesize',{provider:settings.provider,voice:settings.voice,text:item.text,speed:settings.speed});jobId=initial.id;
+        currentItem=item;if(isAndroid()&&!item.voice_preview){ensureLanguageVoice();renderSelectors();}
+        const selected=selectedVoice();if(!selected?.installed||selected.runtime_available===false)throw Object.assign(Error(),{code:isAndroid()&&language(item.language)==='ro'?'NO_ROMANIAN_VOICE':'VOICE_NOT_INSTALLED_OR_CORRUPT'});
+        const native=isAndroid()&&catalog.native_playback===true;
+        const initial=await request(native?'audio/narrate':'audio/synthesize',{provider:settings.provider,voice:settings.voice,text:item.text,speed:settings.speed,volume:settings.volume,...(isAndroid()?{speech_mode:item.voice_preview?'selected':settings.speechMode,engine_package:selected.engine_package||settings.systemEnginePackage||undefined,expected_language:language(item.language||selected.language)}:{})});jobId=initial.id;
         if(token!==epoch){await request('job/cancel',{id:jobId}).catch(()=>{});await waitJob(initial).catch(()=>{});return;}
         activeJob=jobId;state=paused?'pausedPending':'generating';renderStatus();
-        const result=await waitJob(initial);
+        const result=await waitJob(initial,{onProgress:progress=>{if(!native||token!==epoch)return;if(['playing','completed'].includes(progress.phase)&&progress.provider)producedBy=providerName(progress.provider)+(progress.voice_name?' · '+progress.voice_name:'');if(progress.phase==='recovering'){generating=true;state='recovering';}else if(paused)state='paused';else if(progress.phase==='playing'){generating=false;state='playing';highlight(item);}else if(progress.phase==='paused')state='paused';else if(progress.phase==='preparing'||progress.phase==='synthesizing')state='generating';renderStatus();}});
         if(token!==epoch||!plan)return;
+        if(native){
+          if(result.narration_completed!==true)throw Object.assign(Error(),{code:'AUDIO_PLAYBACK_FAILED'});
+          producedBy=providerName(result.provider)+(result.voice_name?' · '+result.voice_name:'');generating=false;preparing=false;clearHighlight();
+          if(result.fallback_used)notify(t('audio.recovered',{engine:producedBy}));
+          queueMicrotask(()=>{if(token===epoch&&plan)move(1).catch(issue);});return;
+        }
         const url=result.download_url||('/api/studio/audio/file?id='+encodeURIComponent(result.artifact_id));if(!url.startsWith('/api/studio/audio/file?id='))throw Error(t('audio.failed'));
         media.src=url;media.volume=settings.volume;clipEpoch=token;generating=false;preparing=false;highlight(item);
         if(paused){state='paused';renderStatus();return;}
@@ -150,8 +183,11 @@ export async function createAudioStudio(common,{reader,getSelection}){
   }
   media.addEventListener('ended',()=>{if(plan&&clipEpoch===epoch&&!paused)move(1).catch(issue);});
   media.addEventListener('error',()=>{if(plan&&media.getAttribute('src')){paused=true;state='error';clearHighlight();renderStatus();}});
-  provider.addEventListener('change',()=>{stop();settings.provider=provider.value;settings.voice=catalog.voices.find(v=>v.provider===provider.value&&v.installed&&v.runtime_available!==false)?.id||null;save();renderSelectors();});
-  voice.addEventListener('change',()=>{stop();settings.voice=voice.value;save();});
+  provider.addEventListener('change',()=>{stop();settings.provider=provider.value;if(isAndroid())settings.speechMode=provider.value==='android-native'?'android-native':provider.value==='piper'?'piper':'auto';settings.voice=matchingVoices().find(v=>v.provider===provider.value)?.id||null;save();renderSelectors();});
+  voice.addEventListener('change',()=>{stop();settings.voice=voice.value;const chosen=selectedVoice();if(chosen?.engine_package)settings.systemEnginePackage=chosen.engine_package;save();});
+  speechMode.input.addEventListener('change',()=>{stop();settings.speechMode=speechMode.input.value;ensureLanguageVoice();renderSelectors();renderVoices();});
+  systemEngine.input.addEventListener('change',async()=>{stop();settings.systemEnginePackage=systemEngine.input.value;save();if(settings.systemEnginePackage)await request('speech/engine',{engine_package:settings.systemEnginePackage});await refreshVoices(true);});
+  document.addEventListener('reader:chapter',()=>{if(!isAndroid())return;if(plan&&currentItem?.edition_id&&currentItem.edition_id!==editionId(reader.getCurrent()))stop();ensureLanguageVoice();renderSelectors();});
 
   function renderScopes(){options(scopeField.input,['selection','verse','range','chapter','chapterrange','book'].map(v=>[v,t('audio.scope.'+v)]),settings.scope);}
   function showScope(){const value=scopeField.input.value;verseStart.label.hidden=value!=='range';verseEnd.label.hidden=value!=='range';chapterStart.label.hidden=value!=='chapterrange';chapterEnd.label.hidden=value!=='chapterrange';}
@@ -175,7 +211,7 @@ export async function createAudioStudio(common,{reader,getSelection}){
   scopeField.input.addEventListener('change',showScope);
   speedField.input.addEventListener('input',()=>{settings.speed=Number(speedField.input.value);speedValue.textContent=settings.speed.toFixed(2)+'×';save();});
   speedField.input.addEventListener('change',()=>{if(plan)schedule();});
-  volumeField.input.addEventListener('input',()=>{settings.volume=Number(volumeField.input.value);media.volume=settings.volume;volumeValue.textContent=Math.round(settings.volume*100)+'%';save();});
+  volumeField.input.addEventListener('input',()=>{settings.volume=Number(volumeField.input.value);media.volume=settings.volume;if(isAndroid()&&catalog.native_playback)request('playback/volume',{volume:settings.volume}).catch(()=>{});volumeValue.textContent=Math.round(settings.volume*100)+'%';save();});
 
   async function settlePlayback(){stop();await serial.catch(()=>{});}
   async function manageInstall(voiceId){
@@ -193,7 +229,7 @@ export async function createAudioStudio(common,{reader,getSelection}){
     if(managerBusy)return;
     if(refreshPromise)await refreshPromise;
     await settlePlayback();settings.provider=item.provider;settings.voice=item.id;save();renderSelectors();const code=language(item.language);if(!previewField.input.dataset.edited)previewField.input.value=t('audio.sample'+(code==='ro'?'Ro':code==='de'?'De':'En'));
-    await play({blocks:[{text:previewField.input.value,reference:t('audio.preview')}],text:previewField.input.value});
+    await play({blocks:[{text:previewField.input.value,reference:t('audio.preview'),language:item.language,voice_preview:true}],text:previewField.input.value});
   }
   previewField.input.addEventListener('input',()=>previewField.input.dataset.edited='true');
   function renderVoices(){
@@ -204,7 +240,7 @@ export async function createAudioStudio(common,{reader,getSelection}){
       if(item.managed&&item.removable){const remove=button('audio.remove',()=>manageRemove(item));remove.dataset.voiceRemove=item.id;actions.append(remove);}
       if(item.installed&&item.runtime_available!==false){const previewButton=button('audio.preview',()=>preview(item));previewButton.dataset.voicePreview=item.id;actions.append(previewButton);}
       for(const control of actions.querySelectorAll('button'))control.disabled=managerBusy||refreshingVoices;
-      if(isAndroid())card.append(text('p',item.network_required===true?'audio.networkVoice':item.bundled?'audio.bundledVoice':item.network_required===false?'audio.offlineVoice':'audio.voiceAvailabilityUnknown','meta'));
+      if(isAndroid()){card.append(text('p',item.network_required===true?'audio.networkVoice':item.bundled?'audio.bundledVoice':item.network_required===false?'audio.offlineVoice':'audio.voiceAvailabilityUnknown','meta'));if(item.engine_name)card.append(node('p',item.engine_name,'meta'));if(item.bundled&&!item.runtime_tested)card.append(text('p','audio.runtimeNotTested','meta'));}
       if(item.license)card.append(node('p',item.license,'meta'));card.append(actions);voiceList.append(card);
     }
     if(!list.length)voiceList.append(text('p','audio.noVoices'));
@@ -214,6 +250,6 @@ export async function createAudioStudio(common,{reader,getSelection}){
   common.subscribe(()=>{for(const element of player.querySelectorAll('[data-audio-label]')){element.title=t(element.dataset.audioLabel);element.setAttribute('aria-label',t(element.dataset.audioLabel));}player.setAttribute('aria-label',t('audio.player'));managerProgress.setAttribute('aria-label',t('audio.downloadProgress'));renderSelectors();renderVoices();renderStatus();const old=scopeField.input.value;renderScopes();scopeField.input.value=old;});
   window.addEventListener('pagehide',stop);
   renderScopes();renderStatus();await refreshVoices();
-  return{openVoices,openPlayback,play,pause,stop,refreshVoices,next:()=>move(1),previous:()=>move(-1),getState:()=>({state,provider:settings.provider,voice:settings.voice,speed:settings.speed,volume:settings.volume,paused,generating,activeJob,reference:currentItem?.reference||null,scope:settings.scope}),destroy(){stop();player.remove();voicesDialog.element.remove();playback.element.remove();}};
+  return{openVoices,openPlayback,play,pause,stop,refreshVoices,next:()=>move(1),previous:()=>move(-1),getState:()=>({state,provider:settings.provider,voice:settings.voice,speechMode:settings.speechMode,systemEnginePackage:settings.systemEnginePackage,producedBy,speed:settings.speed,volume:settings.volume,paused,generating,activeJob,reference:currentItem?.reference||null,scope:settings.scope}),destroy(){stop();player.remove();voicesDialog.element.remove();playback.element.remove();}};
 }
 export default createAudioStudio;

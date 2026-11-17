@@ -16,5 +16,5 @@ export async function attach(packageId,port=9223){
  await send('Runtime.enable');await send('Page.enable');
  return {pid,url:list[0].url,send,evaluate,events,close:()=>ws.close()};
 }
-export async function wait(client,predicate,label='condition',timeout=20000){const start=Date.now();while(Date.now()-start<timeout){if(await client.evaluate(predicate))return;await new Promise(r=>setTimeout(r,200));}throw Error('Timed out: '+label);}
+export async function wait(client,predicate,label='condition',timeout=20000){const start=Date.now();let last;while(Date.now()-start<timeout){try{if(await client.evaluate(predicate))return;}catch(error){last=error;}await new Promise(r=>setTimeout(r,200));}throw Error('Timed out: '+label+(last?' ('+last.message+')':''));}
 export async function screenshot(path){const data=execFileSync(adb,['-s',serial,'exec-out','screencap','-p'],{timeout:15000,maxBuffer:30_000_000});await fs.writeFile(path,data);}

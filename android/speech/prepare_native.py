@@ -80,6 +80,7 @@ def main():
     receipt = {'piper_kotlin': {'repository': 'https://github.com/piper-tts-apps/piper-kotlin', 'revision': REVISION},
                'submodules': EXPECTED_GITLINKS, 'onnxruntime': {'version': ORT_VERSION, 'url': url, 'sha256': actual, 'bytes': aar.stat().st_size, 'source': f'https://github.com/microsoft/onnxruntime/tree/{ORT_SOURCE_COMMIT}', 'source_commit': ORT_SOURCE_COMMIT},
                'patches': [{'path': str(p.relative_to(UPSTREAM)).replace('\\', '/'), 'sha256': digest(p)} for p in sorted((UPSTREAM / 'piper-engine/src/main/cpp/patches/piper1-gpl').glob('*.patch'))],
+               'local_patches': [{'path': p.relative_to(WORKSPACE).as_posix(), 'sha256': digest(p)} for p in sorted((Path(__file__).parent / 'patches').glob('*.patch'))],
                'abis': ['arm64-v8a', 'x86_64'], 'pristine_upstream_preserved': True}
     (SUPPORT / 'source-receipt.json').write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(receipt, indent=2))

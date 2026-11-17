@@ -17,6 +17,16 @@ if(WIN32)
   set(PATCH_CMD "C:/Program Files/Git/usr/bin/patch.exe" CACHE FILEPATH "Verified Git patch utility")
 endif()
 add_subdirectory("${PIPER_ANDROID_UPSTREAM}" "${CMAKE_CURRENT_BINARY_DIR}/piper-native")
+file(STRINGS "${PIPER1_GPL_DIR}/libpiper/src/piper.cpp" FBR_NO_EXIT_MARKER
+     REGEX "espeakINITIALIZE_DONT_EXIT" LIMIT_COUNT 1)
+if(NOT FBR_NO_EXIT_MARKER)
+  execute_process(COMMAND "${PATCH_CMD}" -p1 --silent
+    -i "${CMAKE_CURRENT_SOURCE_DIR}/../../../patches/0003-espeak-initialization-no-exit.patch"
+    WORKING_DIRECTORY "${PIPER1_GPL_DIR}" RESULT_VARIABLE FBR_PATCH_RESULT)
+  if(NOT FBR_PATCH_RESULT EQUAL 0)
+    message(FATAL_ERROR "Cannot apply declared Piper DONT_EXIT patch")
+  endif()
+endif()
 target_sources(piper_jni PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/speech_bridge.cpp")
 target_include_directories(piper_jni PRIVATE "${PIPER_ANDROID_UPSTREAM}")
 # Android 15+ can use 16 KiB pages. Inspect the prebuilt ORT separately as well.

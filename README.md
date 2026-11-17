@@ -1,5 +1,27 @@
 # FREE BIBLE READER
 
+## Romanian voice recovery — Android Ultimate 0.3.1 Beta 1
+
+[Download the repair and Romanian Voice Add-on](https://github.com/chatgptopenaiagi/Free-Bible-Reader/releases/tag/v0.3.1-beta.1)
+· [Romanian voice installation guide](docs/ROMANIAN-VOICE-RECOVERY.md)
+
+This focused Android update prevents a saved English voice from being used for
+Romanian Scripture, discovers installed TTS engines explicitly, adds native
+Android playback and provides bounded automatic recovery. A separate small
+**Romanian Voice Add-on** supplies a genuine offline Android TTS service using
+basic eSpeak synthesis. It is independent of Piper and the Bible databases.
+
+The recommended recovery is to install the add-on, update Ultimate, then choose
+**Audio → Voice Manager → Android system TTS** and select the add-on's Romanian
+voice. No global TTS setting change is required. Piper Mihai remains available.
+The update uses the same development signing certificate and application ID as
+the published Ultimate preview; it does not clear personal libraries or settings.
+
+**Physical Vivo V2450 testing was unavailable.** The repair is verified on the
+ARM64 emulator runtime, including actual native playback completion. Digital
+audio tests do not establish that a person heard the phone's loudspeaker.
+Windows v0.2.0, Python v0.3.0 and the existing Lite release are unchanged.
+
 ## Android and Python preview — 0.3.0
 
 The multiplatform prerelease provides two independent, offline Android apps and

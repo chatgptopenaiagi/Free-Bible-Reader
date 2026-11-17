@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';import path from 'node:path';import assert from 'node:assert/strict';import {execFileSync}from'node:child_process';
 import {attach,shell,wait,screenshot}from'./cdp.mjs';
-const evidence=path.resolve('evidence/final-ultimate');await fs.mkdir(evidence,{recursive:true});const checks=[];const c=await attach('com.freebiblereader.ultimate',9225);
+const evidence=path.resolve(process.env.FBR_READER_EVIDENCE||'evidence/final-ultimate');await fs.mkdir(evidence,{recursive:true});const checks=[];const c=await attach('com.freebiblereader.ultimate',9225);
 const test=async(name,fn)=>{try{const detail=await fn();checks.push({name,pass:true,detail});console.log('PASS '+name);}catch(e){checks.push({name,pass:false,error:String(e.stack||e)});console.log('FAIL '+name+': '+e.message);}};
 const api=async(route,payload)=>c.evaluate(`(async()=>{const r=await fetch(${JSON.stringify(route)},${payload===undefined?'{}':JSON.stringify({method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})});const v=await r.json();if(!r.ok)throw Error(JSON.stringify(v));return v;})()`);
 const job=async(route,payload)=>{const queued=await api(route,payload);if(!queued.id)return queued;for(let i=0;i<100;i++){const value=await api('/api/studio/job?id='+queued.id);if(value.state==='COMPLETE')return value.result;if(['FAILED','CANCELLED'].includes(value.state))throw Error(JSON.stringify(value));await new Promise(r=>setTimeout(r,150));}throw Error('Job timed out');};

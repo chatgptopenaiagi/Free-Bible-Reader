@@ -99,7 +99,7 @@ Java_com_freebiblereader_speech_SpeechBridge_nativeSynthesize(JNIEnv* env,jclass
       } while(status!=PIPER_DONE);
     } else if(provider=="espeak-ng"){
       cached.reset();cachedModel.clear();
-      const int rate=espeak_Initialize(AUDIO_OUTPUT_SYNCHRONOUS,0,data.c_str(),0);if(rate<=0)throw std::runtime_error("ESPEAK_INITIALIZATION_FAILED");
+      const int rate=espeak_Initialize(AUDIO_OUTPUT_SYNCHRONOUS,0,data.c_str(),espeakINITIALIZE_DONT_EXIT);if(rate<=0)throw std::runtime_error("ESPEAK_INITIALIZATION_FAILED");
       wav.rate=rate;callbackError=false;currentWave=&wav;espeak_SetSynthCallback(espeakCallback);
       if(espeak_SetVoiceByName(voice.c_str())!=EE_OK){currentWave=nullptr;espeak_Terminate();throw std::runtime_error("VOICE_NOT_INSTALLED_OR_CORRUPT");}
       espeak_SetParameter(espeakRATE,int(175*speed),0);
@@ -117,6 +117,6 @@ extern "C" JNIEXPORT jboolean JNICALL
 Java_com_freebiblereader_speech_SpeechBridge_nativeCanVoice(JNIEnv* env,jclass,jstring dataValue,jstring voiceValue){
   std::lock_guard<std::mutex> guard(bridgeMutex);std::lock_guard<std::mutex> espeakGuard(piper_jni::EspeakProcessMutex());
   cached.reset();cachedModel.clear();const std::string data=str(env,dataValue),voice=str(env,voiceValue);
-  if(espeak_Initialize(AUDIO_OUTPUT_SYNCHRONOUS,0,data.c_str(),0)<=0)return false;
+  if(espeak_Initialize(AUDIO_OUTPUT_SYNCHRONOUS,0,data.c_str(),espeakINITIALIZE_DONT_EXIT)<=0)return false;
   const bool ok=espeak_SetVoiceByName(voice.c_str())==EE_OK;espeak_Terminate();return ok;
 }

@@ -44,5 +44,12 @@
     "reason": "ARM64 emulator native-bridge library initializer failure in1.31; corrected Piper RO/EN/DE, eSpeak RO and cancellation passed with1.22",
     "physical_device_tested": false,
     "audible_pronunciation_verified": false
-  }
+  },
+  "local_patches": [
+    {
+      "path": "android/speech/patches/0003-espeak-initialization-no-exit.patch",
+      "sha256": "7f3c95f63b625e0a8b9ecafee6f848842da69468eb42679cebebe18e94221de3"
+    }
+  ],
+  "local_patch_reason": "Use espeakINITIALIZE_DONT_EXIT so an initialization failure returns an error instead of exiting the reader process; pristine source unchanged."
 }

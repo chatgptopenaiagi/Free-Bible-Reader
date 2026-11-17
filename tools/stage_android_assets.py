@@ -64,7 +64,7 @@ def stage(variant):
     # Fail rather than quietly packaging a stale or private leftover file.
     unexpected=[str(p.relative_to(target)) for p in target.rglob('*') if p.is_file() and str(p.relative_to(target)).replace('\\','/') not in files and p.name!='resource-manifest.json']
     if unexpected:raise ValueError('Unexpected staged assets; inspect without deleting evidence: '+repr(unexpected[:10]))
-    receipt={'schema_version':1,'product':variant,'version':'0.3.0','private_corpus_included':False,'files':manifest,'total_bytes':sum(f['size'] for f in manifest),'speech_assets':'Ultimate-only :speech module; independently hashed' if variant=='ultimate' else 'Android device voices only','reading_editions':['web','kjv','bsb','ronbl'],'romanian_coverage':'Draft Latin-script New Testament only; 27 books'}
+    receipt={'schema_version':1,'product':variant,'version':'0.3.1-beta.1' if variant=='ultimate' else '0.3.0','private_corpus_included':False,'files':manifest,'total_bytes':sum(f['size'] for f in manifest),'speech_assets':'Ultimate-only :speech module; independently hashed' if variant=='ultimate' else 'Android device voices only','reading_editions':['web','kjv','bsb','ronbl'],'romanian_coverage':'Draft Latin-script New Testament only; 27 books'}
     (target/'resource-manifest.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({'variant':variant,'files':len(manifest),'bytes':receipt['total_bytes'],'path':str(target)},ensure_ascii=False))
     return receipt

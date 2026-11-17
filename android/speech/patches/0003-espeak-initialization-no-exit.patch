@@ -1,0 +1,12 @@
+diff --git a/libpiper/src/piper.cpp b/libpiper/src/piper.cpp
+--- a/libpiper/src/piper.cpp
++++ b/libpiper/src/piper.cpp
+@@ -194,7 +194,7 @@ auto piper_create_with_options(const piper_create_options *options)
+       std::lock_guard<std::mutex> lock(g_espeak_ref_mutex);
+       if (g_espeak_ref_count == 0 &&
+           espeak_Initialize(AUDIO_OUTPUT_SYNCHRONOUS, 0, final_espeak_data_path,
+-                            0) < 0) {
++                            espeakINITIALIZE_DONT_EXIT) < 0) {
+         return nullptr;
+       }
+       ++g_espeak_ref_count;

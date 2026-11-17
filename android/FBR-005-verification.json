@@ -1,0 +1,24 @@
+{
+  "mission": "FBR-005",
+  "physical_device_status": "PHYSICAL_VIVO_TESTING_NOT_AVAILABLE",
+  "physical_vivo_success_claim": false,
+  "runtime": {"avd": "FBR_004_API37", "android_api": 37, "guest_abi": "x86_64", "application_abi": "arm64-v8a", "native_bridge": "libndk_translation.so", "airplane_mode": true},
+  "artifacts": [
+    {"application_id": "com.freebiblereader.ultimate", "version": "0.3.1-beta.1", "version_code": 301, "bytes": 446400281, "sha256": "ad8504f7f3caff5f58c5805de11a41547638d9e7f88a2bed1f3e731bdc2fdca8", "installed_release": true, "debuggable": false, "sqlite_databases": 6, "onnx_models": 3},
+    {"application_id": "com.freebiblereader.voice.ro", "version": "0.1.0", "version_code": 1, "bytes": 2101891, "sha256": "46952d4e87fae34ab09c94304f9d04411e46b01cb18be12f91f22ef038a0b9b8", "installed_release": true, "debuggable": false, "sqlite_databases": 0, "onnx_models": 0}
+  ],
+  "signing": {"nature": "existing Android Debug development certificate; prerelease", "certificate_sha256": "d77e623706f0146bc495904affe310cb492d67277ecf70b28455d1f5e138e419", "verified": true, "same_certificate_upgrade": true},
+  "baseline": {"ultimate_retained_english_joe_for_romanian": true, "lite_default_engine_only_missed_working_companion": true, "exact_physical_vivo_failure_reproduced": false, "all_three_baseline_model_hashes_match_manifest": true},
+  "accepted_suites": {"speech_recovery": {"passed": 12, "failed": 0}, "reader_research_import_documents": {"passed": 8, "failed": 0}},
+  "actual_playback_verified": ["explicit Romanian Android companion through GUI and native MediaPlayer", "Piper Mihai Romanian through native MediaPlayer", "intentional missing preferred voice to real Romanian companion recovery", "post-restart Romanian companion completion", "final non-debuggable release GUI Romanian completion"],
+  "native_controls": {"position_advanced": true, "pause_position_stable": true, "paused_volume_preserved": true, "resume_completed": true, "stop_prevented_replay": true, "english_voice_for_romanian_rejected": true},
+  "system_mode": {"explicit_engine_package": "com.freebiblereader.voice.ro", "exact_voice_name": "com.freebiblereader.voice.ro.ro-RO.espeak", "locale": "ro-RO", "network_required": false, "piper_jni_and_onnx_not_loaded_during_system_test": true, "system_default_unchanged": true},
+  "generation_only_regressions": ["Piper en_US-joe-medium", "Piper de_DE-thorsten-medium", "embedded eSpeak Romanian"],
+  "restart": {"passed": true, "new_loopback_origin": true, "voice_mode_and_composite_id_preserved": true, "prior_library_ids": 7, "all_prior_library_ids_preserved": true, "new_narration_completed": true, "completion_position_ms": 5640, "duration_ms": 5640},
+  "documents": {"actual_android_pdf_docx_created": true, "independently_reopened": true, "source_text_and_reference_preserved": true, "romanian_diacritics_preserved": true},
+  "companion": {"genuine_android_tts_service": true, "framework_client_test_passed": true, "english_availability_unsupported": true, "pcm16_non_silent": true, "native_gui_test_completed": true, "no_bible_database_or_neural_model": true},
+  "release": {"gui_reading_and_actual_romanian_completion_verified": true, "debug_probe_activities_absent": true, "apk_bytes_frozen": true},
+  "scope": {"human_loudspeaker_listening_verified": false, "physical_vivo_verified": false, "all_third_party_voices_verified": false, "model_files_corrupted_or_renamed_for_tests": false, "application_uninstalled_or_storage_cleared": false, "original_private_corpus_included": false, "windows_installation_modified": false},
+  "romanian_text_coverage": "Biblia Liberă draft Latin-script New Testament, 27 books",
+  "publication_performed_by_android_runtime_agent": false
+}

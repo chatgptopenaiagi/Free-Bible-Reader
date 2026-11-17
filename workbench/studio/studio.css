@@ -47,3 +47,4 @@ body[data-reading-focus=true] .studio-menubar{display:none}
 body.android-ultimate .studio-player{inset-block-end:calc(60px + env(safe-area-inset-bottom))}
 body.android-ultimate{padding-block-end:240px}
 html[data-platform=android] .app-shell{padding-inline-start:env(safe-area-inset-left);padding-inline-end:env(safe-area-inset-right)}
+.studio-player-status,#studio-engine-diagnostics,.studio-voice-card{overflow-wrap:anywhere}

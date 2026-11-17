@@ -17,29 +17,27 @@ import java.lang.reflect.*;
 /** Narrow native contract; potentially blocking file dialogs always wait off the UI thread. */
 public final class PlatformAdapter {
     private static MainActivity activity;
-    private static TextToSpeech tts;
-    private static CountDownLatch ttsReady=new CountDownLatch(1);
-    private static volatile boolean ttsOk;
     private static Object neural;
     private static final Object pickerLock=new Object();
     private static final Object speechLock=new Object();
     private static final Map<Integer,Pending> pending=new ConcurrentHashMap<>();
     private static int requestCounter=4100;
-    private static volatile long cancelEpoch;
     private static class Pending {CountDownLatch latch=new CountDownLatch(1);Intent data;int result;}
-    public static void initialize(MainActivity owner){activity=owner;owner.runOnUiThread(()->{tts=new TextToSpeech(owner,status->{ttsOk=status==TextToSpeech.SUCCESS;ttsReady.countDown();});});}
+    public static void initialize(MainActivity owner){activity=owner;AndroidSpeechEngines.initialize(owner);NativeAudioPlayer.initialize(owner);}
     public static String invoke(String operation,String payloadJson){
         try {
             JSONObject payload=new JSONObject(payloadJson==null||payloadJson.isEmpty()?"{}":payloadJson);
-            if(Looper.myLooper()==Looper.getMainLooper()&&(operation.startsWith("picker.")||operation.equals("speech.synthesize")))throw new IllegalStateException("Blocking native operation requires a worker thread");
+            if(Looper.myLooper()==Looper.getMainLooper()&&(operation.startsWith("picker.")||operation.equals("speech.synthesize")||operation.equals("speech.catalog")||operation.equals("speech.engine.select")))throw new IllegalStateException("Blocking native operation requires a worker thread");
             Object response=switch(operation){
                 case "picker.open" -> open(payload);
                 case "picker.save" -> save(payload);
                 case "share" -> share(payload);
                 case "settings.voices","android-voices" -> voiceSettings();
-                case "speech.catalog" -> catalog();
+                case "speech.catalog" -> catalog(payload);
+                case "speech.engine.select" -> AndroidSpeechEngines.select(payload);
+                case "playback.start","playback.pause","playback.resume","playback.stop","playback.status","playback.volume" -> NativeAudioPlayer.invoke(operation,payload);
                 case "speech.synthesize" -> synthesize(payload);
-                case "speech.cancel" -> cancel();
+                case "speech.cancel" -> cancel(payload);
                 case "app.quit" -> quit();
                 case "app.info" -> new JSONObject().put("variant",BuildConfig.PRODUCT_VARIANT).put("application_id",BuildConfig.APPLICATION_ID).put("version",BuildConfig.VERSION_NAME);
                 case "preferences.load" -> new JSONObject().put("values",new JSONObject(activity.getSharedPreferences("reader-ui",0).getString("values","{}")));
@@ -83,26 +81,28 @@ public final class PlatformAdapter {
     private static File privateFile(String value)throws IOException{File f=new File(value).getCanonicalFile();if(!f.getPath().startsWith(activity.getFilesDir().getCanonicalPath()+File.separator))throw new SecurityException("Only application-private files may be exported");if(!f.isFile())throw new FileNotFoundException(f.toString());return f;}
     private static JSONObject voiceSettings()throws Exception {activity.runOnUiThread(()->{try{activity.startActivity(new Intent("com.android.settings.TTS_SETTINGS"));}catch(Exception e){activity.startActivity(new Intent(Settings.ACTION_SETTINGS));}});return new JSONObject().put("status","OPENED");}
     private static Object neural()throws Exception {if(!BuildConfig.PRODUCT_VARIANT.equals("ultimate"))return null;if(neural==null)neural=Class.forName("com.freebiblereader.speech.SpeechBridge").getConstructor(android.content.Context.class).newInstance(activity);return neural;}
-    private static JSONObject catalog()throws Exception {
-        ttsReady.await(15,TimeUnit.SECONDS);JSONArray voices=new JSONArray();JSONArray providers=new JSONArray().put(new JSONObject().put("id","android-native").put("name","Android TextToSpeech").put("available",ttsOk).put("runtime_available",ttsOk));
-        if(ttsOk&&tts.getVoices()!=null)for(Voice v:tts.getVoices()){boolean installed=!v.getFeatures().contains(TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED);voices.put(new JSONObject().put("id",v.getName()).put("name",v.getName()).put("provider","android-native").put("language",v.getLocale().toLanguageTag()).put("installed",installed).put("available",installed).put("runtime_available",ttsOk).put("network_required",v.isNetworkConnectionRequired()).put("offline",!v.isNetworkConnectionRequired()).put("quality",v.getQuality()));}
-        Object engine=neural();if(engine!=null){JSONObject local=new JSONObject((String)engine.getClass().getMethod("voices").invoke(engine));JSONArray localVoices=local.optJSONArray("voices");if(localVoices!=null)for(int i=0;i<localVoices.length();i++)voices.put(localVoices.get(i));JSONArray localProviders=local.optJSONArray("providers");if(localProviders!=null)for(int i=0;i<localProviders.length();i++)providers.put(localProviders.get(i));}
-        return new JSONObject().put("platform","android").put("providers",providers).put("voices",voices);
+    private static JSONObject catalog(JSONObject request)throws Exception {
+        JSONObject result;JSONArray diagnostics=new JSONArray();
+        try{result=AndroidSpeechEngines.catalog(request.optBoolean("refresh",false));}
+        catch(Throwable error){result=new JSONObject().put("platform","android").put("engines",new JSONArray()).put("voices",new JSONArray()).put("providers",new JSONArray().put(new JSONObject().put("id","android-native").put("available",false).put("error",String.valueOf(error.getMessage()))));diagnostics.put(new JSONObject().put("provider","android-native").put("error",String.valueOf(error.getMessage())));}
+        JSONArray voices=result.getJSONArray("voices"),providers=result.getJSONArray("providers");
+        try{Object engine=neural();if(engine!=null){JSONObject local=new JSONObject((String)engine.getClass().getMethod("voices").invoke(engine));JSONArray localVoices=local.optJSONArray("voices");if(localVoices!=null)for(int i=0;i<localVoices.length();i++)voices.put(localVoices.get(i));JSONArray localProviders=local.optJSONArray("providers");if(localProviders!=null)for(int i=0;i<localProviders.length();i++)providers.put(localProviders.get(i));}}
+        catch(Throwable error){Throwable cause=error instanceof InvocationTargetException?error.getCause():error;for(String id:new String[]{"piper","espeak-ng"})providers.put(new JSONObject().put("id",id).put("available",false).put("error",String.valueOf(cause.getMessage())));diagnostics.put(new JSONObject().put("provider","bundled-native").put("error",String.valueOf(cause.getMessage())));}
+        return result.put("native_playback",true).put("diagnostics",diagnostics);
     }
     private static JSONObject synthesize(JSONObject p)throws Exception {synchronized(speechLock){return synthesizeSerial(p);}}
     private static JSONObject synthesizeSerial(JSONObject p)throws Exception {
         String provider=p.optString("provider","android-native"),voice=p.optString("voice",p.optString("voice_id","")),text=p.getString("text");double speed=p.optDouble("speed",1.0);String destination=p.optString("output_path",p.optString("output",""));
-        if(text.length()>20000)throw new IllegalArgumentException("Narration text exceeds bound");
-        File out=new File(destination).getCanonicalFile();if(!out.getPath().startsWith(activity.getFilesDir().getCanonicalPath()+File.separator))throw new SecurityException("Audio must remain in application storage");out.getParentFile().mkdirs();
-        if(!provider.equals("android-native")){Object engine=neural();if(engine==null)throw new IllegalArgumentException("Neural speech is available in Ultimate only");return new JSONObject((String)engine.getClass().getMethod("synthesize",String.class,String.class,String.class,double.class,String.class).invoke(engine,provider,voice,text,speed,out.toString()));}
-        ttsReady.await(15,TimeUnit.SECONDS);if(!ttsOk)throw new IOException("Android voice engine unavailable");long epoch=cancelEpoch;
-        Voice selected=null;if(tts.getVoices()!=null)for(Voice v:tts.getVoices())if(v.getName().equals(voice)){selected=v;break;}if(!voice.isEmpty()&&selected==null)throw new IOException("Selected Android voice unavailable");
-        if(selected!=null)tts.setVoice(selected);tts.setSpeechRate((float)Math.max(.25,Math.min(3,speed)));CountDownLatch done=new CountDownLatch(1);String utterance=UUID.randomUUID().toString();final int[] error={0};
-        tts.setOnUtteranceProgressListener(new UtteranceProgressListener(){public void onStart(String id){}public void onDone(String id){if(id.equals(utterance))done.countDown();}public void onError(String id){if(id.equals(utterance)){error[0]=1;done.countDown();}}public void onStop(String id,boolean interrupted){if(id.equals(utterance)){error[0]=2;done.countDown();}}});
-        int result=tts.synthesizeToFile(text,new Bundle(),out,utterance);if(result!=TextToSpeech.SUCCESS)throw new IOException("Android speech request failed");if(!done.await(120,TimeUnit.SECONDS)){tts.stop();throw new IOException("Android speech timed out");}if(epoch!=cancelEpoch)throw new IOException("Speech cancelled");if(error[0]!=0||out.length()<44)throw new IOException("Android voice produced no WAV audio");return new JSONObject().put("status","COMPLETE").put("path",out.toString()).put("bytes",out.length()).put("provider",provider).put("voice",voice);
+        if(text.trim().isEmpty()||text.length()>20000)throw new IllegalArgumentException("INVALID_SPEECH_TEXT");
+        if(!Double.isFinite(speed)||speed<.5||speed>2.2)throw new IllegalArgumentException("INVALID_SPEECH_SPEED");
+        File out=new File(destination).getCanonicalFile();if(!out.getPath().startsWith(activity.getFilesDir().getCanonicalPath()+File.separator))throw new SecurityException("INVALID_AUDIO_OUTPUT_PATH");if(!out.getParentFile().isDirectory()&&!out.getParentFile().mkdirs())throw new IOException("AUDIO_FILE_NOT_WRITABLE");
+        if(provider.equals("android-native"))return AndroidSpeechEngines.synthesize(p,out);
+        if(!provider.equals("piper")&&!provider.equals("espeak-ng"))throw new IOException("UNSUPPORTED_SPEECH_PROVIDER");
+        Object engine=neural();if(engine==null)throw new IOException("BUNDLED_SPEECH_UNAVAILABLE");
+        return new JSONObject((String)engine.getClass().getMethod("synthesize",String.class,String.class,String.class,double.class,String.class,String.class,String.class).invoke(engine,provider,voice,text,speed,out.toString(),p.optString("request_id",UUID.randomUUID().toString()),p.optString("expected_language","")));
     }
-    private static JSONObject cancel()throws Exception{cancelEpoch++;if(tts!=null)tts.stop();if(neural!=null)neural.getClass().getMethod("cancel").invoke(neural);return new JSONObject().put("status","CANCELLED");}
+    private static JSONObject cancel(JSONObject p)throws Exception{AndroidSpeechEngines.cancel();if(neural!=null){String payload=new JSONObject().put("request_id",p.optString("request_id","")).toString();neural.getClass().getMethod("invoke",String.class,String.class).invoke(neural,"speech.cancel",payload);}return new JSONObject().put("status","CANCELLED");}
     private static JSONObject quit()throws Exception {activity.runOnUiThread(()->activity.finish());return new JSONObject().put("status","CLOSING");}
     private static JSONObject persistPreferences(JSONObject p)throws Exception{JSONObject values=p.getJSONObject("values");if(values.toString().length()>1000000)throw new IllegalArgumentException("Preference storage bound exceeded");Iterator<String> keys=values.keys();while(keys.hasNext()){String key=keys.next();if(!(values.get(key) instanceof String))throw new IllegalArgumentException("Preference values must be strings");}activity.getSharedPreferences("reader-ui",0).edit().putString("values",values.toString()).apply();return new JSONObject().put("status","SAVED");}
-    public static void shutdown(){try{cancel();if(neural!=null)neural.getClass().getMethod("shutdown").invoke(neural);}catch(Exception ignored){}if(tts!=null){tts.shutdown();tts=null;}for(Pending p:pending.values())p.latch.countDown();pending.clear();}
+    public static void shutdown(){try{cancel(new JSONObject());if(neural!=null)neural.getClass().getMethod("shutdown").invoke(neural);}catch(Exception ignored){}neural=null;AndroidSpeechEngines.shutdown();NativeAudioPlayer.shutdown();for(Pending p:pending.values())p.latch.countDown();pending.clear();}
 }

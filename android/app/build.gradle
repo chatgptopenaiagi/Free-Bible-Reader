@@ -13,7 +13,7 @@ android {
     flavorDimensions += 'edition'
     productFlavors {
         lite { dimension 'edition'; applicationId 'com.freebiblereader.lite'; resValue 'string','app_name','Free Bible Reader Lite'; buildConfigField 'String','PRODUCT_VARIANT','"lite"' }
-        ultimate { dimension 'edition'; applicationId 'com.freebiblereader.ultimate'; resValue 'string','app_name','Free Bible Reader Ultimate'; buildConfigField 'String','PRODUCT_VARIANT','"ultimate"' }
+        ultimate { dimension 'edition'; applicationId 'com.freebiblereader.ultimate'; versionCode 301; versionName '0.3.1-beta.1'; resValue 'string','app_name','Free Bible Reader Ultimate'; buildConfigField 'String','PRODUCT_VARIANT','"ultimate"' }
     }
     buildFeatures { buildConfig true; resValues true }
     compileOptions { sourceCompatibility JavaVersion.VERSION_21; targetCompatibility JavaVersion.VERSION_21 }

@@ -33,7 +33,10 @@ public class MainActivity extends Activity {
         startup.submit(()->{
             try {
                 if(BuildConfig.DEBUG&&getIntent().hasExtra("native_operation")){runNativeTest(getIntent());return;}
-                bundleRoot=new File(getFilesDir(),"bundle/"+BuildConfig.VERSION_NAME+"-"+BuildConfig.PRODUCT_VARIANT);
+                // Keep verified immutable public resources across speech-only updates.
+                // Personal libraries live separately in files/studio and are untouched.
+                File legacy=new File(getFilesDir(),"bundle/0.3.0-"+BuildConfig.PRODUCT_VARIANT);
+                bundleRoot=legacy.isDirectory()?legacy:new File(getFilesDir(),"bundle/"+BuildConfig.PRODUCT_VARIANT);
                 extractResources(bundleRoot);
                 if(!Python.isStarted())Python.start(new AndroidPlatform(this));
                 Python py=Python.getInstance();
